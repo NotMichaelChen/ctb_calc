@@ -46,11 +46,11 @@ namespace HitObjects
             for(int i = 0; i < timings.Length; i++)
             {
                 //Split the string by commas to get all the relevant times
-                string[] properties = timings[i].Split(new char[] {','});
+                string[] attributes = timings[i].Split(new char[] {','});
                 //Trim each string just in case
-                properties = Dewlib.TrimStringArray(properties);
+                attributes = Dewlib.TrimStringArray(attributes);
                 //If the timing point is a higher time, then we want the previous timing section
-                if(properties[0] > ms)
+                if(Int32.Parse(attributes[0]) > ms)
                 {
                     //avoid accessing a negative timing point
                     if(i == 0)
@@ -67,13 +67,13 @@ namespace HitObjects
 
             string[] properties = timingpoint.Split(new char[] {','});
             //If the offset is positive, then there is no slider multiplication
-            if(properties[1] > 0)
+            if(Double.Parse(properties[1]) > 0)
                 return slidervelocity;
             //Otherwise the slider multiplier is 100 / abs(offset)
             else
             {
                 double offset = Double.Parse(properties[1]);
-                return slidervelocity * (100 / abs(offset));
+                return slidervelocity * (100 / Math.Abs(offset));
             }
         }
 
