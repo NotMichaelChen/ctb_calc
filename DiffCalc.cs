@@ -80,7 +80,7 @@ public class DiffCalc
             HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
             if(hobject == null)
                 continue;
-            times.AddRange(hobject.GetHitLocations());
+            times.AddRange(hobject.GetHitTimes());
 
         }
 
