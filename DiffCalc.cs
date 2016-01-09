@@ -62,7 +62,16 @@ public class DiffCalc
             HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
             if(hobject == null)
                 continue;
-            positions.AddRange(hobject.GetHitLocations());
+
+            try
+            {
+                positions.AddRange(hobject.GetHitLocations());
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine("index: " + i);
+            }
 
         }
 

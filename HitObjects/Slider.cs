@@ -63,7 +63,7 @@ namespace HitObjects
 
             //If the timing point needed is the very last one
             if(timingpoint == null)
-                timingpoint = timings[timings.Length];
+                timingpoint = timings[timings.Length-1];
 
             string[] properties = timingpoint.Split(new char[] {','});
             //If the offset is positive, then there is no slider multiplication
