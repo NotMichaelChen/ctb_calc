@@ -37,8 +37,8 @@ public class Program
                     //int[] hobjects = calc.GetHitObjectsCount();
                     //Console.WriteLine("Circles: " + hobjects[0] + " Sliders: " + hobjects[1] + " Spinners: " + hobjects[2]);
 
-                    double[] hitpoints = calc.GetHitPoints();
-                    foreach(double i in hitpoints)
+                    double[] hittimes = calc.GetHitTimes();
+                    foreach(double i in hittimes)
                         Console.Write(i + " ");
                     Console.WriteLine();
 

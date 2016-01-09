@@ -51,6 +51,7 @@ public class DiffCalc
         return counts;
     }
 
+    //Get a list of all hit points in a beatmap
     public double[] GetHitPoints()
     {
         List<double> positions = new List<double>();
@@ -66,6 +67,24 @@ public class DiffCalc
         }
 
         return positions.ToArray();
+    }
+
+    //Get a list of all hit times in a beatmap
+    public double[] GetHitTimes()
+    {
+        List<double> times = new List<double>();
+
+        for(int i = 0; i < hitobjects.GetSize(); i++)
+        {
+
+            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
+            if(hobject == null)
+                continue;
+            times.AddRange(hobject.GetHitLocations());
+
+        }
+
+        return times.ToArray();
     }
 
     /*public double CalculateDistances()
