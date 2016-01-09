@@ -31,6 +31,52 @@ namespace HitObjects
             controlpoints = FormatControlPoints(id);
         }
 
+        //Calculates the slider velocity at a specified time using the default
+        //velocity and the relevant timing section
+        protected double GetSliderVelocity(int ms)
+        {
+            //Get the default slider velocity of the beatmap
+            double slidervelocity = Double.Parse(map.GetTag("Difficulty", "SliderMultiplier"));
+
+            //Get all the timing sections of the beatmap
+            string[] timings = this.map.GetSection("TimingPoints");
+            //Will hold the relevant timing point
+            string timingpoint = null;
+            //Find the section that applies to the given time
+            for(int i = 0; i < timings.Length; i++)
+            {
+                //Split the string by commas to get all the relevant times
+                string[] properties = timings[i].Split(new char[] {','});
+                //Trim each string just in case
+                properties = Dewlib.TrimStringArray(properties);
+                //If the timing point is a higher time, then we want the previous timing section
+                if(properties[0] > ms)
+                {
+                    //avoid accessing a negative timing point
+                    if(i == 0)
+                        timingpoint = timings[0];
+                    else
+                        timingpoint = timings[i - 1];
+                    break;
+                }
+            }
+
+            //If the timing point needed is the very last one
+            if(timingpoint == null)
+                timingpoint = timings[timings.Length];
+
+            string[] properties = timingpoint.Split(new char[] {','});
+            //If the offset is positive, then there is no slider multiplication
+            if(properties[1] > 0)
+                return slidervelocity;
+            //Otherwise the slider multiplier is 100 / abs(offset)
+            else
+            {
+                double offset = Double.Parse(properties[1]);
+                return slidervelocity * (100 / abs(offset));
+            }
+        }
+
         //Remains abstract since implementation depends on the slider type
         abstract public double[] GetHitLocations();
         abstract public double[] GetHitTimes();

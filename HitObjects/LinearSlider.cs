@@ -49,6 +49,8 @@ namespace HitObjects
 			//Subtracting 1 returns the actual number of repeats
 			int repeats = Int32.Parse(HitObjectParser.GetProperty(id, "repeat")) - 1;
 
+
+
             //Get the initial hit point of the slider
             //Split into three lines for readibility
             Point initialcoord = new Point();
