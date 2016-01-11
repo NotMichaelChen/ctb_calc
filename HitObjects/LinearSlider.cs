@@ -36,10 +36,7 @@ namespace HitObjects
         {
             int tickcount = 0;
 
-            //I use the time of the slider since timing points inside sliders don't
-            //affect the slider itself
-            int time = Int32.Parse(HitObjectParser.GetProperty(id, "time"));
-            double slidervelocity = this.GetSliderVelocity(time);
+            double slidervelocity = this.GetSliderVelocity();
 
             int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
@@ -73,11 +70,7 @@ namespace HitObjects
 			List<double> ticklocs = new List<double>();
 
             //TODO: Add null checking to the statements using SearchForTag
-
-            //I use the time of the slider since timing points inside sliders don't
-            //affect the slider itself
-            int time = Int32.Parse(HitObjectParser.GetProperty(id, "time"));
-            double slidervelocity = this.GetSliderVelocity(time);
+            double slidervelocity = this.GetSliderVelocity();
 
             int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
             //Necessary to avoid cases where the pixellength is something like 105.000004005432

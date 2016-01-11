@@ -33,6 +33,7 @@ namespace HitObjects
 
         //Calculates the Milliseconds per Beat at a specified time by searching
         //through the entire timing points section
+        //Timing points inside sliders don't affect the slider itself
         protected double GetMpB()
         {
             int ms = Int32.Parse(HitObjectParser.GetProperty(id, "time"));
@@ -65,12 +66,13 @@ namespace HitObjects
             return Double.Parse(properties[1]);
         }
 
-        //TODO: Make GetSliderVelocity calculate the ms by itself
         //TODO: Throw error if somethings messed up with the timing section
         //Calculates the slider velocity at a specified time using the default
         //velocity and the relevant timing section
-        protected double GetSliderVelocity(int ms)
+        //Timing points inside sliders don't affect the slider itself
+        protected double GetSliderVelocity()
         {
+            int ms = Int32.Parse(HitObjectParser.GetProperty(id, "time"));
             //Get the default slider velocity of the beatmap
             double slidervelocity = Double.Parse(map.GetTag("Difficulty", "SliderMultiplier"));
 
