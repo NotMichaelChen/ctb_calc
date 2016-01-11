@@ -150,8 +150,10 @@ namespace HitObjects
             double ticktime = MpB / Double.Parse(map.GetTag("difficulty", "slidertickrate"));
             //How many times the slider runs
             int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
-            //How many ticks are in the slider
-            int tickcount = this.GetTickCount();
+            //How many ticks are in the slider (without repeats)
+            //This is because later we use tickcount to tell how many times to add a time
+            //for a given slider run
+            int tickcount = this.GetTickCount() / sliderruns;
 
             //The time from the last tick to the slider end
             //If there are no ticks, then this just become slidertime
