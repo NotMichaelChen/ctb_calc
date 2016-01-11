@@ -31,6 +31,42 @@ namespace HitObjects
 				return d * (1 / Math.Sqrt(1 + Math.Pow(m, 2))) + begin.x;
 		}
 
+        //Gets the number of slider ticks, including slider repeats
+        private int GetTickCount()
+        {
+            int tickcount = 0;
+
+            //I use the time of the slider since timing points inside sliders don't
+            //affect the slider itself
+            int time = Int32.Parse(HitObjectParser.GetProperty(id, "time"));
+            double slidervelocity = this.GetSliderVelocity(time);
+
+            int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
+            //Necessary to avoid cases where the pixellength is something like 105.000004005432
+			int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+			//Subtracting 1 returns the actual number of repeats
+			int repeats = Int32.Parse(HitObjectParser.GetProperty(id, "repeat")) - 1;
+
+            //If the slider is long enough to generate slider ticks
+            //slidervelocity * (100/tickrate) == pixels between slider ticks
+			if(length > slidervelocity * (100 / tickrate))
+			{
+                /// Fill in all the ticks inside the slider
+				int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
+                //Will represent where the next tick is in the slider
+				int calclength = ticklength;
+                //While we haven't fallen off the end of the slider
+				while(calclength < length)
+				{
+                    tickcount++;
+					calclength += ticklength;
+				}
+			}
+
+            //add one to repeats to avoid multiplying by zero
+			return tickcount * (repeats + 1);
+        }
+
         public override double[] GetHitLocations()
         {
             List<double> hitpoints = new List<double>();
@@ -44,10 +80,8 @@ namespace HitObjects
             double slidervelocity = this.GetSliderVelocity(time);
 
             int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
-
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
 			int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
-
 			//Subtracting 1 returns the actual number of repeats
 			int repeats = Int32.Parse(HitObjectParser.GetProperty(id, "repeat")) - 1;
 
@@ -111,7 +145,5 @@ namespace HitObjects
         {
             throw new NotImplementedException();
         }
-
-
     }
 }
