@@ -112,9 +112,9 @@ public class DiffCalc
         }
 
         if(positions.Count != times.Count)
-            throw new Exception("Error: position and times array mismatched in size\n
-                                positions.Count: " + positions.Count + "\n
-                                times.Count: " + times.Count + "\n");
+            throw new Exception("Error: position and times array mismatched in size\n" +
+                                "positions.Count: " + positions.Count + "\n" +
+                                "times.Count: " + times.Count + "\n");
 
         List<double> speeds = new List<double>();
         for(int i = 0; i < positions.Count; i++)
