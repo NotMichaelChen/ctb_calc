@@ -31,15 +31,7 @@ public class Program
                     Beatmap map = new Beatmap(name);
                     DiffCalc calc = new DiffCalc(map);
 
-                    Console.WriteLine(map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version"));
-
-                    //int[] hobjects = calc.GetHitObjectsCount();
-                    //Console.WriteLine("Circles: " + hobjects[0] + " Sliders: " + hobjects[1] + " Spinners: " + hobjects[2]);
-
-                    double[] hittimes = calc.GetHitPoints();
-                    foreach(double i in hittimes)
-                        Console.Write(i + " ");
-                    Console.WriteLine();
+                    Console.WriteLine(map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version") + ": "+ calc.CalculateDistances());
 
                     timer.Stop();
                     Console.WriteLine("Calculation time (ms): " + timer.ElapsedMilliseconds);
