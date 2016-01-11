@@ -40,8 +40,8 @@ namespace HitObjects
             int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
 			int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
-			//Subtracting 1 returns the actual number of repeats
-			int repeats = Int32.Parse(HitObjectParser.GetProperty(id, "repeat")) - 1;
+
+			int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
 
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
@@ -59,10 +59,10 @@ namespace HitObjects
 				}
 			}
 
-            //add one to repeats to avoid multiplying by zero
-			return tickcount * (repeats + 1);
+			return tickcount * sliderruns;
         }
 
+        //TODO: Consider splitting the overridden methods into smaller functions
         public override double[] GetHitLocations()
         {
             List<double> hitpoints = new List<double>();
