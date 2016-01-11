@@ -1,5 +1,3 @@
-using System;
-
 namespace HitObjects
 {
     //Dummy class, since spinners don't contribute a meaningful hit location
