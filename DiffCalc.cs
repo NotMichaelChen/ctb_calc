@@ -119,9 +119,9 @@ public class DiffCalc
                                 "times.Count: " + times.Count + "\n");
 
         List<double> speeds = new List<double>();
-        for(int i = 0; i < positions.Count; i++)
+        for(int i = 1; i < positions.Count; i++)
         {
-            speeds.Add(positions[i] / times[i]);
+            speeds.Add(Math.Abs(positions[i] - positions[i-1]) / (times[i] - times[i-1]));
         }
 
 		//foreach(double num in speeds)
