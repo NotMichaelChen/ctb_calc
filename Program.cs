@@ -4,7 +4,6 @@ using System.Diagnostics;
 using BeatmapInfo;
 
 //TODO: Overhaul exception system
-//TODO: Implement the rest of the sliders
 //TODO: Replace .Equals() with strings with ==
 
 public class Program
