@@ -96,6 +96,8 @@ public class DiffCalc
         return times.ToArray();
     }
 
+    //Calculates the average of the top ten % of speeds between hitpoints in the given beatmap
+    //(speeds = change in position / change in time)
     public double CalculateDistances()
     {
         List<double> positions = new List<double>();
