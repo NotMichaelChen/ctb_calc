@@ -31,6 +31,42 @@ namespace HitObjects
             controlpoints = FormatControlPoints(id);
         }
 
+        //Calculates the Milliseconds per Beat at a specified time by searching
+        //through the entire timing points section
+        protected double GetMpB()
+        {
+            int ms = Int32.Parse(HitObjectParser.GetProperty(id, "time"));
+            //Get all the timing sections of the beatmap
+            string[] timings = this.map.GetSection("TimingPoints");
+            //Just in case there is only one timing point
+            string timingpoint = timings[0];
+
+            //Find the section that applies to the given time
+            for(int i = 0; i < timings.Length; i++)
+            {
+                //Split the string by commas to get all the relevant times
+                string[] attributes = timings[i].Split(new char[] {','});
+                //Trim each string just in case
+                attributes = Dewlib.TrimStringArray(attributes);
+
+                if(Int32.Parse(attributes[0]) > ms)
+                    break;
+
+                else if(Double.Parse(attributes[1]) > 0)
+                    timingpoint = timings[i];
+                else
+                    continue;
+            }
+
+            if(timingpoint == null)
+                throw new Exception("Error, no relevant timing point\nms=" + ms);
+
+            string[] properties = timingpoint.Split(new char[] {','});
+            return Double.Parse(properties[1]);
+        }
+
+        //TODO: Make GetSliderVelocity calculate the ms by itself
+        //TODO: Throw error if somethings messed up with the timing section
         //Calculates the slider velocity at a specified time using the default
         //velocity and the relevant timing section
         protected double GetSliderVelocity(int ms)
