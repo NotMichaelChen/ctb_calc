@@ -96,20 +96,31 @@ public class DiffCalc
         return times.ToArray();
     }
 
-    /*public double CalculateDistances()
+    public double CalculateDistances()
     {
         List<double> positions = new List<double>();
         List<double> times = new List<double>();
 
         for(int i = 0; i < hitobjects.GetSize(); i++)
         {
-            HitObject hobject = hitobjects.GetHitObjectWrapper(i);
+            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
+            if(hobject == null)
+                continue;
+
             positions.AddRange(hobject.GetHitLocations());
             times.AddRange(hobject.GetHitTimes());
         }
 
+        if(positions.Count != times.Count)
+            throw new Exception("Error: position and times array mismatched in size\n
+                                positions.Count: " + positions.Count + "\n
+                                times.Count: " + times.Count + "\n");
+
         List<double> speeds = new List<double>();
-        //Add positions/times to speeds
+        for(int i = 0; i < positions.Count; i++)
+        {
+            speeds.Add(positions[i] / times[i]);
+        }
 
 		//foreach(double num in speeds)
 		//	Console.WriteLine(num);
@@ -124,7 +135,7 @@ public class DiffCalc
 		}
 
 		return sum/topten;
-    }*/
+    }
 
     //Gets the hitobject returned as a HitObjectWrapper
     //Returns null if not implemented (hopefully won't exist when finished)
