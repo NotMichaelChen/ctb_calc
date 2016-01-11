@@ -155,7 +155,7 @@ public class DiffCalc
             else return null;
         }
         else if(objecttype == HitObjectType.Spinner)
-            return null;
+            return new Spinner();
         else
             throw new ArgumentException("Error: id is invalid");
     }
