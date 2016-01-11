@@ -9,7 +9,6 @@ namespace HitObjects
 {
     public class LinearSlider : Slider
     {
-        //TODO: Make linearslider not require a beatmap
         public LinearSlider(string id, Beatmap amap) : base(id, amap)
         {
             if(HitObjectParser.GetProperty(id, "slidertype") != "L")
