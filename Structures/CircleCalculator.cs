@@ -34,10 +34,10 @@ namespace Structures
                             (2 * (mb - ma));
             center.y = (-1 / ma) * (center.x - ((p1.x + p2.x) / 2)) + ((p1.y + p2.y) / 2);
 
-            radius = Math.Sqrt(Math.Pow(p1.x - center.x) + Math.Pow(p1.y - center.y));
+            radius = Math.Sqrt(Math.Pow(p1.x - center.x, 2) + Math.Pow(p1.y - center.y, 2));
         }
 
-        public double Center
+        public Point Center
         {
             get { return center; }
         }
