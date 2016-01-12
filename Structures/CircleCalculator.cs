@@ -4,7 +4,8 @@ using HitObjectInterpreter;
 
 namespace Structures
 {
-    //Calculates a circle's radius and center given three points
+    //Approximates a curve of three points using a circle calculated from those
+    //three points.
     //Main algorithm courtesy of "Equation of a Circle from 3 Points
     //(2 dimensions)" from http://paulbourke.net/geometry/circlesphere/
     public class CircleCalculator
@@ -66,6 +67,23 @@ namespace Structures
         public double Radius
         {
             get { return radius; }
+        }
+
+        //Gets a point on the approximated curve on the circle
+        //Goes from 0 to 1, where 0 is the starting point and 1 is the ending point
+        public Point GetPoint(double t)
+        {
+            //TODO: Make exception more useful
+            if(t < 0 || t > 1)
+                throw new ArgumentOutOfRangeException();
+
+            double angle = t * (endangle - startangle) + startangle;
+
+            Point accessed = new Point();
+            accessed.x = center.x + radius * Math.Cos(angle);
+            accessed.y = center.y + radius * Math.Sin(angle);
+
+            return accessed;
         }
     }
 }
