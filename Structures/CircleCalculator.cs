@@ -1,5 +1,7 @@
 using System;
 
+using HitObjectInterpreter;
+
 namespace Structures
 {
     //Calculates a circle's radius and center given three points
@@ -10,8 +12,13 @@ namespace Structures
         double radius;
         Point center;
 
-        public CircleCalculator(Point p1, Point p2, Point p3)
+        double startangle, endangle;
+
+        public CircleCalculator(Point p1, Point p2, Point p3, double arclength)
         {
+            //Assign this before points are shuffled around
+            Point startpoint = p1;
+
             if(p1.x == p2.x)
             {
                 Point temppoint = p2;
@@ -39,6 +46,16 @@ namespace Structures
                 center.y = (-1 / ma) * (center.x - ((p1.x + p2.x) / 2)) + ((p1.y + p2.y) / 2);
 
             radius = Math.Sqrt(Math.Pow(p1.x - center.x, 2) + Math.Pow(p1.y - center.y, 2));
+
+            this.startangle = Math.Acos((startpoint.x - center.x) / radius);
+
+            //Use the sliderlength to calculate the final angle since the last control point
+            //of the slider is NOT the last hit point of the slider
+            //This is an angle differential since the arclength is the slider length, and the
+            //formula assumes a start from an angle of 0
+            double anglediff = arclength / radius;
+
+            this.endangle = startangle + anglediff;
         }
 
         public Point Center
