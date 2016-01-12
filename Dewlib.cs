@@ -24,22 +24,28 @@ public static class Dewlib
        return new String(array);
     }
 
-    // Adds two numbers and rolls back to reset if the threshold is passed
-    public static double ModulusAdd(double num1, double num2, double threshold, double reset = 0)
+    // Adds two numbers, making sure to remain in the range between lower and upper
+    public static double ModulusAdd(double num1, double num2, double lower, double upper)
     {
+        if(lower > upper)
+            throw new ArgumentException("Error, lower is greater than upper\n" +
+                                        "lower: " + lower + "\n" +
+                                        "upper: " + upper);
+
         double result = num1 + num2;
+
         //A positive threshold is exceeded by going above it
-        if(threshold > 0 && result > threshold)
+        if(result > upper)
         {
             //Just in case the threshold is exceeded multiple times
-            while(result > threshold)
-                result = result - threshold + reset;
+            while(result > upper)
+                result = result - upper + lower;
         }
-        //A negative threshold is exceed by going below it
-        else if(threshold < 0 && result < threshold)
+        //A negative threshold is exceeded by going below it
+        else if(result < lower)
         {
-            while(result < threshold)
-                result = threshold - result + reset;
+            while(result < lower)
+                result = upper - (lower - result);
         }
 
         return result;
