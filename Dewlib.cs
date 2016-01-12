@@ -23,4 +23,25 @@ public static class Dewlib
        Array.Reverse(array);
        return new String(array);
     }
+
+    // Adds two numbers and rolls back to reset if the threshold is passed
+    public static double ModulusAdd(double num1, double num2, double threshold, double reset = 0)
+    {
+        double result = num1 + num2;
+        //A positive threshold is exceeded by going above it
+        if(threshold > 0 && result > threshold)
+        {
+            //Just in case the threshold is exceeded multiple times
+            while(result > threshold)
+                result = result - threshold + reset;
+        }
+        //A negative threshold is exceed by going below it
+        else if(threshold < 0 && result < threshold)
+        {
+            while(result < threshold)
+                result = threshold - result + reset;
+        }
+
+        return result;
+    }
 }
