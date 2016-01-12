@@ -8,14 +8,14 @@ namespace Structures
     //three points.
     //Main algorithm courtesy of "Equation of a Circle from 3 Points
     //(2 dimensions)" from http://paulbourke.net/geometry/circlesphere/
-    public class CircleCalculator
+    public class CircleCurve
     {
         double radius;
         Point center;
 
         double startangle, endangle;
 
-        public CircleCalculator(Point p1, Point p2, Point p3, double arclength)
+        public CircleCurve(Point p1, Point p2, Point p3, double arclength)
         {
             //Assign this before points are shuffled around
             Point startpoint = p1;
