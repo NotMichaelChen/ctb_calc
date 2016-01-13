@@ -13,12 +13,19 @@ namespace Structures
         double radius;
         Point center;
 
-        double startangle, endangle;
+        public double startangle, endangle;
 
+        //Tells which direction the curve goes
+        bool clockwise;
+
+        //TODO: Divide constructor into sub-methods
+        //
         public CircleCurve(Point p1, Point p2, Point p3, double arclength)
         {
-            //Assign this before points are shuffled around
+            //Assign these before points are shuffled around
             Point startpoint = p1;
+            Point midpoint = p2;
+            Point endpoint = p3;
 
             if(p1.x == p2.x)
             {
@@ -48,15 +55,38 @@ namespace Structures
 
             radius = Math.Sqrt(Math.Pow(p1.x - center.x, 2) + Math.Pow(p1.y - center.y, 2));
 
-            this.startangle = Math.Acos((startpoint.x - center.x) / radius);
+            //The ModulusAdd keeps the angle in range, and doesn't actually do any addition
+            this.startangle = Dewlib.ModulusAdd(Math.Atan2(startpoint.y - center.y, startpoint.x - center.x), 0, 0, 2*Math.PI);
+            double midangle = Dewlib.ModulusAdd(Math.Atan2(midpoint.y - center.y, midpoint.x - center.x), 0, 0, 2*Math.PI);
+            //NOT the last hittable point of this curve
+            //Only used to calculate the direction of the curve
+            double lastangle = Dewlib.ModulusAdd(Math.Atan2(endpoint.y - center.y, endpoint.x - center.x), 0, 0, 2*Math.PI);
+
+            if(startangle >= midangle && midangle >= lastangle)
+                clockwise = false;
+            else if(startangle >= lastangle && lastangle >= midangle)
+                clockwise = true;
+            else if(midangle >= startangle && startangle >= lastangle)
+                clockwise = true;
+            else if(midangle >= lastangle && lastangle >= startangle)
+                clockwise = false;
+            else if(lastangle >= startangle && startangle >= midangle)
+                clockwise = false;
+            else if(lastangle >= midangle && midangle >= startangle)
+                clockwise = true;
+            Console.WriteLine(clockwise);
+            Console.WriteLine("angles: " + startangle + " " + midangle + " " + lastangle);
 
             //Use the sliderlength to calculate the final angle since the last control point
             //of the slider is NOT the last hit point of the slider
             //This is an angle differential since the arclength is the slider length, and the
             //formula assumes a start from an angle of 0
             double anglediff = arclength / radius;
+            if(clockwise)
+                this.endangle = Dewlib.ModulusAdd(startangle, anglediff, 0, 2*Math.PI);
+            else
+                this.endangle = Dewlib.ModulusAdd(startangle, -anglediff, 0, 2*Math.PI);
 
-            this.endangle = startangle + anglediff;
         }
 
         public Point Center
@@ -77,7 +107,26 @@ namespace Structures
             if(t < 0 || t > 1)
                 throw new ArgumentOutOfRangeException();
 
-            double angle = t * (endangle - startangle) + startangle;
+            double angle;
+            double anglediff;
+            if(clockwise)
+            {
+                if(endangle - startangle > 0)
+                    anglediff = endangle - startangle;
+                else
+                    anglediff = endangle + ((2 * Math.PI) - startangle);
+
+                angle = Dewlib.ModulusAdd(t * anglediff, startangle, 0, 2 * Math.PI);
+            }
+            else
+            {
+                if(startangle - endangle > 0)
+                    anglediff = startangle - endangle;
+                else
+                    anglediff = startangle + ((2 * Math.PI) - endangle);
+
+                angle = Dewlib.ModulusAdd(-t * anglediff, startangle, 0, 2 * Math.PI);
+            }
 
             Point accessed = new Point();
             accessed.x = center.x + radius * Math.Cos(angle);
