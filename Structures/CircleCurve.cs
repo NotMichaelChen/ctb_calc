@@ -13,17 +13,19 @@ namespace Structures
         double radius;
         Point center;
 
-        public double startangle, endangle;
+        double startangle, endangle;
 
         //Tells which direction the curve goes
         bool clockwise;
 
-        public CircleCurve(Point p1, Point p2, Point p3, double arclength)
+        double arclength;
+
+        public CircleCurve(Point p1, Point p2, Point p3, double length)
         {
             //Calculate the center and radius
             this.calculateCenterandRadius(p1, p2, p3);
             //Calculate the first and last angles of the curve
-            this.calculateAngles(p1, p2, p3, arclength);
+            this.calculateAngles(p1, p2, p3, length);
         }
 
         public Point Center
@@ -107,7 +109,7 @@ namespace Structures
 
         //Helper method that calculates the angles of the first and last points
         //of the curve
-        private void calculateAngles(Point p1, Point p2, Point p3, double arclength)
+        private void calculateAngles(Point p1, Point p2, Point p3, double length)
         {
             this.startangle = Dewlib.RestrictRange(Math.Atan2(p1.y - center.y, p1.x - center.x), 0, 2*Math.PI);
             double midangle = Dewlib.RestrictRange(Math.Atan2(p2.y - center.y, p2.x - center.x), 0, 2*Math.PI);
@@ -131,7 +133,7 @@ namespace Structures
             //Use the arclength to calculate the final angle since the last control point
             //of the slider is NOT the last point of the curve
             //This is an angle differential since the formula assumes a start from an angle of 0
-            double anglediff = arclength / radius;
+            double anglediff = length / radius;
             if(clockwise)
                 this.endangle = Dewlib.RestrictRange(startangle + anglediff, 0, 2*Math.PI);
             else
