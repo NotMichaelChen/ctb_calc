@@ -152,6 +152,8 @@ public class DiffCalc
             string slidertype = HitObjectParser.GetProperty(id, "slidertype");
             if(slidertype == "L")
                 return new LinearSlider(id, map);
+            else if(slidertype == "P")
+                return new PassthroughSlider(id, map);
             else return null;
         }
         else if(objecttype == HitObjectType.Spinner)
