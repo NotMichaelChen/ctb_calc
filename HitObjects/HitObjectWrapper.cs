@@ -7,7 +7,7 @@ namespace HitObjects
         //Both of these methods must return a list of the same length
 
         //IMPORTANT: Only returns x-coordinates (as this is a ctb calculator)
-        double[] GetHitLocations();
-        double[] GetHitTimes();
+        int[] GetHitLocations();
+        int[] GetHitTimes();
     }
 }
