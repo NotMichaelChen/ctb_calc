@@ -52,9 +52,9 @@ public class DiffCalc
     }
 
     //Get a list of all hit points in a beatmap
-    public double[] GetHitPoints()
+    public int[] GetHitPoints()
     {
-        List<double> positions = new List<double>();
+        List<int> positions = new List<int>();
 
         for(int i = 0; i < hitobjects.GetSize(); i++)
         {
@@ -79,9 +79,9 @@ public class DiffCalc
     }
 
     //Get a list of all hit times in a beatmap
-    public double[] GetHitTimes()
+    public int[] GetHitTimes()
     {
-        List<double> times = new List<double>();
+        List<int> times = new List<int>();
 
         for(int i = 0; i < hitobjects.GetSize(); i++)
         {
@@ -100,8 +100,8 @@ public class DiffCalc
     //(speeds = change in position / change in time)
     public double CalculateDistances()
     {
-        List<double> positions = new List<double>();
-        List<double> times = new List<double>();
+        List<int> positions = new List<int>();
+        List<int> times = new List<int>();
 
         for(int i = 0; i < hitobjects.GetSize(); i++)
         {
@@ -121,7 +121,8 @@ public class DiffCalc
         List<double> speeds = new List<double>();
         for(int i = 1; i < positions.Count; i++)
         {
-            speeds.Add(Math.Abs(positions[i] - positions[i-1]) / (times[i] - times[i-1]));
+            //Cast to make division operation a double
+            speeds.Add(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
         }
 
 		//foreach(double num in speeds)
