@@ -116,8 +116,8 @@ namespace HitObjects
         }
 
         //Remains abstract since implementation depends on the slider type
-        abstract public double[] GetHitLocations();
-        abstract public double[] GetHitTimes();
+        abstract public int[] GetHitLocations();
+        abstract public int[] GetHitTimes();
 
         //Formats a string of control points into an array of points
         //Does NOT include the first hit point
