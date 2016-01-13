@@ -15,6 +15,38 @@ namespace HitObjects
                 throw new ArgumentException("Error: Hitobject provided to PassthroughSlider class is not Passthrough");
         }
 
+        //Gets the number of slider ticks, including slider repeats
+        private int GetTickCount()
+        {
+            int tickcount = 0;
+
+            double slidervelocity = this.GetSliderVelocity();
+
+            int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
+            //Necessary to avoid cases where the pixellength is something like 105.000004005432
+			int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+
+			int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
+
+            //If the slider is long enough to generate slider ticks
+            //slidervelocity * (100/tickrate) == pixels between slider ticks
+			if(length > slidervelocity * (100 / tickrate))
+			{
+                /// Fill in all the ticks inside the slider
+				int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
+                //Will represent where the next tick is in the slider
+				int calclength = ticklength;
+                //While we haven't fallen off the end of the slider
+				while(calclength < length)
+				{
+                    tickcount++;
+					calclength += ticklength;
+				}
+			}
+
+			return tickcount * sliderruns;
+        }
+
         public override int[] GetHitLocations()
         {
             List<int> hitpoints = new List<int>();
