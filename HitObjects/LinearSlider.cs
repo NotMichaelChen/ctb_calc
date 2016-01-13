@@ -85,7 +85,7 @@ namespace HitObjects
 
             //Get the first and last x-coordinates of the slider
 			double beginpoint = initialcoord.x;
-			double endpoint = Convert.ToDouble(GetEndLinear(initialcoord, controlpoints[0], length));
+			double endpoint = GetEndLinear(initialcoord, controlpoints[0], length);
 
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
