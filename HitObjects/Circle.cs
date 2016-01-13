@@ -14,22 +14,22 @@ namespace HitObjects
             circleid = id;
         }
 
-        public double[] GetHitLocations()
+        public int[] GetHitLocations()
         {
             //There is only one hit location for a circle, so just return an array
             //that holds that hit location
             string loc = HitObjectParser.GetProperty(circleid, "X");
 
-            return new double[1] {Convert.ToDouble(loc)};
+            return new int[1] {Convert.ToInt32(loc)};
         }
 
-        public double[] GetHitTimes()
+        public int[] GetHitTimes()
         {
             //There is only one hit time for a circle, so just return an array
             //that holds that hit time
             string time = HitObjectParser.GetProperty(circleid, "time");
 
-            return new double[1] {Convert.ToDouble(time)};
+            return new int[1] {Convert.ToInt32(time)};
         }
     }
 }
