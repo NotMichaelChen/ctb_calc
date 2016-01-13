@@ -148,46 +148,46 @@ namespace HitObjects
             int currenttime = starttime;
 
             for(int runnum = 1; runnum <= sliderruns; runnum++)
-			{
-				if(runnum == 1)
-				{
+            {
+                if(runnum == 1)
+                {
                     //Add the initial slider hit
-					times.Add(currenttime);
+                    times.Add(currenttime);
                     //Add the tick times
-					for(int ticknum = 0; ticknum < tickcount; ticknum++)
-					{
-						currenttime += ticktime;
-						times.Add(currenttime);
-					}
+                    for(int ticknum = 0; ticknum < tickcount; ticknum++)
+                    {
+                        currenttime += ticktime;
+                        times.Add(currenttime);
+                    }
                     //Add the slider end
-					currenttime += sliderenddiff;
-					times.Add(currenttime);
-				}
-				else if(runnum % 2 == 0)
-				{
+                    currenttime += sliderenddiff;
+                    times.Add(currenttime);
+                }
+                else if(runnum % 2 == 0)
+                {
                     //Add the first tick after the slider end
-					currenttime += sliderenddiff;
-					times.Add(currenttime);
+                    currenttime += sliderenddiff;
+                    times.Add(currenttime);
                     //Don't skip the first tick since we need to include the slider head too
-					for(int ticknum = 0; ticknum < tickcount; ticknum++)
-					{
-						currenttime += ticktime;
-						times.Add(currenttime);
-					}
-				}
-				else if(runnum % 2 == 1)
-				{
+                    for(int ticknum = 0; ticknum < tickcount; ticknum++)
+                    {
+                        currenttime += ticktime;
+                        times.Add(currenttime);
+                    }
+                }
+                else if(runnum % 2 == 1)
+                {
                     //Add the tick times
-					for(int ticknum = 0; ticknum < tickcount; ticknum++)
-					{
-						currenttime += ticktime;
-						times.Add(currenttime);
-					}
+                    for(int ticknum = 0; ticknum < tickcount; ticknum++)
+                    {
+                        currenttime += ticktime;
+                        times.Add(currenttime);
+                    }
                     //Add the slider end
-					currenttime += sliderenddiff;
-					times.Add(currenttime);
-				}
-			}
+                    currenttime += sliderenddiff;
+                    times.Add(currenttime);
+                }
+            }
 
             return times.ToArray();
         }
@@ -202,49 +202,49 @@ namespace HitObjects
 
             int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
-			int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
 
-			int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
+            int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
 
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
-			if(length > slidervelocity * (100 / tickrate))
-			{
+            if(length > slidervelocity * (100 / tickrate))
+            {
                 /// Fill in all the ticks inside the slider
-				int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
+                int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
                 //Will represent where the next tick is in the slider
-				int calclength = ticklength;
+                int calclength = ticklength;
                 //While we haven't fallen off the end of the slider
-				while(calclength < length)
-				{
+                while(calclength < length)
+                {
                     tickcount++;
-					calclength += ticklength;
-				}
-			}
+                    calclength += ticklength;
+                }
+            }
 
-			return tickcount * sliderruns;
+            return tickcount * sliderruns;
         }
 
         //Formats a string of control points into an array of points
         //Does NOT include the first hit point
-		private Point[] FormatControlPoints(string id)
-		{
+        private Point[] FormatControlPoints(string id)
+        {
             //Control point string will look like: B|380:120|332:96|332:96|304:124
 
             //Gets a list of strings containing each control point by splitting up the control point string
-			string[] sliderpoints = HitObjectParser.GetProperty(id, "controlpoints").Split(new char[] {'|'});
+            string[] sliderpoints = HitObjectParser.GetProperty(id, "controlpoints").Split(new char[] {'|'});
 
-			List<Point> temppoints = new List<Point>();
+            List<Point> temppoints = new List<Point>();
 
             //Parse each point as a Point object
-			foreach(string point in sliderpoints)
-			{
-				string[] pair = point.Split(new char[] {':'});
-				temppoints.Add(new Point(Double.Parse(pair[0]), Double.Parse(pair[1])));
-			}
+            foreach(string point in sliderpoints)
+            {
+                string[] pair = point.Split(new char[] {':'});
+                temppoints.Add(new Point(Double.Parse(pair[0]), Double.Parse(pair[1])));
+            }
 
             //Return this list of points as an array
-			return temppoints.ToArray();
-		}
+            return temppoints.ToArray();
+        }
     }
 }

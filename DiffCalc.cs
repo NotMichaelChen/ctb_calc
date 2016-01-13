@@ -125,19 +125,19 @@ public class DiffCalc
             speeds.Add(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
         }
 
-		//foreach(double num in speeds)
-		//	Console.WriteLine(num);
-		speeds.Sort();
+        //foreach(double num in speeds)
+        //    Console.WriteLine(num);
+        speeds.Sort();
 
-		int topten = speeds.Count / 10;
+        int topten = speeds.Count / 10;
 
-		double sum = 0;
-		for(int i = speeds.Count - 1; i >= speeds.Count-topten; i--)
-		{
-			sum += speeds[i];
-		}
+        double sum = 0;
+        for(int i = speeds.Count - 1; i >= speeds.Count-topten; i--)
+        {
+            sum += speeds[i];
+        }
 
-		return sum/topten;
+        return sum/topten;
     }
 
     //Gets the hitobject returned as a HitObjectWrapper
