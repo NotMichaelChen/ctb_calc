@@ -22,6 +22,8 @@ namespace Structures
 
         public CircleCurve(Point p1, Point p2, Point p3, double length)
         {
+            arclength = length;
+
             //Calculate the center and radius
             this.calculateCenterandRadius(p1, p2, p3);
             //Calculate the first and last angles of the curve
