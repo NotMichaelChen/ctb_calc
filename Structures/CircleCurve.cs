@@ -55,12 +55,11 @@ namespace Structures
 
             radius = Math.Sqrt(Math.Pow(p1.x - center.x, 2) + Math.Pow(p1.y - center.y, 2));
 
-            //The ModulusAdd keeps the angle in range, and doesn't actually do any addition
-            this.startangle = Dewlib.ModulusAdd(Math.Atan2(startpoint.y - center.y, startpoint.x - center.x), 0, 0, 2*Math.PI);
-            double midangle = Dewlib.ModulusAdd(Math.Atan2(midpoint.y - center.y, midpoint.x - center.x), 0, 0, 2*Math.PI);
+            this.startangle = Dewlib.RestrictRange(Math.Atan2(startpoint.y - center.y, startpoint.x - center.x), 0, 2*Math.PI);
+            double midangle = Dewlib.RestrictRange(Math.Atan2(midpoint.y - center.y, midpoint.x - center.x), 0, 2*Math.PI);
             //NOT the last hittable point of this curve
             //Only used to calculate the direction of the curve
-            double lastangle = Dewlib.ModulusAdd(Math.Atan2(endpoint.y - center.y, endpoint.x - center.x), 0, 0, 2*Math.PI);
+            double lastangle = Dewlib.RestrictRange(Math.Atan2(endpoint.y - center.y, endpoint.x - center.x), 0, 2*Math.PI);
 
             if(startangle >= midangle && midangle >= lastangle)
                 clockwise = false;
@@ -83,9 +82,9 @@ namespace Structures
             //formula assumes a start from an angle of 0
             double anglediff = arclength / radius;
             if(clockwise)
-                this.endangle = Dewlib.ModulusAdd(startangle, anglediff, 0, 2*Math.PI);
+                this.endangle = Dewlib.RestrictRange(startangle + anglediff, 0, 2*Math.PI);
             else
-                this.endangle = Dewlib.ModulusAdd(startangle, -anglediff, 0, 2*Math.PI);
+                this.endangle = Dewlib.RestrictRange(startangle - anglediff, 0, 2*Math.PI);
 
         }
 
@@ -116,7 +115,7 @@ namespace Structures
                 else
                     anglediff = endangle + ((2 * Math.PI) - startangle);
 
-                angle = Dewlib.ModulusAdd(t * anglediff, startangle, 0, 2 * Math.PI);
+                angle = Dewlib.RestrictRange(t * anglediff + startangle, 0, 2 * Math.PI);
             }
             else
             {
@@ -125,7 +124,7 @@ namespace Structures
                 else
                     anglediff = startangle + ((2 * Math.PI) - endangle);
 
-                angle = Dewlib.ModulusAdd(-t * anglediff, startangle, 0, 2 * Math.PI);
+                angle = Dewlib.RestrictRange(-t * anglediff + startangle, 0, 2 * Math.PI);
             }
 
             Point accessed = new Point();
