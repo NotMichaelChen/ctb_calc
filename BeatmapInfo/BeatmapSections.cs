@@ -52,6 +52,17 @@ namespace BeatmapInfo
             else return -1;
         }
 
+        //Returns whether the given string is actually a section
+        public bool IsSection(string section)
+        {
+            //Cannot be a section if it's not long enough to contain [ and ]
+            if(section.Length < 2)
+                return false;
+
+            //Get rid of the [ and ] and check whether the resulting string is a section
+            return GetSectionLine(section.Substring(1, section.Length - 2)) != -1;
+        }
+
         public int General
         {
             get { return general; }
