@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 // Collection of useful static functions
 public static class Dewlib
@@ -47,5 +48,19 @@ public static class Dewlib
         }
 
         return num;
+    }
+
+    public static string[] RemoveEmptyEntries(string[] arr)
+    {
+        List<string> finalarr = new List<string>(arr);
+
+        finalarr.RemoveAll(isEmpty);
+
+        return finalarr.ToArray();
+    }
+
+    private static bool isEmpty(string str)
+    {
+        return str.Length == 0;
     }
 }
