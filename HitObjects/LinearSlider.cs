@@ -63,10 +63,10 @@ namespace HitObjects
         }
 
         //TODO: Consider splitting the overridden methods into smaller functions
-        public override double[] GetHitLocations()
+        public override int[] GetHitLocations()
         {
-            List<double> hitpoints = new List<double>();
-			List<double> ticklocs = new List<double>();
+            List<int> hitpoints = new List<int>();
+			List<int> ticklocs = new List<int>();
 
             //TODO: Add null checking to the statements using SearchForTag
             double slidervelocity = this.GetSliderVelocity();
@@ -80,12 +80,12 @@ namespace HitObjects
             //Get the initial hit point of the slider
             //Split into three lines for readibility
             Point initialcoord = new Point();
-            initialcoord.x = Double.Parse(HitObjectParser.GetProperty(id, "x"));
-            initialcoord.y = Double.Parse(HitObjectParser.GetProperty(id, "y"));
+            initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
+            initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
 
             //Get the first and last x-coordinates of the slider
-			double beginpoint = initialcoord.x;
-			double endpoint = GetEndLinear(initialcoord, controlpoints[0], length);
+			int beginpoint = Convert.ToInt32(initialcoord.x);
+			int endpoint = Convert.ToInt32(GetEndLinear(initialcoord, controlpoints[0], length));
 
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
@@ -133,20 +133,20 @@ namespace HitObjects
 			return hitpoints.ToArray();
         }
 
-        public override double[] GetHitTimes()
+        public override int[] GetHitTimes()
         {
-            List<double> times = new List<double>();
+            List<int> times = new List<int>();
 
             //When slider starts
-            double starttime = Double.Parse(HitObjectParser.GetProperty(id, "time"));
+            int starttime = Int32.Parse(HitObjectParser.GetProperty(id, "time"));
             double MpB = this.GetMpB();
             //How long the slider is in existance (without considering repeats)
             //slidertime = (pixellength / (slidervelocity * 100)) * MillisecondsPerBeat
             //(Order of operations is important kids! Otherwise you end up with slidertimes of 5000000 :o)
-            double slidertime = (Double.Parse(HitObjectParser.GetProperty(id, "pixellength")) / (this.GetSliderVelocity() * 100)) * MpB;
+            int slidertime = Convert.ToInt32((Double.Parse(HitObjectParser.GetProperty(id, "pixellength")) / (this.GetSliderVelocity() * 100)) * MpB);
             //How long each tick is apart from each other
             //ticktime = MillisecondsPerBeat / tickrate
-            double ticktime = MpB / Double.Parse(map.GetTag("difficulty", "slidertickrate"));
+            int ticktime = Convert.ToInt32(MpB / Double.Parse(map.GetTag("difficulty", "slidertickrate")));
             //How many times the slider runs
             int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
             //How many ticks are in the slider (without repeats)
@@ -156,10 +156,10 @@ namespace HitObjects
 
             //The time from the last tick to the slider end
             //If there are no ticks, then this just become slidertime
-            double sliderenddiff = (slidertime) - (tickcount * ticktime);
+            int sliderenddiff = (slidertime) - (tickcount * ticktime);
 
             //Keeps track of what time we are at when travelling through the slider
-            double currenttime = starttime;
+            int currenttime = starttime;
 
             for(int runnum = 1; runnum <= sliderruns; runnum++)
 			{
