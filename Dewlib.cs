@@ -24,30 +24,28 @@ public static class Dewlib
        return new String(array);
     }
 
-    // Adds two numbers, making sure to remain in the range between lower and upper
-    public static double ModulusAdd(double num1, double num2, double lower, double upper)
+    // Keeps the number in the range between lower and upper
+    public static double RestrictRange(double num, double lower, double upper)
     {
         if(lower > upper)
             throw new ArgumentException("Error, lower is greater than upper\n" +
                                         "lower: " + lower + "\n" +
                                         "upper: " + upper);
 
-        double result = num1 + num2;
-
         //A positive threshold is exceeded by going above it
-        if(result > upper)
+        if(num > upper)
         {
             //Just in case the threshold is exceeded multiple times
-            while(result > upper)
-                result = result - upper + lower;
+            while(num > upper)
+                num = num - upper + lower;
         }
         //A negative threshold is exceeded by going below it
-        else if(result < lower)
+        else if(num < lower)
         {
-            while(result < lower)
-                result = upper - (lower - result);
+            while(num < lower)
+                num = upper - (lower - num);
         }
 
-        return result;
+        return num;
     }
 }
