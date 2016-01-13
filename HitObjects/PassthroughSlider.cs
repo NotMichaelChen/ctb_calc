@@ -15,17 +15,17 @@ namespace HitObjects
                 throw new ArgumentException("Error: Hitobject provided to PassthroughSlider class is not Passthrough");
         }
 
-        public override double[] GetHitLocations()
+        public override int[] GetHitLocations()
         {
-            List<double> hitpoints = new List<double>();
-			List<double> ticklocs = new List<double>();
+            List<int> hitpoints = new List<int>();
+			List<int> ticklocs = new List<int>();
 
             //TODO: Add null checking to the statements using SearchForTag
             double slidervelocity = this.GetSliderVelocity();
 
             int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
-            //length can't be int since the circlecurve class requires a double for length
-			double length = Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"));
+            //Necessary to avoid cases where the pixellength is something like 105.000004005432
+			int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
 			//Subtracting 1 returns the actual number of repeats
 			int repeats = Int32.Parse(HitObjectParser.GetProperty(id, "repeat")) - 1;
 
@@ -38,8 +38,8 @@ namespace HitObjects
             CircleCurve curve = new CircleCurve(initialcoord, controlpoints[0], controlpoints[1], length);
 
             //Get the first and last x-coordinates of the slider
-			double beginpoint = initialcoord.x;
-			double endpoint = curve.GetPoint(1).x;
+			int beginpoint = Convert.ToInt32(initialcoord.x);
+			int endpoint = Convert.ToInt32(curve.GetPoint(1).x);
 
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
@@ -55,7 +55,7 @@ namespace HitObjects
                     //Using the angle created from the first hit point and the control point (since a linear
                     //slider ALWAYS has only one control points), and the length between ticks, calculate
                     //where the tick should land
-                    ticklocs.Add(curve.GetPointAlong(calclength).x);
+                    ticklocs.Add(Convert.ToInt32(curve.GetPointAlong(calclength).x));
                     //Move down the slider by a ticklength
 					calclength += ticklength;
 				}
@@ -87,7 +87,7 @@ namespace HitObjects
 			return hitpoints.ToArray();
         }
 
-        public override double[] GetHitTimes()
+        public override int[] GetHitTimes()
         {
             throw new NotImplementedException();
         }
