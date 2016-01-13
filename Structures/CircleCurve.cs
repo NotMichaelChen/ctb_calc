@@ -18,48 +18,15 @@ namespace Structures
         //Tells which direction the curve goes
         bool clockwise;
 
-        //TODO: Divide constructor into sub-methods
-        //
         public CircleCurve(Point p1, Point p2, Point p3, double arclength)
         {
-            //Assign these before points are shuffled around
-            Point startpoint = p1;
-            Point midpoint = p2;
-            Point endpoint = p3;
-
-            if(p1.x == p2.x)
-            {
-                Point temppoint = p2;
-                p2 = p3;
-                p3 = temppoint;
-            }
-            else if(p2.x == p3.x)
-            {
-                Point temppoint = p1;
-                p1 = p2;
-                p2 = temppoint;
-            }
-
-            double ma = (p2.y - p1.y) / (p2.x - p1.x);
-            double mb = (p3.y - p2.y) / (p3.x - p2.x);
-
-            center = new Point();
-
-            center.x = (ma * mb * (p1.y - p3.y) + mb * (p1.x + p2.x) - ma * (p2.x + p3.x)) /
-                            (2 * (mb - ma));
-
-            if(ma == 0)
-                center.y = (-1 / mb) * (center.x - ((p2.x + p3.x) / 2)) + ((p2.y + p3.y) / 2);
-            else
-                center.y = (-1 / ma) * (center.x - ((p1.x + p2.x) / 2)) + ((p1.y + p2.y) / 2);
-
-            radius = Math.Sqrt(Math.Pow(p1.x - center.x, 2) + Math.Pow(p1.y - center.y, 2));
-
-            this.startangle = Dewlib.RestrictRange(Math.Atan2(startpoint.y - center.y, startpoint.x - center.x), 0, 2*Math.PI);
-            double midangle = Dewlib.RestrictRange(Math.Atan2(midpoint.y - center.y, midpoint.x - center.x), 0, 2*Math.PI);
+            this.calculateCenterandRadius(p1, p2, p3);
+            
+            this.startangle = Dewlib.RestrictRange(Math.Atan2(p1.y - center.y, p1.x - center.x), 0, 2*Math.PI);
+            double midangle = Dewlib.RestrictRange(Math.Atan2(p2.y - center.y, p2.x - center.x), 0, 2*Math.PI);
             //NOT the last hittable point of this curve
             //Only used to calculate the direction of the curve
-            double lastangle = Dewlib.RestrictRange(Math.Atan2(endpoint.y - center.y, endpoint.x - center.x), 0, 2*Math.PI);
+            double lastangle = Dewlib.RestrictRange(Math.Atan2(p3.y - center.y, p3.x - center.x), 0, 2*Math.PI);
 
             if(startangle >= midangle && midangle >= lastangle)
                 clockwise = false;
@@ -132,6 +99,39 @@ namespace Structures
             accessed.y = center.y + radius * Math.Sin(angle);
 
             return accessed;
+        }
+
+        //Helper method that's only called in the constructor to calculate center
+        //and radius
+        private void calculateCenterandRadius(Point p1, Point p2, Point p3)
+        {
+            if(p1.x == p2.x)
+            {
+                Point temppoint = p2;
+                p2 = p3;
+                p3 = temppoint;
+            }
+            else if(p2.x == p3.x)
+            {
+                Point temppoint = p1;
+                p1 = p2;
+                p2 = temppoint;
+            }
+
+            double ma = (p2.y - p1.y) / (p2.x - p1.x);
+            double mb = (p3.y - p2.y) / (p3.x - p2.x);
+
+            center = new Point();
+
+            center.x = (ma * mb * (p1.y - p3.y) + mb * (p1.x + p2.x) - ma * (p2.x + p3.x)) /
+                            (2 * (mb - ma));
+
+            if(ma == 0)
+                center.y = (-1 / mb) * (center.x - ((p2.x + p3.x) / 2)) + ((p2.y + p3.y) / 2);
+            else
+                center.y = (-1 / ma) * (center.x - ((p1.x + p2.x) / 2)) + ((p1.y + p2.y) / 2);
+
+            radius = Math.Sqrt(Math.Pow(p1.x - center.x, 2) + Math.Pow(p1.y - center.y, 2));
         }
     }
 }
