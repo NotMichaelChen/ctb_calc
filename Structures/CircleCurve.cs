@@ -20,39 +20,10 @@ namespace Structures
 
         public CircleCurve(Point p1, Point p2, Point p3, double arclength)
         {
+            //Calculate the center and radius
             this.calculateCenterandRadius(p1, p2, p3);
-            
-            this.startangle = Dewlib.RestrictRange(Math.Atan2(p1.y - center.y, p1.x - center.x), 0, 2*Math.PI);
-            double midangle = Dewlib.RestrictRange(Math.Atan2(p2.y - center.y, p2.x - center.x), 0, 2*Math.PI);
-            //NOT the last hittable point of this curve
-            //Only used to calculate the direction of the curve
-            double lastangle = Dewlib.RestrictRange(Math.Atan2(p3.y - center.y, p3.x - center.x), 0, 2*Math.PI);
-
-            if(startangle >= midangle && midangle >= lastangle)
-                clockwise = false;
-            else if(startangle >= lastangle && lastangle >= midangle)
-                clockwise = true;
-            else if(midangle >= startangle && startangle >= lastangle)
-                clockwise = true;
-            else if(midangle >= lastangle && lastangle >= startangle)
-                clockwise = false;
-            else if(lastangle >= startangle && startangle >= midangle)
-                clockwise = false;
-            else if(lastangle >= midangle && midangle >= startangle)
-                clockwise = true;
-            Console.WriteLine(clockwise);
-            Console.WriteLine("angles: " + startangle + " " + midangle + " " + lastangle);
-
-            //Use the sliderlength to calculate the final angle since the last control point
-            //of the slider is NOT the last hit point of the slider
-            //This is an angle differential since the arclength is the slider length, and the
-            //formula assumes a start from an angle of 0
-            double anglediff = arclength / radius;
-            if(clockwise)
-                this.endangle = Dewlib.RestrictRange(startangle + anglediff, 0, 2*Math.PI);
-            else
-                this.endangle = Dewlib.RestrictRange(startangle - anglediff, 0, 2*Math.PI);
-
+            //Calculate the first and last angles of the curve
+            this.calculateAngles(Point p1, Point p2, Point p3, double arclength);
         }
 
         public Point Center
@@ -132,6 +103,39 @@ namespace Structures
                 center.y = (-1 / ma) * (center.x - ((p1.x + p2.x) / 2)) + ((p1.y + p2.y) / 2);
 
             radius = Math.Sqrt(Math.Pow(p1.x - center.x, 2) + Math.Pow(p1.y - center.y, 2));
+        }
+
+        //Helper method that calculates the angles of the first and last points
+        //of the curve
+        private void calculateAngles(Point p1, Point p2, Point p3, double arclength)
+        {
+            this.startangle = Dewlib.RestrictRange(Math.Atan2(p1.y - center.y, p1.x - center.x), 0, 2*Math.PI);
+            double midangle = Dewlib.RestrictRange(Math.Atan2(p2.y - center.y, p2.x - center.x), 0, 2*Math.PI);
+            //NOT the last point of this curve
+            //Only used to calculate the direction of the curve
+            double lastangle = Dewlib.RestrictRange(Math.Atan2(p3.y - center.y, p3.x - center.x), 0, 2*Math.PI);
+
+            if(startangle >= midangle && midangle >= lastangle)
+                clockwise = false;
+            else if(startangle >= lastangle && lastangle >= midangle)
+                clockwise = true;
+            else if(midangle >= startangle && startangle >= lastangle)
+                clockwise = true;
+            else if(midangle >= lastangle && lastangle >= startangle)
+                clockwise = false;
+            else if(lastangle >= startangle && startangle >= midangle)
+                clockwise = false;
+            else if(lastangle >= midangle && midangle >= startangle)
+                clockwise = true;
+
+            //Use the arclength to calculate the final angle since the last control point
+            //of the slider is NOT the last point of the curve
+            //This is an angle differential since the formula assumes a start from an angle of 0
+            double anglediff = arclength / radius;
+            if(clockwise)
+                this.endangle = Dewlib.RestrictRange(startangle + anglediff, 0, 2*Math.PI);
+            else
+                this.endangle = Dewlib.RestrictRange(startangle - anglediff, 0, 2*Math.PI);
         }
     }
 }
