@@ -74,6 +74,20 @@ namespace Structures
             return accessed;
         }
 
+        //Gets a point on the curve that is an arclength away from the start
+        public Point GetPointAlong(double length)
+        {
+            //Calculate how much along the curve the given length is
+            double percent = length / arclength;
+
+            if(percent > 1)
+                throw new ArgumentException("Error: given length is beyond the length of the curve\n" +
+                                            "length: " +  length + "\n" +
+                                            "arclength: " + arclength);
+
+            return GetPoint(percent);
+        }
+
         //Helper method that's only called in the constructor to calculate center
         //and radius
         private void calculateCenterandRadius(Point p1, Point p2, Point p3)
