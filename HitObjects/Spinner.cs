@@ -4,14 +4,14 @@ namespace HitObjects
     //Makes things more organized when parsing hitobjects though, so it gets implemented
     public class Spinner : HitObjectWrapper
     {
-        public double[] GetHitLocations()
+        public int[] GetHitLocations()
         {
-            return new double[0];
+            return new int[0];
         }
 
-        public double[] GetHitTimes()
+        public int[] GetHitTimes()
         {
-            return new double[0];
+            return new int[0];
         }
     }
 }
