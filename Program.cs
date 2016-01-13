@@ -31,7 +31,8 @@ public class Program
                     Beatmap map = new Beatmap(name);
                     DiffCalc calc = new DiffCalc(map);
 
-                    Console.WriteLine(map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version") + ": "+ calc.CalculateDistances());
+                    Console.Write(map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version"));
+                    Console.WriteLine(": " + calc.CalculateDistances());
 
                     timer.Stop();
                     Console.WriteLine("Calculation time (ms): " + timer.ElapsedMilliseconds);
