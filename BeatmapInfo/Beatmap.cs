@@ -88,16 +88,19 @@ namespace BeatmapInfo
             //Start at sectionline + 1 to skip the section header itself
             for(int i = sectionline + 1; i < filelines.Length; i++)
             {
-                //Exit the loop if the line read is empty, which means the end of the section
-                if(filelines[i].Length == 0)
+                //Exit the loop if we hit another section
+                if(section.IsSection(filelines[i]))
                     break;
 
                 //Otherwise add the line to the list
                 tags.Add(filelines[i]);
             }
 
+            string[] finaltags = tags.ToArray();
+            finaltags = Dewlib.RemoveEmptyEntries(finaltags);
+
             //Return the list
-            return tags.ToArray();
+            return finaltags;
         }
 
         /*************************
