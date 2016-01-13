@@ -121,7 +121,75 @@ namespace HitObjects
 
         public override int[] GetHitTimes()
         {
-            throw new NotImplementedException();
+            List<int> times = new List<int>();
+
+            //When slider starts
+            int starttime = Int32.Parse(HitObjectParser.GetProperty(id, "time"));
+            double MpB = this.GetMpB();
+            //How long the slider is in existance (without considering repeats)
+            //slidertime = (pixellength / (slidervelocity * 100)) * MillisecondsPerBeat
+            //(Order of operations is important kids! Otherwise you end up with slidertimes of 5000000 :o)
+            int slidertime = Convert.ToInt32((Double.Parse(HitObjectParser.GetProperty(id, "pixellength")) / (this.GetSliderVelocity() * 100)) * MpB);
+            //How long each tick is apart from each other
+            //ticktime = MillisecondsPerBeat / tickrate
+            int ticktime = Convert.ToInt32(MpB / Double.Parse(map.GetTag("difficulty", "slidertickrate")));
+            //How many times the slider runs
+            int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
+            //How many ticks are in the slider (without repeats)
+            //This is because later we use tickcount to tell how many times to add a time
+            //for a given slider run
+            int tickcount = this.GetTickCount() / sliderruns;
+
+            //The time from the last tick to the slider end
+            //If there are no ticks, then this just become slidertime
+            int sliderenddiff = (slidertime) - (tickcount * ticktime);
+
+            //Keeps track of what time we are at when travelling through the slider
+            int currenttime = starttime;
+
+            for(int runnum = 1; runnum <= sliderruns; runnum++)
+			{
+				if(runnum == 1)
+				{
+                    //Add the initial slider hit
+					times.Add(currenttime);
+                    //Add the tick times
+					for(int ticknum = 0; ticknum < tickcount; ticknum++)
+					{
+						currenttime += ticktime;
+						times.Add(currenttime);
+					}
+                    //Add the slider end
+					currenttime += sliderenddiff;
+					times.Add(currenttime);
+				}
+				else if(runnum % 2 == 0)
+				{
+                    //Add the first tick after the slider end
+					currenttime += sliderenddiff;
+					times.Add(currenttime);
+                    //Don't skip the first tick since we need to include the slider head too
+					for(int ticknum = 0; ticknum < tickcount; ticknum++)
+					{
+						currenttime += ticktime;
+						times.Add(currenttime);
+					}
+				}
+				else if(runnum % 2 == 1)
+				{
+                    //Add the tick times
+					for(int ticknum = 0; ticknum < tickcount; ticknum++)
+					{
+						currenttime += ticktime;
+						times.Add(currenttime);
+					}
+                    //Add the slider end
+					currenttime += sliderenddiff;
+					times.Add(currenttime);
+				}
+			}
+
+            return times.ToArray();
         }
     }
 }
