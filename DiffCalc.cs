@@ -125,11 +125,14 @@ public class DiffCalc
             speeds.Add(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
         }
 
-        //foreach(double num in speeds)
-        //    Console.WriteLine(num);
         speeds.Sort();
 
-        int topten = speeds.Count / 10;
+        //Avoid dividing by zero if there aren't enough objects to make a top ten percent
+        int topten;
+        if(speeds.Count >= 10)
+            topten = speeds.Count / 10;
+        else
+            topten = 1;
 
         double sum = 0;
         for(int i = speeds.Count - 1; i >= speeds.Count-topten; i--)
