@@ -7,7 +7,6 @@ using BeatmapInfo;
 
 namespace HitObjects
 {
-    //TODO: Check if the slider given is linear
     public class PassthroughSlider : Slider
     {
         public PassthroughSlider(string id, Beatmap amap) : base(id, amap)
