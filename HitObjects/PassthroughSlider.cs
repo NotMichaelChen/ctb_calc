@@ -62,9 +62,6 @@ namespace HitObjects
                 //While we haven't fallen off the end of the slider
                 while(calclength < length)
                 {
-                    //Using the angle created from the first hit point and the control point (since a linear
-                    //slider ALWAYS has only one control points), and the length between ticks, calculate
-                    //where the tick should land
                     ticklocs.Add(Convert.ToInt32(curve.GetPointAlong(calclength).x));
                     //Move down the slider by a ticklength
                     calclength += ticklength;
