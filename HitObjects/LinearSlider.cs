@@ -15,6 +15,16 @@ namespace HitObjects
                 throw new ArgumentException("Error: Hitobject provided to LinearSlider class is not Linear");
         }
 
+        //Allows a linear slider to be constructed with custom control points
+        public LinearSlider(string id, Beatmap amap, Point[] overridencontrol) : base(id, amap)
+        {
+            //Override the automatically generated control points with the provided ones
+            controlpoints = overridencontrol;
+            //Just check that we're provided the correct number of control points
+            if(controlpoints.Length != 1)
+                throw new ArgumentException("Error: incorrect number of controlpoints given");
+        }
+
         //Courtesy of http://math.stackexchange.com/questions/656500/given-a-point-slope-and-a-distance-along-that-slope-easily-find-a-second-p
         private double GetEndLinear(Point begin, Point end, double d)
         {
