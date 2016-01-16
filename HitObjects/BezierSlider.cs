@@ -37,7 +37,7 @@ namespace HitObjects
 
             //Get the first and last x-coordinates of the slider
             int beginpoint = Convert.ToInt32(initialcoord.x);
-            int endpoint = Convert.ToInt32(GetEndLinear(initialcoord, controlpoints[0], length));
+            int endpoint = Convert.ToInt32(GetPointAlong(length).x);
 
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
@@ -50,7 +50,7 @@ namespace HitObjects
                 //While we haven't fallen off the end of the slider
                 while(calclength < length)
                 {
-                    ticklocs.Add(Convert.ToInt32(GetEndLinear(initialcoord, controlpoints[0], calclength)));
+                    ticklocs.Add(Convert.ToInt32(GetPointAlong(calclength).x));
                     //Move down the slider by a ticklength
                     calclength += ticklength;
                 }
