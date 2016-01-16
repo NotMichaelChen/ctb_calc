@@ -83,7 +83,7 @@ namespace HitObjects
         }
 
         //Recursive definition of a bezier curve for any degree
-        public static Point Bezier(List<Point> controls, double t)
+        private Point Bezier(List<Point> controls, double t)
         {
             if(controls.Count == 1)
                 return controls[0];
