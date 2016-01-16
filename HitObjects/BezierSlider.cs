@@ -82,6 +82,22 @@ namespace HitObjects
             return hitpoints.ToArray();
         }
 
+        private Point GetPointAlong(double along)
+        {
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            //Calculate how much along the curve the given length is
+            double percent = along / length;
+
+            if(percent > 1)
+                throw new ArgumentException("Error: given length is beyond the length of the curve\n" +
+                                            "length: " +  length + "\n" +
+                                            "along: " + along);
+
+            List<Point> pointlist = new List<Point>(this.controlpoints);
+
+            return Bezier(pointlist, percent);
+        }
+
         //Recursive definition of a bezier curve for any degree
         private Point Bezier(List<Point> controls, double t)
         {
