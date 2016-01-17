@@ -7,6 +7,22 @@ namespace Structures
     //Designed specifically to work with Sliders and their control points
     public class BezierCurve
     {
+        List<Point> points;
+        int length;
+
+        /* Current problem: Bezier curve gets defined by slider control points,
+         * but the end of the slider is NOT the last control point. The slider
+         * is shorter than the bezier curve that the control points define
+         */
+        public BezierCurve(Point startpoint, Point[] sliderpoints, double slidervelocity, int slidertime, doube mpb)
+        {
+            points = new List<Point>(startpoint);
+            points.AddRange(sliderpoints);
+
+            //length of the curve is NOT the length of the slider
+            length = (slidervelocity * 100) * slidertime / mpb;
+        }
+
         private Point GetPointAlong(double along)
         {
             int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
