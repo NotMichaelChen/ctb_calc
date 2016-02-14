@@ -21,7 +21,7 @@ public class DiffCalc
 
         //Checks that the beatmap given is the correct mode
         string mode = map.GetTag("general", "mode");
-        if(!(mode.Equals("0") || mode.Equals("2")))
+        if(!(mode == "0" || mode == "2"))
         {
             throw new Exception("Error: beatmap is not the correct mode (std or ctb)");
         }

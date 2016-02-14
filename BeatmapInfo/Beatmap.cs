@@ -65,7 +65,7 @@ namespace BeatmapInfo
                 pair = Dewlib.TrimStringArray(pair);
 
                 //Essentially if the tag is a match
-                if(pair[0].ToUpper().Equals(tag.ToUpper()))
+                if(pair[0].ToUpper() == tag.ToUpper())
                 {
                     //Return its value
                     return pair[1];
@@ -153,21 +153,21 @@ namespace BeatmapInfo
             //Search through each line, and if the line is a tag then set it
             for(int i = 0; i < this.filelines.Length; i++)
             {
-                if(filelines[i].Equals("[General]"))
+                if(filelines[i] == "[General]")
                     section.General = i;
-                else if(filelines[i].Equals("[Editor]"))
+                else if(filelines[i] =="[Editor]")
                     section.Editor = i;
-                else if(filelines[i].Equals("[Metadata]"))
+                else if(filelines[i] == "[Metadata]")
                     section.Metadata = i;
-                else if(filelines[i].Equals("[Difficulty]"))
+                else if(filelines[i] == "[Difficulty]")
                     section.Difficulty = i;
-                else if(filelines[i].Equals("[Events]"))
+                else if(filelines[i] == "[Events]")
                     section.Events = i;
-                else if(filelines[i].Equals("[TimingPoints]"))
+                else if(filelines[i] == "[TimingPoints]")
                     section.TimingPoints = i;
-                else if(filelines[i].Equals("[Colours]"))
+                else if(filelines[i] == "[Colours]")
                     section.Colours = i;
-                else if(filelines[i].Equals("[HitObjects]"))
+                else if(filelines[i] == "[HitObjects]")
                     section.HitObjects = i;
             }
         }

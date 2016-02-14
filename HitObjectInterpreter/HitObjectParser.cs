@@ -20,15 +20,15 @@ namespace HitObjectInterpreter
             //TODO: Cleanup the property-selection code
 
             //Standard tags that all hitobjects have
-            if(property.Equals("X"))
+            if(property == "X")
                 tag = 0;
-            else if(property.Equals("Y"))
+            else if(property == "Y")
                 tag = 1;
-            else if(property.Equals("TIME"))
+            else if(property == "TIME")
                 tag = 2;
-            else if(property.Equals("TYPE"))
+            else if(property == "TYPE")
                 tag = 3;
-            else if(property.Equals("HITSOUND"))
+            else if(property == "HITSOUND")
                 tag = 4;
 
             else
@@ -39,7 +39,7 @@ namespace HitObjectInterpreter
 
                 if(objecttype == HitObjectType.Circle)
                 {
-                    if(property.Equals("ADDITION"))
+                    if(property == "ADDITION")
                        tag = 5;
                 }
                 else if(objecttype == HitObjectType.Slider)
@@ -49,29 +49,29 @@ namespace HitObjectInterpreter
                     //Ex. B|380:120|332:96|332:96|304:124
 
                     //The slidertype tag is the first char in the entire tag
-                    if(property.Equals("SLIDERTYPE"))
+                    if(property == "SLIDERTYPE")
                         return hobject[5][0].ToString();
                     //Custom tag: represents the control points within a slider
                     //is everything after the slidertype char
-                    else if(property.Equals("CONTROLPOINTS"))
+                    else if(property == "CONTROLPOINTS")
                         return hobject[5].Substring(2);
 
-                    else if(property.Equals("REPEAT"))
+                    else if(property == "REPEAT")
                         tag = 6;
-                    else if(property.Equals("PIXELLENGTH"))
+                    else if(property == "PIXELLENGTH")
                         tag = 7;
-                    else if(property.Equals("EDGEHITSOUND"))
+                    else if(property == "EDGEHITSOUND")
                         tag = 8;
-                    else if(property.Equals("EDGEADDITION"))
+                    else if(property == "EDGEADDITION")
                         tag = 9;
-                    else if(property.Equals("ADDITION"))
+                    else if(property == "ADDITION")
                         tag = 10;
                 }
                 else if(objecttype == HitObjectType.Spinner)
                 {
-                    if(property.Equals("ENDTIME"))
+                    if(property == "ENDTIME")
                         tag = 5;
-                    else if(property.Equals("ADDITION"))
+                    else if(property == "ADDITION")
                         tag = 6;
                 }
             }

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using BeatmapInfo;
 
 //TODO: Overhaul exception system
-//TODO: Replace .Equals() with strings with ==
 
 public class Program
 {
