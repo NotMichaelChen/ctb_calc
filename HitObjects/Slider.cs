@@ -13,6 +13,7 @@ namespace HitObjects
         protected string id;
         protected Beatmap map;
         //List of control points of slider
+        //DOES NOT INCLUDE THE FIRST HIT POINT
         protected Point[] controlpoints;
 
         //Constructs a slider given an id
