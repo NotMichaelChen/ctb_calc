@@ -74,9 +74,36 @@ namespace Structures
         //Accessed the point along the specified curve
         //start and end are the indexes of the points that the curve lays between
         //thus they cannot be 0 or controlpoints.Size-1
+        //Courtesy of http://cubic.org/docs/hermite.htm
         private Point GetPointBetween(int start, int end, double t)
         {
+            if(start > end)
+                throw new ArgumentOutOfRangeException("Error: start is greater than end\n" +
+                                                        "start: " + start + "\n" +
+                                                        "end: " + end);
 
+            double h1 = 2 * Math.Pow(t, 3) - 3 * Math.Pow(t, 2) + 1;
+            double h2 = -2 * Math.Pow(t, 3) + 3 * Math.Pow(t, 2);
+            double h3 = Math.Pow(t, 3) - 2 * Math.Pow(t, 2) + t;
+            double h4 = Math.Pow(t, 3) - Math.Pow(t, 2);
+
+            Point T1, T2;
+            T1.x = 0.5 * (controlpoints[end].x - controlpoints[start - 1].x);
+            T1.y = 0.5 * (controlpoints[end].y - controlpoints[start - 1].y);
+            T2.x = 0.5 * (controlpoints[end + 1].x - controlpoints[start].x);
+            T2.y = 0.5 * (controlpoints[end + 1].y - controlpoints[start].x);
+
+            Point result;
+            result.x = h1 * controlpoints[start].x +
+                        h2 * controlpoints[end].x +
+                        h3 * T1.x +
+                        h4 * T2.x;
+            result.y = h1 * controlpoints[start].y +
+                        h2 * controlpoints[end].y +
+                        h3 * T1.y +
+                        h4 * T2.y;
+
+            return result;
         }
 
         //Reassigns the last control point so that it coincides with the point that
