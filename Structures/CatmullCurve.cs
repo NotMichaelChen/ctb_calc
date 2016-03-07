@@ -11,6 +11,12 @@ namespace Structures
         public CatmullCurve(List<Point> points, double curvelength)
         {
             controlpoints = points;
+            //Add the first point to the beginning (so there are two points at the beginning)
+            //and the last point to the end (so there are two points at the end)
+            //This is necessary for calculating the tangent variable for the curve
+            controlpoints.Insert(0, controlpoints[0]);
+            controlpoints.Add(controlpoints[controlpoints.Count-1]);
+
             length = curvelength;
 
             ReassignLastPoint();
