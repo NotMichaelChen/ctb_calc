@@ -22,6 +22,8 @@ namespace Structures
 
             //length of the curve is NOT the length of the slider
             length = (int)Math.Round((slidervelocity * 100) * slidertime / mpb);
+
+            ReassignLastPoint();
         }
 
         private Point GetPointAlong(double along)
@@ -52,6 +54,32 @@ namespace Structures
                         t * Bezier(controls.GetRange(1, controls.Count - 1), t).y;
 
             return result;
+        }
+
+        //Reassigns the last control point so that it coincides with the point that
+        //is length units along the curve
+        private void ReassignLastPoint()
+        {
+            double steps = 1000;
+            double length = 0;
+            Point prev = points[0];
+            for(int i = 1; i <= steps; i++)
+            {
+                double t = i / steps;
+                Point next = Bezier(points, t);
+                double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
+                prev = next;
+                length += distance;
+                if(length >= distance)
+                {
+                    prev.x = Math.Round(prev.x);
+                    prev.y = Math.Round(prev.y);
+                    points[points.Count-1] = prev;
+                    return;
+                }
+            }
+
+            throw new InvalidOperationException("Error: Bezier curve is shorter than given length");
         }
     }
 }
