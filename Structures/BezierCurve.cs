@@ -8,32 +8,31 @@ namespace Structures
     public class BezierCurve
     {
         List<Point> points;
-        int length;
+        int sliderlength;
 
-        /* Current problem: Bezier curve gets defined by slider control points,
-         * but the end of the slider is NOT the last control point. The slider
-         * is shorter than the bezier curve that the control points define
-         */
-        public BezierCurve(Point startpoint, Point[] sliderpoints, double slidervelocity, int slidertime, double mpb)
+        //Constructs a Bezier curve given a list of points and a given length
+        //This is necessary as a slider length may not be the actual length of the
+        //defined curve
+        public BezierCurve(Point startpoint, Point[] sliderpoints, double length)
         {
             points = new List<Point>();
             points.Add(startpoint);
             points.AddRange(sliderpoints);
 
             //length of the curve is NOT the length of the slider
-            length = (int)Math.Round((slidervelocity * 100) * slidertime / mpb);
+            sliderlength = (int)Math.Round(length);
 
             ReassignLastPoint();
         }
 
-        private Point GetPointAlong(double along)
+        public Point GetPointAlong(double along)
         {
             //Calculate how much along the curve the given length is
-            double percent = along / length;
+            double percent = along / sliderlength;
 
             if(percent > 1)
                 throw new ArgumentException("Error: given length is beyond the length of the curve\n" +
-                                            "length: " +  length + "\n" +
+                                            "length: " +  sliderlength + "\n" +
                                             "along: " + along);
 
             return Bezier(points, percent);
@@ -70,7 +69,7 @@ namespace Structures
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
                 prev = next;
                 length += distance;
-                if(length >= distance)
+                if(length >= sliderlength)
                 {
                     prev.x = Math.Round(prev.x);
                     prev.y = Math.Round(prev.y);
@@ -79,7 +78,9 @@ namespace Structures
                 }
             }
 
-            throw new InvalidOperationException("Error: Bezier curve is shorter than given length");
+            throw new InvalidOperationException("Error: Bezier curve is shorter than given length\n" +
+                                                "length: " + sliderlength + "\n" +
+                                                "distance: " + length);
         }
     }
 }
