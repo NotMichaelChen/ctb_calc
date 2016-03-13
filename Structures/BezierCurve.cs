@@ -14,18 +14,18 @@ namespace Structures
          * but the end of the slider is NOT the last control point. The slider
          * is shorter than the bezier curve that the control points define
          */
-        public BezierCurve(Point startpoint, Point[] sliderpoints, double slidervelocity, int slidertime, doube mpb)
+        public BezierCurve(Point startpoint, Point[] sliderpoints, double slidervelocity, int slidertime, double mpb)
         {
-            points = new List<Point>(startpoint);
+            points = new List<Point>();
+            points.Add(startpoint);
             points.AddRange(sliderpoints);
 
             //length of the curve is NOT the length of the slider
-            length = (slidervelocity * 100) * slidertime / mpb;
+            length = (int)Math.Round((slidervelocity * 100) * slidertime / mpb);
         }
 
         private Point GetPointAlong(double along)
         {
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
             //Calculate how much along the curve the given length is
             double percent = along / length;
 
@@ -34,9 +34,7 @@ namespace Structures
                                             "length: " +  length + "\n" +
                                             "along: " + along);
 
-            List<Point> pointlist = new List<Point>(this.controlpoints);
-
-            return Bezier(pointlist, percent);
+            return Bezier(points, percent);
         }
 
         //Recursive definition of a bezier curve for any degree
