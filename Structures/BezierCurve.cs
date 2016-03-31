@@ -25,6 +25,37 @@ namespace Structures
             ReassignLastPoint();
         }
 
+        public Point[] GetPointInterval(double interval, int tickcount)
+        {
+            List<Point> ticks = new List<Point>();
+            //Make the number of steps either length * 5 or 1000, whichever is greater
+            double steps = sliderlength*5>1000?sliderlength*5:1000;
+            double length = 0;
+            Point prev = points[0];
+            for(int i = 1; i <= steps; i++)
+            {
+                double t = i / steps;
+                Point next = Bezier(points, t);
+                double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
+                prev = next;
+                length += distance;
+                if(length >= interval)
+                {
+                    ticks.Add(Bezier(points, t));
+                    length = 0;
+                    if(ticks.Count == tickcount)
+                        break;
+                }
+            }
+
+            if(length > 0)
+            {
+                ticks.Add(points[points.Count-1]);
+            }
+            Console.WriteLine(ticks.Count);
+            return ticks.ToArray();
+        }
+
         public Point GetPointAlong(double along)
         {
             if(along > sliderlength)
@@ -71,7 +102,8 @@ namespace Structures
         //is length units along the curve
         private void ReassignLastPoint()
         {
-            double steps = sliderlength * 5;
+            //Make the number of steps either length * 5 or 1000, whichever is greater
+            double steps = sliderlength*5>1000?sliderlength*5:1000;
             double length = 0;
             Point prev = points[0];
             for(int i = 1; i <= steps; i++)

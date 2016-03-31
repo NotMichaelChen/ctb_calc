@@ -45,17 +45,21 @@ namespace HitObjects
             //slidervelocity * (100/tickrate) == pixels between slider ticks
             if(length > slidervelocity * (100 / tickrate))
             {
-                /// Fill in all the ticks inside the slider
-                int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
-                //Will represent where the next tick is in the slider
-                int calclength = ticklength;
-                //While we haven't fallen off the end of the slider
-                while(calclength < length)
-                {
-                    ticklocs.Add(Convert.ToInt32(curve.GetPointAlong(calclength).x));
-                    //Move down the slider by a ticklength
-                    calclength += ticklength;
-                }
+                int tickcount = this.GetTickCount() / (repeats + 1);
+                Point[] tickpoints = curve.GetPointInterval(slidervelocity * (100 / tickrate), tickcount);
+                foreach(Point i in tickpoints)
+                    ticklocs.Add((int)i.x);
+                // /// Fill in all the ticks inside the slider
+                // int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
+                // //Will represent where the next tick is in the slider
+                // int calclength = ticklength;
+                // //While we haven't fallen off the end of the slider
+                // while(calclength < length)
+                // {
+                //     ticklocs.Add(Convert.ToInt32(curve.GetPointAlong(calclength).x));
+                //     //Move down the slider by a ticklength
+                //     calclength += ticklength;
+                // }
             }
 
             hitpoints.Add(beginpoint);
