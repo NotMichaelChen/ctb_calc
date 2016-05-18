@@ -37,31 +37,15 @@ namespace HitObjects
             initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
             initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
 
-            BezierCurve curve = new BezierCurve(initialcoord, controlpoints, length);
-
             //Get the first and last x-coordinates of the slider
-            int beginpoint = Convert.ToInt32(initialcoord.x);
-            int endpoint = Convert.ToInt32(curve.GetPointAlong(length).x);
+            int beginpoint = initialcoord.IntX();
+            int endpoint = this.GetLastPoint().IntX();
 
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
             if(length > slidervelocity * (100 / tickrate))
             {
-                int tickcount = this.GetTickCount() / (repeats + 1);
-                Point[] tickpoints = curve.GetPointInterval(slidervelocity * (100 / tickrate), tickcount);
-                foreach(Point i in tickpoints)
-                    ticklocs.Add((int)i.x);
-                // /// Fill in all the ticks inside the slider
-                // int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
-                // //Will represent where the next tick is in the slider
-                // int calclength = ticklength;
-                // //While we haven't fallen off the end of the slider
-                // while(calclength < length)
-                // {
-                //     ticklocs.Add(Convert.ToInt32(curve.GetPointAlong(calclength).x));
-                //     //Move down the slider by a ticklength
-                //     calclength += ticklength;
-                // }
+                ticklocs.AddRange(this.GetTickLocations(slidervelocity * (100 / tickrate), this.GetTickCount()));
             }
 
             hitpoints.Add(beginpoint);
@@ -111,7 +95,7 @@ namespace HitObjects
                 if(controlpoints[i].IntX() == controlpoints[i-1].IntX() &&
                     controlpoints[i].IntY() == controlpoints[i-1].IntY())
                 {
-                    BezierCurve tempcurve = new BezierCurve(initialcoord, curvepoints);
+                    BezierCurve tempcurve = new BezierCurve(initialcoord, curvepoints.ToArray());
                     accumulatedcurves.Add(tempcurve);
 
                     initialcoord = controlpoints[i];
@@ -121,7 +105,7 @@ namespace HitObjects
 
             if(curvepoints.Count > 0)
             {
-                BezierCurve tempcurve = new BezierCurve(initialcoord, curvepoints);
+                BezierCurve tempcurve = new BezierCurve(initialcoord, curvepoints.ToArray());
                 accumulatedcurves.Add(tempcurve);
             }
 
@@ -131,11 +115,12 @@ namespace HitObjects
         //Get the x-coordinates of every tick in the slider
         //tickcount is needed to make sure that the correct number of ticks is returned,
         //as rounding errors may cause problems when getting the last tick
-        private int GetTickLocations()
+        private int[] GetTickLocations(double tickinterval, int tickcount)
         {
             int sliderlength = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
 
             List<Point> ticks = new List<Point>();
+
             //Make the number of steps either length * 5 or 1000, whichever is greater
             double steps = sliderlength*5>1000?sliderlength*5:1000;
             //how much to increment t by with every loop
@@ -156,7 +141,7 @@ namespace HitObjects
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
                 length += distance;
                 prev = next;
-                if(length >= interval)
+                if(length >= tickinterval)
                 {
                     ticks.Add(next);
                     length = 0;
@@ -175,7 +160,7 @@ namespace HitObjects
                 throw new Exception("Error, too many ticks to get in bezier curve");
 
             List<int> locations = new List<int>();
-            foreach(Point i in tickpoints)
+            foreach(Point i in ticks)
                 locations.Add(i.IntX());
 
             return locations.ToArray();
