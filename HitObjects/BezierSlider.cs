@@ -15,6 +15,7 @@ namespace HitObjects
         {
             if(HitObjectParser.GetProperty(id, "slidertype") != "B")
                 throw new ArgumentException("Error: Hitobject provided to BezierSlider class is not Bezier");
+            this.GetCurves();
         }
 
         public override int[] GetHitLocations()
@@ -45,7 +46,9 @@ namespace HitObjects
             //slidervelocity * (100/tickrate) == pixels between slider ticks
             if(length > slidervelocity * (100 / tickrate))
             {
-                ticklocs.AddRange(this.GetTickLocations(slidervelocity * (100 / tickrate), this.GetTickCount()));
+                //Only need ticks for one slider length (no repeats needed)
+                int tickcount = this.GetTickCount() / (repeats+1);
+                ticklocs.AddRange(this.GetTickLocations(slidervelocity * (100 / tickrate), tickcount));
             }
 
             hitpoints.Add(beginpoint);
@@ -190,7 +193,7 @@ namespace HitObjects
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
                 length += distance;
                 prev = next;
-                if(length == sliderlength)
+                if(length >= sliderlength)
                     return next;
 
                 t += increment;
