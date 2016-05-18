@@ -25,8 +25,14 @@ namespace Structures
             ReassignLastPoint();
         }
 
+        //Wrapper method to calculate a point on the curve
+        public Point Bezier(double t)
+        {
+            return Bezier(points, t);
+        }
+
         //Recursive definition of a bezier curve for any degree
-        public Point Bezier(List<Point> controls, double t)
+        private Point Bezier(List<Point> controls, double t)
         {
             if(controls.Count == 1)
                 return controls[0];

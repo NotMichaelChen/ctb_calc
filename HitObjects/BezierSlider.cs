@@ -152,7 +152,7 @@ namespace HitObjects
             int curvenumber = 0;
             while(curvenumber < curves.Length)
             {
-                Point next = curves[curvenumber].Bezier(points, t);
+                Point next = curves[curvenumber].Bezier(t);
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
                 length += distance;
                 prev = next;
@@ -201,7 +201,7 @@ namespace HitObjects
             int curvenumber = 0;
             while(curvenumber < curves.Length)
             {
-                Point next = curves[curvenumber].Bezier(points, t);
+                Point next = curves[curvenumber].Bezier(t);
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
                 length += distance;
                 prev = next;
