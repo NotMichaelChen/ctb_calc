@@ -42,13 +42,14 @@ namespace HitObjects
             int beginpoint = initialcoord.IntX();
             int endpoint = this.GetLastPoint().IntX();
 
+            int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
-            if(length > slidervelocity * (100 / tickrate))
+            if(length > ticklength)
             {
                 //Only need ticks for one slider length (no repeats needed)
                 int tickcount = this.GetTickCount() / (repeats+1);
-                ticklocs.AddRange(this.GetTickLocations(slidervelocity * (100 / tickrate), tickcount));
+                ticklocs.AddRange(this.GetTickLocations(ticklength, tickcount));
             }
 
             hitpoints.Add(beginpoint);

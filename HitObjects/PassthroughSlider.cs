@@ -50,12 +50,11 @@ namespace HitObjects
             int beginpoint = Convert.ToInt32(initialcoord.x);
             int endpoint = Convert.ToInt32(curve.GetPoint(1).x);
 
+            int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
             if(length > slidervelocity * (100 / tickrate))
             {
-                /// Fill in all the ticks inside the slider
-                int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
                 //Will represent where the next tick is in the slider
                 int calclength = ticklength;
                 //While we haven't fallen off the end of the slider
