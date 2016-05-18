@@ -9,6 +9,8 @@ namespace HitObjects
 {
     public class BezierSlider : Slider
     {
+        private BezierCurve[] curves;
+
         public BezierSlider(string id, Beatmap amap) : base(id, amap)
         {
             if(HitObjectParser.GetProperty(id, "slidertype") != "B")
@@ -86,6 +88,44 @@ namespace HitObjects
 
             //Return the hitpoints
             return hitpoints.ToArray();
+        }
+
+        //Uses the given list of control points to construct a list of bezier curves
+        //to account for red points
+        private void GetCurves()
+        {
+            //Get the initial hit point of the slider
+            //Split into three lines for readibility
+            Point initialcoord = new Point();
+            initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
+            initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
+
+            List<Point> curvepoints = new List<Point>();
+            List<BezierCurve> accumulatedcurves = new List<BezierCurve>();;
+
+            curvepoints.Add(controlpoints[0]);
+            for(int i = 1; i < controlpoints.Length; i++)
+            {
+                curvepoints.Add(controlpoints[i]);
+
+                if(controlpoints[i].IntX() == controlpoints[i-1].IntX() &&
+                    controlpoints[i].IntY() == controlpoints[i-1].IntY())
+                {
+                    BezierCurve tempcurve = new BezierCurve(initialcoord, curvepoints);
+                    accumulatedcurves.Add(tempcurve);
+
+                    initialcoord = controlpoints[i];
+                    curvepoints.Clear();
+                }
+            }
+
+            if(curvepoints.Count > 0)
+            {
+                BezierCurve tempcurve = new BezierCurve(initialcoord, curvepoints);
+                accumulatedcurves.Add(tempcurve);
+            }
+
+            curves = accumulatedcurves.ToArray();
         }
     }
 }
