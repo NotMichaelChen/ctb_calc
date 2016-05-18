@@ -1,3 +1,5 @@
+using System;
+
 namespace Structures
 {
     /// <summary>
@@ -11,6 +13,16 @@ namespace Structures
         {
             this.x = x;
             this.y = y;
+        }
+
+        public int IntX()
+        {
+            return (int)Math.Round(x);
+        }
+
+        public int IntY()
+        {
+            return (int)Math.Round(y);
         }
     }
 }
