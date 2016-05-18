@@ -25,31 +25,6 @@ namespace Structures
             ReassignLastPoint();
         }
 
-        public Point GetPointAlong(double along)
-        {
-            if(along > sliderlength)
-                throw new ArgumentException("Error: given length is beyond the length of the curve\n" +
-                                            "length: " +  sliderlength + "\n" +
-                                            "along: " + along);
-
-            //Make the number of steps either length * 5 or 1000, whichever is greater
-            double steps = sliderlength*5>1000?sliderlength*5:1000;
-            double length = 0;
-            Point prev = points[0];
-            for(int i = 1; i <= steps; i++)
-            {
-                double t = i / steps;
-                Point next = Bezier(points, t);
-                double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
-                prev = next;
-                length += distance;
-                if(length >= along)
-                    return next;
-            }
-
-            return points[points.Count-1];
-        }
-
         //Recursive definition of a bezier curve for any degree
         public Point Bezier(List<Point> controls, double t)
         {

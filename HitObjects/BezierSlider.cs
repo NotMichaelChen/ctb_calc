@@ -140,10 +140,10 @@ namespace HitObjects
             double steps = sliderlength*5>1000?sliderlength*5:1000;
             //how much to increment t by with every loop
             double increment = 1 / steps;
-            //how much along the curve we have travelled so far
+            //how much along the curve we have traveled so far
             double length = 0;
             //where to get the next point on a given curve
-            //assign to increment to get the next intended point
+            //assign  increment to get the next intended point
             double t = increment;
             Point prev = new Point();
             prev.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
@@ -179,6 +179,44 @@ namespace HitObjects
                 locations.Add(i.IntX());
 
             return locations.ToArray();
+        }
+
+        private Point GetLastPoint()
+        {
+            int sliderlength = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+
+            //Make the number of steps either length * 5 or 1000, whichever is greater
+            double steps = sliderlength*5>1000?sliderlength*5:1000;
+            //how much to increment t by with every loop
+            double increment = 1 / steps;
+            //how much along the curve we have traveled so far
+            double length = 0;
+            //where to get the next point on a given curve
+            //assign increment to get the next intended point
+            double t = increment;
+            Point prev = new Point();
+            prev.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
+            prev.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
+            //which curve we are looking at
+            int curvenumber = 0;
+            while(curvenumber < curves.Length)
+            {
+                Point next = curves[curvenumber].Bezier(points, t);
+                double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
+                length += distance;
+                prev = next;
+                if(length == sliderlength)
+                    return next;
+
+                t += increment;
+                if(t > 1)
+                {
+                    curvenumber++;
+                    t -= 1;
+                }
+            }
+
+            throw new Exception("Error, slider end is beyond control points");
         }
     }
 }
