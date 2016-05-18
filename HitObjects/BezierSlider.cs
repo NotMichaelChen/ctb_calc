@@ -204,7 +204,9 @@ namespace HitObjects
                 }
             }
 
-            throw new Exception("Error, slider end is beyond control points");
+            //If we reached the end of the slider without accumulated sliderlength distance,
+            //just assume that the last point is the last point of the bezier curve
+            return curves[curves.Length-1].Bezier(1);
         }
     }
 }
