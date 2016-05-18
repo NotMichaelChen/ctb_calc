@@ -127,5 +127,58 @@ namespace HitObjects
 
             curves = accumulatedcurves.ToArray();
         }
+
+        //Get the x-coordinates of every tick in the slider
+        //tickcount is needed to make sure that the correct number of ticks is returned,
+        //as rounding errors may cause problems when getting the last tick
+        private int GetTickLocations()
+        {
+            int sliderlength = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+
+            List<Point> ticks = new List<Point>();
+            //Make the number of steps either length * 5 or 1000, whichever is greater
+            double steps = sliderlength*5>1000?sliderlength*5:1000;
+            //how much to increment t by with every loop
+            double increment = 1 / steps;
+            //how much along the curve we have travelled so far
+            double length = 0;
+            //where to get the next point on a given curve
+            //assign to increment to get the next intended point
+            double t = increment;
+            Point prev = new Point();
+            prev.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
+            prev.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
+            //which curve we are looking at
+            int curvenumber = 0;
+            while(curvenumber < curves.Length)
+            {
+                Point next = curves[curvenumber].Bezier(points, t);
+                double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
+                length += distance;
+                prev = next;
+                if(length >= interval)
+                {
+                    ticks.Add(next);
+                    length = 0;
+                    if(ticks.Count == tickcount)
+                        break;
+                }
+                t += increment;
+                if(t > 1)
+                {
+                    curvenumber++;
+                    t -= 1;
+                }
+            }
+
+            if(length > 0)
+                throw new Exception("Error, too many ticks to get in bezier curve");
+
+            List<int> locations = new List<int>();
+            foreach(Point i in tickpoints)
+                locations.Add(i.IntX());
+
+            return locations.ToArray();
+        }
     }
 }

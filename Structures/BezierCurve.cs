@@ -25,40 +25,6 @@ namespace Structures
             ReassignLastPoint();
         }
 
-        //Get every point on the curve, separated by the given interval
-        //tickcount is needed to make sure that the correct number of ticks is returned,
-        //as rounding errors may cause problems when getting the last tick
-        public Point[] GetPointInterval(double interval, int tickcount)
-        {
-            List<Point> ticks = new List<Point>();
-            //Make the number of steps either length * 5 or 1000, whichever is greater
-            double steps = sliderlength*5>1000?sliderlength*5:1000;
-            double length = 0;
-            Point prev = points[0];
-            for(int i = 1; i <= steps; i++)
-            {
-                double t = i / steps;
-                Point next = Bezier(points, t);
-                double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
-                prev = next;
-                length += distance;
-                if(length >= interval)
-                {
-                    ticks.Add(next);
-                    length = 0;
-                    if(ticks.Count == tickcount)
-                        break;
-                }
-            }
-
-            if(length > 0)
-            {
-                ticks.Add(points[points.Count-1]);
-            }
-            Console.WriteLine(ticks.Count);
-            return ticks.ToArray();
-        }
-
         public Point GetPointAlong(double along)
         {
             if(along > sliderlength)
@@ -85,7 +51,7 @@ namespace Structures
         }
 
         //Recursive definition of a bezier curve for any degree
-        private Point Bezier(List<Point> controls, double t)
+        public Point Bezier(List<Point> controls, double t)
         {
             if(controls.Count == 1)
                 return controls[0];
