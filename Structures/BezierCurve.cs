@@ -25,6 +25,9 @@ namespace Structures
             ReassignLastPoint();
         }
 
+        //Get every point on the curve, separated by the given interval
+        //tickcount is needed to make sure that the correct number of ticks is returned,
+        //as rounding errors may cause problems when getting the last tick
         public Point[] GetPointInterval(double interval, int tickcount)
         {
             List<Point> ticks = new List<Point>();
@@ -41,7 +44,7 @@ namespace Structures
                 length += distance;
                 if(length >= interval)
                 {
-                    ticks.Add(Bezier(points, t));
+                    ticks.Add(next);
                     length = 0;
                     if(ticks.Count == tickcount)
                         break;
@@ -75,7 +78,7 @@ namespace Structures
                 prev = next;
                 length += distance;
                 if(length >= along)
-                    return Bezier(points, t);
+                    return next;
             }
 
             return points[points.Count-1];
