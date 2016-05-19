@@ -15,6 +15,16 @@ namespace HitObjects
                 throw new ArgumentException("Error: Hitobject provided to LinearSlider class is not Linear");
         }
 
+        //Allows a linear slider to be constructed with custom control points
+        public LinearSlider(string id, Beatmap amap, Point[] overridencontrol) : base(id, amap)
+        {
+            //Override the automatically generated control points with the provided ones
+            controlpoints = overridencontrol;
+            //Just check that we're provided the correct number of control points
+            if(controlpoints.Length != 1)
+                throw new ArgumentException("Error: incorrect number of controlpoints given");
+        }
+
         //Courtesy of http://math.stackexchange.com/questions/656500/given-a-point-slope-and-a-distance-along-that-slope-easily-find-a-second-p
         private double GetEndLinear(Point begin, Point end, double d)
         {
@@ -55,12 +65,11 @@ namespace HitObjects
             int beginpoint = Convert.ToInt32(initialcoord.x);
             int endpoint = Convert.ToInt32(GetEndLinear(initialcoord, controlpoints[0], length));
 
+            int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
-            if(length > slidervelocity * (100 / tickrate))
+            if(length > ticklength)
             {
-                /// Fill in all the ticks inside the slider
-                int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
                 //Will represent where the next tick is in the slider
                 int calclength = ticklength;
                 //While we haven't fallen off the end of the slider
