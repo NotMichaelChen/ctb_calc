@@ -193,9 +193,9 @@ namespace HitObjects
             }
         }
 
-        //Gets the number of slider ticks, including slider repeats
+        //Gets the number of slider ticks, including slider repeats (but not slider ends)
         //Calculated the same regardless of slider type
-        private int GetTickCount()
+        protected int GetTickCount()
         {
             int tickcount = 0;
 

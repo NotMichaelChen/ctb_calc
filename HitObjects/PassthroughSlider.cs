@@ -35,26 +35,31 @@ namespace HitObjects
             initialcoord.x = Double.Parse(HitObjectParser.GetProperty(id, "x"));
             initialcoord.y = Double.Parse(HitObjectParser.GetProperty(id, "y"));
 
+            //Check if points are colinear (because a circle can't be generated from a straight line)
+            if((controlpoints[0].y - initialcoord.y) * (controlpoints[1].x - controlpoints[0].x) ==
+                (controlpoints[1].y - controlpoints[0].y) * (controlpoints[0].x - initialcoord.x))
+            {
+                //use a linear slider instead
+                LinearSlider tempslider = new LinearSlider(id, map, new Point[] {controlpoints[1]});
+                return tempslider.GetHitLocations();
+            }
+
             CircleCurve curve = new CircleCurve(initialcoord, controlpoints[0], controlpoints[1], length);
 
             //Get the first and last x-coordinates of the slider
             int beginpoint = Convert.ToInt32(initialcoord.x);
             int endpoint = Convert.ToInt32(curve.GetPoint(1).x);
 
+            int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
             //If the slider is long enough to generate slider ticks
             //slidervelocity * (100/tickrate) == pixels between slider ticks
             if(length > slidervelocity * (100 / tickrate))
             {
-                /// Fill in all the ticks inside the slider
-                int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
                 //Will represent where the next tick is in the slider
                 int calclength = ticklength;
                 //While we haven't fallen off the end of the slider
                 while(calclength < length)
                 {
-                    //Using the angle created from the first hit point and the control point (since a linear
-                    //slider ALWAYS has only one control points), and the length between ticks, calculate
-                    //where the tick should land
                     ticklocs.Add(Convert.ToInt32(curve.GetPointAlong(calclength).x));
                     //Move down the slider by a ticklength
                     calclength += ticklength;

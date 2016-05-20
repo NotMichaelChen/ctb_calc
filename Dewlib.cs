@@ -50,6 +50,7 @@ public static class Dewlib
         return num;
     }
 
+    //Removes empty strings in a given array
     public static string[] RemoveEmptyEntries(string[] arr)
     {
         List<string> finalarr = new List<string>(arr);
@@ -59,8 +60,15 @@ public static class Dewlib
         return finalarr.ToArray();
     }
 
+    //Predicate method for RemoveEmptyEntries that determines if a string is empty
     private static bool isEmpty(string str)
     {
         return str.Length == 0;
+    }
+
+    //Calculates the distance between two points
+    public static double GetDistance(double a, double b, double x, double y)
+    {
+        return Math.Sqrt(Math.Pow(x - a, 2) + Math.Pow(y - b, 2));
     }
 }

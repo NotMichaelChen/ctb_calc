@@ -1,7 +1,10 @@
 # My Files
-c.bat
 Test Suite/
-main.exe
+Properties/
+app.config
+bin/
+ctb_calc.csproj
+obj/
 
 # Windows image file caches
 Thumbs.db
