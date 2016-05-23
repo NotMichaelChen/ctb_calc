@@ -34,10 +34,13 @@ namespace Structures
             //where to get the next point on a given curve
             //assign increment to get the next intended point
             double t = increment;
+            //track which curve (defined by two points) is being looked at
+            int curvestartpoint = 0;
             Point prev = controlpoints[0];
-            while(t < 1)
+            //Subtract two for the extra points, and subtract one to get the number of curves
+            while(curvestartpoint < controlpoints.Count - 2 - 1)
             {
-                Point next = GetPoint(t);
+                Point next = GetPointBetween(curvestartpoint, curvestartpoint+1, t);
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
                 travelled += distance;
                 prev = next;
@@ -49,6 +52,11 @@ namespace Structures
                         break;
                 }
                 t += increment;
+                if(t > 1)
+                {
+                    curvestartpoint++;
+                    t -= 1;
+                }
             }
 
             if(travelled > 0)
@@ -68,10 +76,13 @@ namespace Structures
             //where to get the next point on a given curve
             //assign increment to get the next intended point
             double t = increment;
+            //track which curve (defined by two points) is being looked at
+            int curvestartpoint = 0;
             Point prev = controlpoints[0];
-            while(t < 1)
+            //Subtract two for the extra points, and subtract one to get the number of curves
+            while(curvestartpoint < controlpoints.Count - 2 - 1)
             {
-                Point next = GetPoint(t);
+                Point next = GetPointBetween(curvestartpoint, curvestartpoint+1, t);
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
                 length += distance;
                 prev = next;
@@ -79,54 +90,16 @@ namespace Structures
                     return next;
 
                 t += increment;
+                if(t > 1)
+                {
+                    curvestartpoint++;
+                    t -= 1;
+                }
             }
 
             //If we reached the end of the slider without accumulated sliderlength distance,
             //just assume that the last point is the last point of the curve
-            return GetPoint(1);
-        }
-
-        //Gets a point along the curve
-        //t is the parameter variable that controls where along the curve the point is
-        //t goes from 0 to 1
-        public Point GetPoint(double t)
-        {
-            //TODO: Make exception more useful
-            if(t < 0 || t > 1)
-                throw new ArgumentOutOfRangeException();
-
-            //Subtract two for the extra points, and subtract one to get the number of curves
-            //that the overall curve is composed of
-            int curvecount = controlpoints.Count - 2 - 1;
-
-            //Determines which curve the point specified by t lands on
-            int curvetoget = 0;
-            for(double i = 1; i <= curvecount; i++)
-            {
-                if(i / curvecount > t)
-                {
-                    curvetoget = (int)i;
-                    break;
-                }
-            }
-
-            //Scale the t so that it fits with the curve being accessed
-            //Determines from what point the t is from
-            //eg if t is 0.75 and there are 3 control points, then lowerbound is 0.5
-            double lowerbound = (curvetoget - 1) / curvecount;
-            //Determines how much along that specific curve the t is
-            //eg fromlowerbound would be 0.25
-            double fromlowerbound = t - lowerbound;
-            //Divide the fromlowerbound from the range that the specified curve takes up from 0 to 1
-            //eg the fraction would be 0.25 / 0.5 = 0.5
-            double scaledt = fromlowerbound / ((curvetoget / curvecount) - lowerbound);
-
-            //Get the two points that define the specified curve
-            int startindex = curvetoget + 1;
-            int endindex = startindex + 1;
-
-            //Access the relevant point on that curve using the scaled t
-            return GetPointBetween(startindex, endindex, scaledt);
+            return GetPointBetween(controlpoints.Count - 2 - 1, controlpoints.Count - 2, 1);
         }
 
         //Accessed the point along the specified curve
