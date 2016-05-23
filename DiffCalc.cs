@@ -160,6 +160,8 @@ public class DiffCalc
                 return new PassthroughSlider(id, map);
             else if(slidertype == "B")
                 return new BezierSlider(id, map);
+            else if(slidertype == "C")
+                return new CatmullSlider(id, map);
             else return null;
         }
         else if(objecttype == HitObjectType.Spinner)
