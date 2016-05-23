@@ -7,26 +7,18 @@ namespace Structures
     public class CatmullCurve
     {
         private List<Point> controlpoints;
-        private double length;
 
-        public CatmullCurve(List<Point> points, double curvelength)
+        public CatmullCurve(Point startpoint, Point[] sliderpoints)
         {
-            controlpoints = points;
-            //Add the first point to the beginning (so there are two points at the beginning)
-            //and the last point to the end (so there are two points at the end)
+            controlpoints = new List<Point>();
+            
+            //Add the first point twice (so there are two points at the beginning)
+            //and the last point twice (so there are two points at the end)
             //This is necessary for calculating the tangent variable for the curve
-            controlpoints.Insert(0, controlpoints[0]);
+            controlpoints.Add(startpoint);
+            controlpoints.Add(startpoint);
+            controlpoints.AddRange(sliderpoints);
             controlpoints.Add(controlpoints[controlpoints.Count-1]);
-
-            length = curvelength;
-
-            ReassignLastPoint();
-        }
-
-        //Get a point that is length units along the curve
-        public Point GetPointAlong(double length)
-        {
-
         }
 
         //Gets a point along the curve
@@ -105,13 +97,6 @@ namespace Structures
                         h4 * T2.y;
 
             return result;
-        }
-
-        //Reassigns the last control point so that it coincides with the point that
-        //is length units along the curve
-        private void ReassignLastPoint()
-        {
-
         }
     }
 }
