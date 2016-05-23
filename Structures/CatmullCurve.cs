@@ -20,6 +20,71 @@ namespace Structures
             controlpoints.AddRange(sliderpoints);
             controlpoints.Add(controlpoints[controlpoints.Count-1]);
         }
+        
+        public Point[] GetTickLocations(double interval, int count, int length)
+        {
+            List<Point> ticks = new List<Point>();
+
+            //Make the number of steps either length * 5 or 1000, whichever is greater
+            double steps = length*5>1000?length*5:1000;
+            //how much to increment t by with every loop
+            double increment = 1 / steps;
+            //how much along the curve we have traveled so far
+            double travelled = 0;
+            //where to get the next point on a given curve
+            //assign increment to get the next intended point
+            double t = increment;
+            Point prev = controlpoints[0];
+            while(t < 1)
+            {
+                Point next = GetPoint(t);
+                double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
+                travelled += distance;
+                prev = next;
+                if(travelled >= interval)
+                {
+                    ticks.Add(next);
+                    travelled = 0;
+                    if(ticks.Count == count)
+                        break;
+                }
+                t += increment;
+            }
+
+            if(travelled > 0)
+                throw new Exception("Error, too many ticks to get in catmull curve");
+
+            return ticks.ToArray();
+        }
+        
+        public Point GetPointAlong(int along)
+        {
+            //Make the number of steps either length * 5 or 1000, whichever is greater
+            double steps = along*5>1000?along*5:1000;
+            //how much to increment t by with every loop
+            double increment = 1 / steps;
+            //how much along the curve we have traveled so far
+            double length = 0;
+            //where to get the next point on a given curve
+            //assign increment to get the next intended point
+            double t = increment;
+            Point prev = controlpoints[0];
+            while(t < 1)
+            {
+                Point next = GetPoint(t);
+                double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
+                length += distance;
+                prev = next;
+                if(length >= along)
+                    return next;
+
+                t += increment;
+            }
+
+            //If we reached the end of the slider without accumulated sliderlength distance,
+            //just assume that the last point is the last point of the curve
+            return GetPoint(1);
+        }
 
         //Gets a point along the curve
         //t is the parameter variable that controls where along the curve the point is
