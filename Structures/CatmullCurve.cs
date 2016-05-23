@@ -26,7 +26,7 @@ namespace Structures
             List<Point> ticks = new List<Point>();
 
             //Make the number of steps either length * 5 or 1000, whichever is greater
-            double steps = length*5>1000?length*5:1000;
+            double steps = length*6>1000?length*6:1000;
             //how much to increment t by with every loop
             double increment = 1 / steps;
             //how much along the curve we have traveled so far
@@ -35,10 +35,11 @@ namespace Structures
             //assign increment to get the next intended point
             double t = increment;
             //track which curve (defined by two points) is being looked at
-            int curvestartpoint = 0;
+            //start at 1 to not break tangent points
+            int curvestartpoint = 1;
             Point prev = controlpoints[0];
-            //Subtract two for the extra points, and subtract one to get the number of curves
-            while(curvestartpoint < controlpoints.Count - 2 - 1)
+            //Subtract two for the extra points to get the number of curves
+            while(curvestartpoint < controlpoints.Count - 2)
             {
                 Point next = GetPointBetween(curvestartpoint, curvestartpoint+1, t);
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
@@ -77,10 +78,11 @@ namespace Structures
             //assign increment to get the next intended point
             double t = increment;
             //track which curve (defined by two points) is being looked at
-            int curvestartpoint = 0;
+            //start at 1 to not break tangent points
+            int curvestartpoint = 1;
             Point prev = controlpoints[0];
-            //Subtract two for the extra points, and subtract one to get the number of curves
-            while(curvestartpoint < controlpoints.Count - 2 - 1)
+            //Subtract two for the extra points to get the number of curves
+            while(curvestartpoint < controlpoints.Count - 2)
             {
                 Point next = GetPointBetween(curvestartpoint, curvestartpoint+1, t);
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
