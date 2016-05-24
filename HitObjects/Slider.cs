@@ -19,7 +19,7 @@ namespace HitObjects
         //Constructs a slider given an id
         //The beatmap given is the beatmap that the slider resides in
         //Used to make calculations related to timing
-        public Slider(string tempid, Beatmap amap)
+        protected Slider(string tempid, Beatmap amap)
         {
             id = tempid;
             map = amap;
