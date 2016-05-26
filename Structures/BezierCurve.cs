@@ -4,14 +4,12 @@ using System.Collections.Generic;
 namespace Structures
 {
     //Represents a Bezier curve defined by a list of control points
-    //Designed specifically to work with Sliders and their control points
     public class BezierCurve
     {
+        //Not worth changing to an array
         List<Point> points;
 
-        //Constructs a Bezier curve given a list of points and a given length
-        //This is necessary as a slider length may not be the actual length of the
-        //defined curve
+        //Constructs a Bezier curve given a list of points
         public BezierCurve(Point startpoint, Point[] sliderpoints)
         {
             points = new List<Point>();
