@@ -1,8 +1,6 @@
 using System;
 
-using HitObjectInterpreter;
-
-namespace Structures
+namespace Structures.Curves
 {
     //Approximates a curve of three points using a circle calculated from those
     //three points.

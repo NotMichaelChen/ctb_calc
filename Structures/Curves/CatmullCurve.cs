@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Structures
+namespace Structures.Curves
 {
     //Represents a Catmull-Rom Spline given a list of control points
     public class CatmullCurve

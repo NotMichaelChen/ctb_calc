@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Structures
+namespace Structures.Curves
 {
     //Represents a Bezier curve defined by a list of control points
     public class BezierCurve

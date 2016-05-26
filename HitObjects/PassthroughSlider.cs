@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using Structures;
+using Structures.Curves;
 using HitObjectInterpreter;
 using BeatmapInfo;
 
