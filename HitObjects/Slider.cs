@@ -197,8 +197,6 @@ namespace HitObjects
         //Calculated the same regardless of slider type
         protected int GetTickCount()
         {
-            int tickcount = 0;
-
             double slidervelocity = this.GetSliderVelocity();
 
             int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
@@ -206,22 +204,13 @@ namespace HitObjects
             int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
 
             int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
-
-            //If the slider is long enough to generate slider ticks
-            //slidervelocity * (100/tickrate) == pixels between slider ticks
-            if(length > slidervelocity * (100 / tickrate))
-            {
-                /// Fill in all the ticks inside the slider
-                int ticklength = Convert.ToInt32(slidervelocity * (100 / tickrate));
-                //Will represent where the next tick is in the slider
-                int calclength = ticklength;
-                //While we haven't fallen off the end of the slider
-                while(calclength < length)
-                {
-                    tickcount++;
-                    calclength += ticklength;
-                }
-            }
+            
+            int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
+            
+            int tickcount = length / ticklength;
+            
+            if(length % ticklength == 0)
+                tickcount--;
 
             return tickcount * sliderruns;
         }
