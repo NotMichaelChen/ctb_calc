@@ -16,27 +16,23 @@ namespace Structures.Curves
             points.Add(startpoint);
             points.AddRange(sliderpoints);
         }
-
-        //Wrapper method to calculate a point on the curve
+        
+        //Calculates a point on the curve
         public Point Bezier(double t)
         {
-            return Bezier(points, t);
-        }
-
-        //Recursive definition of a bezier curve for any degree
-        private Point Bezier(List<Point> controls, double t)
-        {
-            if(controls.Count == 1)
-                return controls[0];
-
-            Point result = new Point();
-
-            result.x = (1 - t) * Bezier(controls.GetRange(0, controls.Count - 1), t).x +
-                        t * Bezier(controls.GetRange(1, controls.Count - 1), t).x;
-
-            result.y = (1 - t) * Bezier(controls.GetRange(0, controls.Count - 1), t).y +
-                        t * Bezier(controls.GetRange(1, controls.Count - 1), t).y;
-
+            Point result = new Point(0,0);
+            
+            //Degree of the bezier curve
+            int degree = points.Count-1;
+            
+            int[] pascalrow = Dewlib.GetPascalRow(degree);
+            
+            for(int i = 0; i < points.Count; i++)
+            {
+                result.x += pascalrow[i] * Math.Pow((1-t), degree-i) * Math.Pow(t, i) * points[i].x;
+                result.y += pascalrow[i] * Math.Pow((1-t), degree-i) * Math.Pow(t, i) * points[i].y;
+            }
+            
             return result;
         }
     }

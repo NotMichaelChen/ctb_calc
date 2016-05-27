@@ -63,6 +63,7 @@ public static class Dewlib
     
     //Calculates the nth row of pascal's triangle
     //The first row is n=0
+    //Credit from http://stackoverflow.com/questions/15580291/how-to-efficiently-calculate-a-row-in-pascals-triangle
     public static int[] GetPascalRow(int n)
     {
         List<int> row = new List<int>();
