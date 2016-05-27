@@ -109,8 +109,15 @@ public class DiffCalc
             if(hobject == null)
                 continue;
 
-            positions.AddRange(hobject.GetHitLocations());
-            times.AddRange(hobject.GetHitTimes());
+            try
+            {
+                positions.AddRange(hobject.GetHitLocations());
+                times.AddRange(hobject.GetHitTimes());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message + " object=" + i);
+            }
         }
 
         if(positions.Count != times.Count)
