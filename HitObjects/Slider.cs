@@ -55,7 +55,7 @@ namespace HitObjects
 
             //Get the first and last x-coordinates of the slider
             int beginpoint = initialcoord.IntX();
-            int endpoint = this.GetLastPoint().IntX();
+            int endpoint = this.GetLastPoint(length).IntX();
 
             int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
             //If the slider is long enough to generate slider ticks
@@ -64,7 +64,7 @@ namespace HitObjects
             {
                 //Only need ticks for one slider length (no repeats needed)
                 int tickcount = this.GetTickCount() / (repeats+1);
-                ticklocs.AddRange(this.GetTickLocations(ticklength, tickcount));
+                ticklocs.AddRange(this.GetTickLocations(ticklength, tickcount, length));
             }
 
             hitpoints.Add(beginpoint);
