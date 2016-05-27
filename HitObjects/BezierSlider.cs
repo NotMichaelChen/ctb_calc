@@ -19,9 +19,6 @@ namespace HitObjects
             this.GetCurves();
         }
         
-        //Get the x-coordinates of every tick in the slider
-        //tickcount is needed to make sure that the correct number of ticks is returned,
-        //as rounding errors may cause problems when getting the last tick
         protected override int[] GetTickLocations(double tickinterval, int tickcount, int length)
         {
             List<Point> ticks = new List<Point>();
