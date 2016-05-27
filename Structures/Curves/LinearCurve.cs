@@ -16,21 +16,30 @@ namespace Structures.Curves
         }
         
         //Courtesy of http://math.stackexchange.com/questions/656500/given-a-point-slope-and-a-distance-along-that-slope-easily-find-a-second-p
-        public double GetPointAlong(double length)
+        public Point GetPointAlong(double length)
         {
             Point begin = points[0];
             Point end = points[1];
             
             const double EPSILON = 1E-6;
             if (Math.Abs(end.x - begin.x) < EPSILON)
-                return begin.x;
+                return begin;
 
             double m = (end.y - begin.y) / (end.x - begin.x);
+            
+            Point along;
 
             if(end.x < begin.x)
-                return Math.Abs(length * (1 / Math.Sqrt(1 + Math.Pow(m, 2))) - begin.x);
+                along.x = Math.Abs(length * (1 / Math.Sqrt(1 + Math.Pow(m, 2))) - begin.x);
             else
-                return length * (1 / Math.Sqrt(1 + Math.Pow(m, 2))) + begin.x;
+                along.x = length * (1 / Math.Sqrt(1 + Math.Pow(m, 2))) + begin.x;
+            
+            if(end.y < begin.y)
+                along.y = Math.Abs(length * (m / Math.Sqrt(1 + Math.Pow(m, 2))) - begin.y);
+            else
+                along.y = length * (m / Math.Sqrt(1 + Math.Pow(m, 2))) + begin.y;
+            
+            return along;
         }
     }
 }
