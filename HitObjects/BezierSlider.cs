@@ -24,8 +24,7 @@ namespace HitObjects
             List<Point> ticks = new List<Point>();
 
             //Make the number of steps either length * 5 or 1000, whichever is greater
-            double steps = length*5>1000?length*5:1000;
-            steps /= curves.Length;
+            double steps = length*2 / curves.Length;
             //how much to increment t by with every loop
             double increment = 1 / steps;
             //how much along the curve we have traveled so far
@@ -60,7 +59,7 @@ namespace HitObjects
             }
 
             if(travelled > 0)
-                throw new Exception("Error, too many ticks to get in bezier curve");
+                throw new Exception("Error, too many ticks to get in bezier curve, travelled=" + travelled);
 
             List<int> locations = new List<int>();
             foreach(Point i in ticks)
@@ -72,8 +71,7 @@ namespace HitObjects
         protected override Point GetLastPoint(int length)
         {
             //Make the number of steps either length * 5 or 1000, whichever is greater
-            double steps = length*5>1000?length*5:1000;
-            steps /= curves.Length;
+            double steps = length*2 / curves.Length;
             //how much to increment t by with every loop
             double increment = 1 / steps;
             //how much along the curve we have traveled so far
