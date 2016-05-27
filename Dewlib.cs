@@ -14,17 +14,6 @@ public static class Dewlib
         return arr;
     }
 
-    /// Reverses the given string
-    public static string ReverseString(string str)
-    {
-        if (str == null)
-            return null;
-
-       char[] array = str.ToCharArray();
-       Array.Reverse(array);
-       return new String(array);
-    }
-
     // Keeps the number in the range between lower and upper
     public static double RestrictRange(double num, double lower, double upper)
     {
@@ -70,5 +59,18 @@ public static class Dewlib
     public static double GetDistance(double a, double b, double x, double y)
     {
         return Math.Sqrt(Math.Pow(x - a, 2) + Math.Pow(y - b, 2));
+    }
+    
+    //Calculates the nth row of pascal's triangle
+    //The first row is n=0
+    public static int[] GetPascalRow(int n)
+    {
+        List<int> row = new List<int>();
+        row.Add(1);
+        for(int i = 0; i < n; i++)
+        {
+            row.Add((int)(row[i] * (n-i) / (double)(i+1)));
+        }
+        return row.ToArray();
     }
 }
