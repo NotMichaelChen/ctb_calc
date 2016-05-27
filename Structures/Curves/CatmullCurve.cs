@@ -25,8 +25,8 @@ namespace Structures.Curves
         {
             List<Point> ticks = new List<Point>();
 
-            //Make the number of steps either length * 5 or 1000, whichever is greater
-            double steps = length*6>1000?length*6:1000;
+            //Make the number of steps 1000 for each curve
+            double steps = 1000/controlpoints.Count-2-1;
             //how much to increment t by with every loop
             double increment = 1 / steps;
             //how much along the curve we have traveled so far
@@ -68,8 +68,8 @@ namespace Structures.Curves
         
         public Point GetPointAlong(int along)
         {
-            //Make the number of steps either length * 5 or 1000, whichever is greater
-            double steps = along*5>1000?along*5:1000;
+            //Make the number of steps 1000 for each curve
+            double steps = 1000/controlpoints.Count-2-1;
             //how much to increment t by with every loop
             double increment = 1 / steps;
             //how much along the curve we have traveled so far

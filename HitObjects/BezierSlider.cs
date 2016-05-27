@@ -23,7 +23,8 @@ namespace HitObjects
         {
             List<Point> ticks = new List<Point>();
 
-            //Make the number of steps either length * 5 or 1000, whichever is greater
+            //how many steps to travel through the curve
+            //divide by curves.Length to scale this with the number of curves
             double steps = length*2 / curves.Length;
             //how much to increment t by with every loop
             double increment = 1 / steps;
@@ -70,7 +71,8 @@ namespace HitObjects
 
         protected override Point GetLastPoint(int length)
         {
-            //Make the number of steps either length * 5 or 1000, whichever is greater
+            //how many steps to travel through the curve
+            //divide by curves.Length to scale this with the number of curves
             double steps = length*2 / curves.Length;
             //how much to increment t by with every loop
             double increment = 1 / steps;
