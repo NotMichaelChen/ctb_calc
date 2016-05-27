@@ -39,7 +39,7 @@ namespace HitObjects
             //While we haven't fallen off the end of the slider
             while(calclength < length)
             {
-                ticks.Add(Convert.ToInt32(curve.GetPointAlong(calclength).x));
+                ticks.Add(curve.GetPointAlong(calclength).IntX());
                 //Move down the slider by a ticklength
                 calclength += ticklength;
             }
