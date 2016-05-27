@@ -25,6 +25,7 @@ namespace HitObjects
 
             //Make the number of steps either length * 5 or 1000, whichever is greater
             double steps = length*5>1000?length*5:1000;
+            steps /= curves.Length;
             //how much to increment t by with every loop
             double increment = 1 / steps;
             //how much along the curve we have traveled so far
@@ -72,6 +73,7 @@ namespace HitObjects
         {
             //Make the number of steps either length * 5 or 1000, whichever is greater
             double steps = length*5>1000?length*5:1000;
+            steps /= curves.Length;
             //how much to increment t by with every loop
             double increment = 1 / steps;
             //how much along the curve we have traveled so far
