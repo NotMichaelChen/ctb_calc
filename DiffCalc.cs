@@ -116,7 +116,7 @@ public class DiffCalc
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message + " object=" + i);
+                throw new Exception(e.Message + "\nobject=" + i);
             }
         }
 
@@ -148,6 +148,96 @@ public class DiffCalc
         }
 
         return sum/topten;
+    }
+    
+    public double GetDirectionalChanges()
+    {
+        List<int> positions = new List<int>();
+        List<int> times = new List<int>();
+
+        for(int i = 0; i < hitobjects.GetSize(); i++)
+        {
+            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
+            if(hobject == null)
+                continue;
+
+            try
+            {
+                positions.AddRange(hobject.GetHitLocations());
+                times.AddRange(hobject.GetHitTimes());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message + "\nobject=" + i);
+            }
+        }
+
+        if(positions.Count != times.Count)
+            throw new Exception("Error: position and times array mismatched in size\n" +
+                                "positions.Count: " + positions.Count + "\n" +
+                                "times.Count: " + times.Count);
+        
+        List<int> DCtimes = new List<int>();
+        //Right is true, Left is false (make an enum later)
+        bool currentdir = false;
+        if(positions[1] - positions[0] > 0)
+            currentdir = true;
+        else
+            currentdir = false;
+        
+        bool prevnotedir = currentdir;
+        for(int i = 2; i < positions.Count; i++)
+        {
+            bool notedirection = false;
+            if(positions[i] - positions[i-1] > 0)
+                notedirection = true;
+            else
+                notedirection = false;
+            
+            int distance = Math.Abs(positions[i]-positions[i-1]);
+            if(notedirection != currentdir && (distance > catchersize() || notedirection == prevnotedir))
+            {
+                currentdir = notedirection;
+                DCtimes.Add(times[i]);
+            }
+            
+            prevnotedir = currentdir;
+        }
+        
+        //Directional Changes per section
+        List<int> DCps = new List<int>();
+        
+        int threshold = 500;
+        //count of DCs in a section
+        int DCcounter = 0;
+        for(int i = 0; i < DCtimes.Count; i++)
+        {
+            if(DCtimes[i] > threshold)
+            {
+                DCps.Add(DCcounter);
+                DCcounter = 0;
+                //Move forward one section
+                threshold += 500;
+            }
+            else
+                DCcounter++;
+        }
+        //Account for leftover notes
+        if(DCcounter > 0)
+            DCps.Add(DCcounter);
+
+        DCps.Sort();
+        
+        double percentile = 1;
+        int percentilecount = (int)(DCps.Count * percentile);
+
+        double sum = 0;
+        for(int i = DCps.Count - 1; i >= DCps.Count-percentilecount; i--)
+        {
+            sum += DCps[i];
+        }
+
+        return sum/percentilecount;
     }
 
     //Gets the hitobject returned as a HitObjectWrapper
