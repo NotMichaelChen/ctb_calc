@@ -177,6 +177,9 @@ public class DiffCalc
                                 "positions.Count: " + positions.Count + "\n" +
                                 "times.Count: " + times.Count);
         
+        double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
+        CatcherInfo catcher = new CatcherInfo(circlesize);
+        
         List<int> DCtimes = new List<int>();
         //Right is true, Left is false (make an enum later)
         bool currentdir = false;
@@ -195,7 +198,7 @@ public class DiffCalc
                 notedirection = false;
             
             int distance = Math.Abs(positions[i]-positions[i-1]);
-            if(notedirection != currentdir && (distance > catchersize() || notedirection == prevnotedir))
+            if(notedirection != currentdir && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir))
             {
                 currentdir = notedirection;
                 DCtimes.Add(times[i]);
