@@ -213,17 +213,20 @@ public class DiffCalc
         int threshold = 500;
         //count of DCs in a section
         int DCcounter = 0;
-        for(int i = 0; i < DCtimes.Count; i++)
+        int index = 0;
+        while(index < DCtimes.Count)
         {
-            if(DCtimes[i] > threshold)
+            if(DCtimes[index] > threshold)
             {
                 DCps.Add(DCcounter);
                 DCcounter = 0;
-                //Move forward one section
                 threshold += 500;
             }
             else
+            {
                 DCcounter++;
+                index++;
+            }
         }
         //Account for leftover notes
         if(DCcounter > 0)
@@ -231,7 +234,7 @@ public class DiffCalc
 
         DCps.Sort();
         
-        double percentile = 1;
+        double percentile = 0.1;
         int percentilecount = (int)(DCps.Count * percentile);
 
         double sum = 0;
