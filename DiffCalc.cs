@@ -13,6 +13,9 @@ public class DiffCalc
     private Beatmap map;
     //Holds the hitobjects, wrapped in a HitObjectParser
     private HitObjectListParser hitobjects;
+    //Stores the position and time of each note in the beatmap
+    private int[] positions;
+    private int[] times;
 
     //Store the given beatmap and create a HitObjectParser from it
     public DiffCalc(Beatmap givenmap)
@@ -328,5 +331,38 @@ public class DiffCalc
             return new Spinner();
         else
             throw new ArgumentException("Error: id is invalid");
+    }
+    
+    //Gets the list of positions and times for each note of the beatmap, so that
+    //other methods can use these lists without continuous calculations
+    private void GetPositionsAndTimes()
+    {
+        List<int> positionslist = new List<int>();
+        List<int> timeslist = new List<int>();
+
+        for(int i = 0; i < hitobjects.GetSize(); i++)
+        {
+            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
+            if(hobject == null)
+                continue;
+
+            try
+            {
+                positionslist.AddRange(hobject.GetHitLocations());
+                timeslist.AddRange(hobject.GetHitTimes());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message + "\nobject=" + i);
+            }
+        }
+
+        if(positionslist.Count != timeslist.Count)
+            throw new Exception("Error: position and times array mismatched in size\n" +
+                                "positions.Count: " + positionslist.Count + "\n" +
+                                "times.Count: " + timeslist.Count);
+        
+        this.positions = positionslist.ToArray();
+        this.times = timeslist.ToArray();
     }
 }
