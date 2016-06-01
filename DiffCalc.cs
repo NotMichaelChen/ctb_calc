@@ -31,6 +31,8 @@ public class DiffCalc
 
         //Make a parser from the map
         hitobjects = new HitObjectListParser(map);
+        
+        this.GetPositionsAndTimes();
     }
 
     //Gets a count of each type of hitobject in the beatmap
