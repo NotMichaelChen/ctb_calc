@@ -70,22 +70,7 @@ public class DiffCalc
             speeds.Add(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
         }
 
-        speeds.Sort();
-
-        //Avoid dividing by zero if there aren't enough objects to make a top ten percent
-        int topten;
-        if(speeds.Count >= 10)
-            topten = speeds.Count / 10;
-        else
-            topten = 1;
-
-        double sum = 0;
-        for(int i = speeds.Count - 1; i >= speeds.Count-topten; i--)
-        {
-            sum += speeds[i];
-        }
-
-        return sum/topten;
+        return Dewlib.GetPercentage(speeds.ToArray(), 0.1);
     }
     
     public double GetDirectionalChanges()
@@ -147,18 +132,8 @@ public class DiffCalc
         if(DCcounter > 0)
             DCps.Add(DCcounter);
 
-        DCps.Sort();
-        
-        double percentile = 0.1;
-        int percentilecount = (int)(DCps.Count * percentile);
-
-        double sum = 0;
-        for(int i = DCps.Count - 1; i >= DCps.Count-percentilecount; i--)
-        {
-            sum += DCps[i];
-        }
-
-        return sum/percentilecount;
+        //Must convert int array to double array
+        return Dewlib.GetPercentage(Array.ConvertAll(DCps.ToArray(), x => (double)x), 0.1);
     }
     
     public double GetJumpDifficulty()
@@ -213,22 +188,7 @@ public class DiffCalc
            jumpdifficulty.Add(velocity);
         }
         
-        jumpdifficulty.Sort();
-
-        //Avoid dividing by zero if there aren't enough objects to make a top ten percent
-        int topten;
-        if(jumpdifficulty.Count >= 10)
-            topten = jumpdifficulty.Count / 10;
-        else
-            topten = 1;
-
-        double sum = 0;
-        for(int i = jumpdifficulty.Count - 1; i >= jumpdifficulty.Count-topten; i--)
-        {
-            sum += jumpdifficulty[i];
-        }
-
-        return sum/topten;
+        return Dewlib.GetPercentage(jumpdifficulty.ToArray(), 0.1);
     }
 
     //Gets the hitobject returned as a HitObjectWrapper
