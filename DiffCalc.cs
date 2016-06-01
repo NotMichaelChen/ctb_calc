@@ -72,7 +72,7 @@ public class DiffCalc
             speeds.Add(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
         }
 
-        return Dewlib.GetPercentage(speeds.ToArray(), 0.1);
+        return Dewlib.SumScaledList(speeds.ToArray(), 0.95);
     }
     
     public double GetDirectionalChanges()
@@ -135,7 +135,7 @@ public class DiffCalc
             DCps.Add(DCcounter);
 
         //Must convert int array to double array
-        return Dewlib.GetPercentage(Array.ConvertAll(DCps.ToArray(), x => (double)x), 0.1);
+        return Dewlib.SumScaledList(Array.ConvertAll(DCps.ToArray(), x => (double)x), 0.95);
     }
     
     public double GetJumpDifficulty()
@@ -193,7 +193,7 @@ public class DiffCalc
            jumpdifficulty.Add(velocity);
         }
         
-        return Dewlib.GetPercentage(jumpdifficulty.ToArray(), 0.1);
+        return Dewlib.SumScaledList(jumpdifficulty.ToArray(), 0.95);
     }
 
     //Gets the hitobject returned as a HitObjectWrapper
