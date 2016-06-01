@@ -50,51 +50,6 @@ public class DiffCalc
         }
         return counts;
     }
-
-    //Get a list of all hit points in a beatmap
-    public int[] GetHitPoints()
-    {
-        List<int> positions = new List<int>();
-
-        for(int i = 0; i < hitobjects.GetSize(); i++)
-        {
-
-            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
-            if(hobject == null)
-                continue;
-
-            try
-            {
-                positions.AddRange(hobject.GetHitLocations());
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e);
-                Console.WriteLine("index: " + i);
-            }
-
-        }
-
-        return positions.ToArray();
-    }
-
-    //Get a list of all hit times in a beatmap
-    public int[] GetHitTimes()
-    {
-        List<int> times = new List<int>();
-
-        for(int i = 0; i < hitobjects.GetSize(); i++)
-        {
-
-            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
-            if(hobject == null)
-                continue;
-            times.AddRange(hobject.GetHitTimes());
-
-        }
-
-        return times.ToArray();
-    }
     
     /*public double GetDifficulty()
     {
