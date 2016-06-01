@@ -74,4 +74,29 @@ public static class Dewlib
         }
         return row.ToArray();
     }
+    
+    //Gets the top percentage of an array of doubles
+    public static double GetPercentage(double[] items, double percentage)
+    {
+        if(percentage < 0 || percentage > 1)
+            throw new ArgumentOutOfRangeException("Error, percentage is out of bounds\n" +
+                                                  "percentage=" + percentage);
+        
+        Array.Sort(items);
+
+        //Avoid dividing by zero if there aren't enough objects to make a top percentage
+        int toppercentcount;
+        if(items.Length >= percentage * 100)
+            toppercentcount = items.Length / 10;
+        else
+            toppercentcount = 1;
+
+        double sum = 0;
+        for(int i = items.Length - 1; i >= items.Length-toppercentcount; i--)
+        {
+            sum += items[i];
+        }
+
+        return sum/toppercentcount;
+    }
 }
