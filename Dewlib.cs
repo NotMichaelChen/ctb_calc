@@ -99,4 +99,20 @@ public static class Dewlib
 
         return sum/toppercentcount;
     }
+    
+    //Sum a list of numbers with a given weight
+    //The list is first sorted greatest to least, then each item is added after being
+    //multiplied by weight^i
+    public static double SumScaledList(double[] items, double weight)
+    {   
+        Array.Sort(items);
+        //to make the list greatest to least
+        Array.Reverse(items);
+        
+        double sum = 0;
+        for(int i = 0; i < items.Length; i++)
+            sum += items[i] * Math.Pow(weight, i);
+        
+        return sum;
+    }
 }
