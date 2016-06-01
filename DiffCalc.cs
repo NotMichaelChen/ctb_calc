@@ -63,33 +63,8 @@ public class DiffCalc
     //(speeds = change in position / change in time)
     public double CalculateDistances()
     {
-        List<int> positions = new List<int>();
-        List<int> times = new List<int>();
-
-        for(int i = 0; i < hitobjects.GetSize(); i++)
-        {
-            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
-            if(hobject == null)
-                continue;
-
-            try
-            {
-                positions.AddRange(hobject.GetHitLocations());
-                times.AddRange(hobject.GetHitTimes());
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message + "\nobject=" + i);
-            }
-        }
-
-        if(positions.Count != times.Count)
-            throw new Exception("Error: position and times array mismatched in size\n" +
-                                "positions.Count: " + positions.Count + "\n" +
-                                "times.Count: " + times.Count);
-
         List<double> speeds = new List<double>();
-        for(int i = 1; i < positions.Count; i++)
+        for(int i = 1; i < positions.Length; i++)
         {
             //Cast to make division operation a double
             speeds.Add(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
@@ -115,31 +90,6 @@ public class DiffCalc
     
     public double GetDirectionalChanges()
     {
-        List<int> positions = new List<int>();
-        List<int> times = new List<int>();
-
-        for(int i = 0; i < hitobjects.GetSize(); i++)
-        {
-            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
-            if(hobject == null)
-                continue;
-
-            try
-            {
-                positions.AddRange(hobject.GetHitLocations());
-                times.AddRange(hobject.GetHitTimes());
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message + "\nobject=" + i);
-            }
-        }
-
-        if(positions.Count != times.Count)
-            throw new Exception("Error: position and times array mismatched in size\n" +
-                                "positions.Count: " + positions.Count + "\n" +
-                                "times.Count: " + times.Count);
-        
         double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
         CatcherInfo catcher = new CatcherInfo(circlesize);
         
@@ -152,7 +102,7 @@ public class DiffCalc
             currentdir = false;
         
         bool prevnotedir = currentdir;
-        for(int i = 1; i < positions.Count; i++)
+        for(int i = 1; i < positions.Length; i++)
         {
             if(positions[i] == positions[i-1])
                 continue;
@@ -213,31 +163,6 @@ public class DiffCalc
     
     public double GetJumpDifficulty()
     {
-        List<int> positions = new List<int>();
-        List<int> times = new List<int>();
-
-        for(int i = 0; i < hitobjects.GetSize(); i++)
-        {
-            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
-            if(hobject == null)
-                continue;
-
-            try
-            {
-                positions.AddRange(hobject.GetHitLocations());
-                times.AddRange(hobject.GetHitTimes());
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message + "\nobject=" + i);
-            }
-        }
-
-        if(positions.Count != times.Count)
-            throw new Exception("Error: position and times array mismatched in size\n" +
-                                "positions.Count: " + positions.Count + "\n" +
-                                "times.Count: " + times.Count);
-        
         //Calculating DC's, will be put into a method later
         double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
         CatcherInfo catcher = new CatcherInfo(circlesize);
@@ -251,7 +176,7 @@ public class DiffCalc
             currentdir = false;
         
         bool prevnotedir = currentdir;
-        for(int i = 1; i < positions.Count; i++)
+        for(int i = 1; i < positions.Length; i++)
         {
             if(positions[i] == positions[i-1])
                 continue;
@@ -273,7 +198,7 @@ public class DiffCalc
 
         //Calculating jump difficulty
         List<double> jumpdifficulty = new List<double>();
-        for(int i = 1; i < positions.Count; i++)
+        for(int i = 1; i < positions.Length; i++)
         {
             //Cast to make division operation a double
            double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
