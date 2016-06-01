@@ -31,7 +31,7 @@ public class Program
                     DiffCalc calc = new DiffCalc(map);
 
                     Console.Write(map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version"));
-                    Console.WriteLine(": " + calc.GetDirectionalChanges());
+                    Console.WriteLine(": " + calc.GetJumpDifficulty());
 
                     timer.Stop();
                     Console.WriteLine("Calculation time (ms): " + timer.ElapsedMilliseconds);

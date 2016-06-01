@@ -95,6 +95,11 @@ public class DiffCalc
 
         return times.ToArray();
     }
+    
+    /*public double GetDifficulty()
+    {
+        
+    }*/
 
     //Calculates the average of the top ten % of speeds between hitpoints in the given beatmap
     //(speeds = change in position / change in time)
@@ -183,14 +188,16 @@ public class DiffCalc
         List<int> DCtimes = new List<int>();
         //Right is true, Left is false (make an enum later)
         bool currentdir = false;
-        if(positions[1] - positions[0] > 0)
+        if(positions[0] - 256 > 0)
             currentdir = true;
         else
             currentdir = false;
         
         bool prevnotedir = currentdir;
-        for(int i = 2; i < positions.Count; i++)
+        for(int i = 1; i < positions.Count; i++)
         {
+            if(positions[i] == positions[i-1])
+                continue;
             bool notedirection = false;
             if(positions[i] - positions[i-1] > 0)
                 notedirection = true;
@@ -244,6 +251,101 @@ public class DiffCalc
         }
 
         return sum/percentilecount;
+    }
+    
+    public double GetJumpDifficulty()
+    {
+        List<int> positions = new List<int>();
+        List<int> times = new List<int>();
+
+        for(int i = 0; i < hitobjects.GetSize(); i++)
+        {
+            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
+            if(hobject == null)
+                continue;
+
+            try
+            {
+                positions.AddRange(hobject.GetHitLocations());
+                times.AddRange(hobject.GetHitTimes());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message + "\nobject=" + i);
+            }
+        }
+
+        if(positions.Count != times.Count)
+            throw new Exception("Error: position and times array mismatched in size\n" +
+                                "positions.Count: " + positions.Count + "\n" +
+                                "times.Count: " + times.Count);
+        
+        //Calculating DC's, will be put into a method later
+        double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
+        CatcherInfo catcher = new CatcherInfo(circlesize);
+        
+        List<int> DCtimes = new List<int>();
+        //Right is true, Left is false (make an enum later)
+        bool currentdir = false;
+        if(positions[0] - 256 > 0)
+            currentdir = true;
+        else
+            currentdir = false;
+        
+        bool prevnotedir = currentdir;
+        for(int i = 1; i < positions.Count; i++)
+        {
+            if(positions[i] == positions[i-1])
+                continue;
+            bool notedirection = false;
+            if(positions[i] - positions[i-1] > 0)
+                notedirection = true;
+            else
+                notedirection = false;
+            
+            int distance = Math.Abs(positions[i]-positions[i-1]);
+            if(notedirection != currentdir && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir))
+            {
+                currentdir = notedirection;
+                DCtimes.Add(times[i]);
+            }
+            
+            prevnotedir = currentdir;
+        }
+
+        //Calculating jump difficulty
+        List<double> jumpdifficulty = new List<double>();
+        for(int i = 1; i < positions.Count; i++)
+        {
+            //Cast to make division operation a double
+           double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
+           //Temp value
+           if(velocity > 1)
+               velocity = 0.2;
+           
+           //Implement smarter directional change multiplier later
+           if(DCtimes.BinarySearch(times[i]) >= 0)
+               velocity *= 2;
+           
+           jumpdifficulty.Add(velocity);
+        }
+        
+        jumpdifficulty.Sort();
+
+        //Avoid dividing by zero if there aren't enough objects to make a top ten percent
+        int topten;
+        if(jumpdifficulty.Count >= 10)
+            topten = jumpdifficulty.Count / 10;
+        else
+            topten = 1;
+
+        double sum = 0;
+        for(int i = jumpdifficulty.Count - 1; i >= jumpdifficulty.Count-topten; i--)
+        {
+            sum += jumpdifficulty[i];
+        }
+
+        return sum/topten;
     }
 
     //Gets the hitobject returned as a HitObjectWrapper
