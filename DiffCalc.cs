@@ -177,38 +177,39 @@ public class DiffCalc
         List<double> jumpdifficulty = new List<double>();
         for(int i = 1; i < positions.Length; i++)
         {
-            bool ishyper;
             //Cast to make division operation a double
-           double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
-           //Temp value for hyperdashes
-           if(velocity > 1)
-           {
-               velocity = 0.2;
-               ishyper = true;
-           }
-           else
-           {
-               //Scale normal jumps
-               velocity = Math.Pow(velocity, 2);
-               ishyper = false;
-           }
+            double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
+            //Temp value for hyperdashes
+            if(velocity > 1)
+            {
+                //velocity = 0.2;
+                velocity = 2.0 / (times[i] - times[i-1]);
+            }
+            else
+            {
+                //Scale normal jumps
+                velocity = Math.Pow(velocity, 2);
+            }
            
-           //Implement smarter directional change multiplier later
-           int DCindex = DCtimes.BinarySearch(times[i]);
-           if(DCindex > 0)
-           {
-               //Scale velocity based on how far ago the last DC was
-               velocity *= 200 / Math.Pow((DCtimes[DCindex] - DCtimes[DCindex-1]), 1);
-           }
-           //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
-           if(i > 1)
-           {
-               double prevvel = Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]);
-               if(prevvel > 1 && !ishyper)
-                   velocity *= 3;
-           }
-           
-           jumpdifficulty.Add(velocity);
+            //Implement smarter directional change multiplier later
+            int DCindex = DCtimes.BinarySearch(times[i]);
+            if(DCindex > 0)
+            {
+                double multiplier = (500 / Math.Pow((DCtimes[DCindex] - DCtimes[DCindex-1]), 4));
+                if(multiplier >= 1)
+                    //Scale velocity based on how far ago the last DC was
+                    velocity *= multiplier;
+            }
+            //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
+            if(i > 1)
+            {
+                double prevvel = Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]);
+                double thisvel = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
+                if(prevvel > 1 && thisvel <= 1)
+                    velocity *= Math.Pow(thisvel, 2) * 5;
+            }
+            
+            jumpdifficulty.Add(velocity);
         }
         
         return Dewlib.SumScaledList(jumpdifficulty.ToArray(), 0.95);
