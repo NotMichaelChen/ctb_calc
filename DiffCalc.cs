@@ -177,19 +177,35 @@ public class DiffCalc
         List<double> jumpdifficulty = new List<double>();
         for(int i = 1; i < positions.Length; i++)
         {
+            bool ishyper;
             //Cast to make division operation a double
            double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
-           //Temp value
+           //Temp value for hyperdashes
            if(velocity > 1)
-               velocity = 0.5;
+           {
+               velocity = 0.2;
+               ishyper = true;
+           }
            else
-               velocity = Math.Pow(velocity, 6);
+           {
+               //Scale normal jumps
+               velocity = Math.Pow(velocity, 2);
+               ishyper = false;
+           }
            
            //Implement smarter directional change multiplier later
            int DCindex = DCtimes.BinarySearch(times[i]);
            if(DCindex > 0)
            {
-               velocity *= 1000 / Math.Pow((DCtimes[DCindex] - DCtimes[DCindex-1]), 3);
+               //Scale velocity based on how far ago the last DC was
+               velocity *= 200 / Math.Pow((DCtimes[DCindex] - DCtimes[DCindex-1]), 1);
+           }
+           //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
+           if(i > 1)
+           {
+               double prevvel = Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]);
+               if(prevvel > 1 && !ishyper)
+                   velocity *= 3;
            }
            
            jumpdifficulty.Add(velocity);
