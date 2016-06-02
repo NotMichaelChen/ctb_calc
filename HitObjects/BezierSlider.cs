@@ -19,8 +19,23 @@ namespace HitObjects
             this.GetCurves();
         }
         
-        protected override int[] GetTickLocations(double tickinterval, int tickcount, int length)
+        protected override int[] GetTickLocations()
         {
+            //Necessary to avoid cases where the pixellength is something like 105.000004005432
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            
+            int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
+            //Only need ticks for one slider length (no repeats needed)
+            //Also no need for double conversion since TickCount is always divisible by sliderruns
+            int tickcount = this.GetTickCount() / sliderruns;
+            
+            double slidervelocity = this.GetSliderVelocity();
+            int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
+            int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
+            
+            if(length <= ticklength)
+                return new int[0];
+            
             List<Point> ticks = new List<Point>();
 
             //how many steps to travel through the curve
@@ -31,7 +46,7 @@ namespace HitObjects
             //how much along the curve we have traveled so far
             double travelled = 0;
             //where to get the next point on a given curve
-            //assign  increment to get the next intended point
+            //assign increment to get the next intended point
             double t = increment;
             Point prev = new Point();
             prev.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
@@ -44,7 +59,7 @@ namespace HitObjects
                 double distance = Dewlib.GetDistance(prev.x, prev.y, next.x, next.y);
                 travelled += distance;
                 prev = next;
-                if(travelled >= tickinterval)
+                if(travelled >= ticklength)
                 {
                     ticks.Add(next);
                     travelled = 0;
@@ -69,8 +84,11 @@ namespace HitObjects
             return locations.ToArray();
         }
 
-        protected override Point GetLastPoint(int length)
+        protected override Point GetLastPoint()
         {
+            //Necessary to avoid cases where the pixellength is something like 105.000004005432
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            
             //how many steps to travel through the curve
             //divide by curves.Length to scale this with the number of curves
             double steps = length*2 / curves.Length;
