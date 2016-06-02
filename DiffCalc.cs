@@ -182,12 +182,14 @@ public class DiffCalc
            //Temp value
            if(velocity > 1)
                velocity = 0.5;
+           else
+               velocity = Math.Pow(velocity, 6);
            
            //Implement smarter directional change multiplier later
            int DCindex = DCtimes.BinarySearch(times[i]);
            if(DCindex > 0)
            {
-               velocity *= 1000 / (DCtimes[DCindex] - DCtimes[DCindex-1]);
+               velocity *= 1000 / Math.Pow((DCtimes[DCindex] - DCtimes[DCindex-1]), 3);
            }
            
            jumpdifficulty.Add(velocity);
