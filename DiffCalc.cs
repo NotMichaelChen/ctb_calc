@@ -182,8 +182,8 @@ public class DiffCalc
             //Temp value for hyperdashes
             if(velocity > 1)
             {
-                //velocity = 0.2;
-                velocity = 2.0 / (times[i] - times[i-1]);
+                velocity = 0.2;
+                //velocity = 1.0 / (times[i] - times[i-1]);
             }
             else
             {
@@ -195,10 +195,11 @@ public class DiffCalc
             int DCindex = DCtimes.BinarySearch(times[i]);
             if(DCindex > 0)
             {
-                double multiplier = (500 / Math.Pow((DCtimes[DCindex] - DCtimes[DCindex-1]), 4));
-                if(multiplier >= 1)
-                    //Scale velocity based on how far ago the last DC was
-                    velocity *= multiplier;
+                int DCcount = 0;
+                for(int j = DCindex; j >= 0 && DCtimes[DCindex] - DCtimes[j] < 1000; j--)
+                    DCcount++;
+                if(DCcount > 2)
+                    velocity *= DCcount / 2;
             }
             //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
             if(i > 1)
@@ -206,7 +207,7 @@ public class DiffCalc
                 double prevvel = Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]);
                 double thisvel = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
                 if(prevvel > 1 && thisvel <= 1)
-                    velocity *= Math.Pow(thisvel, 2) * 5;
+                    velocity *= Math.Pow(thisvel, 1) * 4;
             }
             
             jumpdifficulty.Add(velocity);
