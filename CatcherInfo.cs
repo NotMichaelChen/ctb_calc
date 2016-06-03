@@ -4,22 +4,10 @@
 public class CatcherInfo
 {
     private double CS;
-    private double speed = 500;
-    private double dashspeed = 1000;
     
     public CatcherInfo(double aCS)
     {
         CS = aCS;
-    }
-    
-    public double Speed
-    {
-        get { return speed; }
-    }
-    
-    public double DashSpeed
-    {
-        get { return dashspeed; }
     }
     
     public int GetCatcherSize()
