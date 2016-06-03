@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 using BeatmapInfo;
 
@@ -20,26 +21,41 @@ public class Program
         //Otherwise try to run the program, and catch and display any exceptions that arise
         else
         {
+            Console.WriteLine("Calculating...");
+            SortedList<double, string> beatmaps = new SortedList<double, string>();
             Stopwatch timer = new Stopwatch();
             try
             {
+                int count = 0;
                 foreach(string name in args)
                 {
                     timer.Start();
 
                     Beatmap map = new Beatmap(name);
                     DiffCalc calc = new DiffCalc(map);
-
-                    Console.Write(map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version"));
-                    Console.WriteLine(": " + calc.GetJumpDifficulty());
+                    
+                    string title = map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version") + ": \t";
+                    double difficulty = calc.GetJumpDifficulty();
 
                     timer.Stop();
-                    Console.WriteLine("Calculation time (ms): " + timer.ElapsedMilliseconds);
+                    
+                    title += timer.ElapsedMilliseconds;
+                    beatmaps[difficulty] = title;
+                    
                     timer.Reset();
-                    Console.WriteLine();
+                    count++;
+                    Console.Write(Math.Round((double)count * 100 / args.Length) + "%\r");
+                }
+                
+                Console.WriteLine("\n");
+                for(int i = beatmaps.Count - 1; i >= 0; i--)
+                {
+                    string[] titleandtime = beatmaps.Values[i].Split(new char[] {'\t'});
+                    Console.WriteLine(titleandtime[0] + beatmaps.Keys[i]);
+                    Console.WriteLine("Calculation Time (ms): " + titleandtime[1] + "\n");
                 }
 
-                Console.WriteLine("\nSuccess!");
+                Console.WriteLine("\nDone.");
             }
             catch(Exception e)
             {
