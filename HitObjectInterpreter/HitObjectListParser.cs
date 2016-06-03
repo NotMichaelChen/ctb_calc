@@ -1,7 +1,6 @@
 using System;
 
 using BeatmapInfo;
-using HitObjects;
 
 namespace HitObjectInterpreter
 {
