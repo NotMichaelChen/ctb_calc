@@ -1,5 +1,5 @@
 using System;
-using System.Text;
+using System.Linq;
 using System.Collections.Generic;
 
 using BeatmapInfo;
@@ -172,9 +172,10 @@ public class DiffCalc
             
             prevnotedir = currentdir;
         }
+        
+        //For debugging only, <difficulty, time>
+        SortedList<double, int> notedifficulties = new SortedList<double, int>();
 
-        //Calculating jump difficulty
-        List<double> jumpdifficulty = new List<double>();
         for(int i = 1; i < positions.Length; i++)
         {
             //Cast to make division operation a double
@@ -210,10 +211,10 @@ public class DiffCalc
                     velocity *= Math.Pow(thisvel, 1) * 4;
             }
             
-            jumpdifficulty.Add(velocity);
+            notedifficulties[velocity] = times[i];
         }
         
-        return Dewlib.SumScaledList(jumpdifficulty.ToArray(), 0.95);
+        return Dewlib.SumScaledList(notedifficulties.Keys.ToArray(), 0.95);
     }
 
     //Gets the hitobject returned as a HitObjectWrapper
