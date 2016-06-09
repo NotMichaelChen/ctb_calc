@@ -38,8 +38,10 @@ public class CatcherInfo
         return (int)size;
     }
     
-    public bool IsHyper(double velocity)
+    //Returns what percent the given velocity is to a pixel-jump
+    public double PercentHyper(double velocity)
     {
-        return velocity > (-0.07 * CS + 1.69);
+        //Obtained from testing, may not be 100% exact
+        return velocity / (-0.07 * CS + 1.69);
     }
 }

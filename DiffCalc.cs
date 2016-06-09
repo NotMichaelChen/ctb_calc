@@ -180,8 +180,10 @@ public class DiffCalc
         {
             //Cast to make division operation a double
             double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
-            //Temp value for hyperdashes
-            if(catcher.IsHyper(velocity))
+            //Scale velocity to be a percent of a pixel-jump - a pixel jump is equal to 1
+            velocity = catcher.PercentHyper(velocity);
+            //Temp value for hyperdashes 
+            if(velocity > 1)
             {
                 velocity = 0.1;
                 //velocity = 1.0 / (times[i] - times[i-1]);
@@ -217,7 +219,7 @@ public class DiffCalc
             {
                 double prevvel = Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]);
                 double thisvel = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
-                if(catcher.IsHyper(prevvel) && !catcher.IsHyper(thisvel))
+                if(prevvel > 1 && thisvel <= 1)
                     velocity *= Math.Pow(thisvel, 3) * 4;
             }
             
