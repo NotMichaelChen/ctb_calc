@@ -181,15 +181,15 @@ public class DiffCalc
             //Cast to make division operation a double
             double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
             //Temp value for hyperdashes
-            if(velocity > 1)
+            if(catcher.IsHyper(velocity))
             {
-                velocity = 0.2;
+                velocity = 0.1;
                 //velocity = 1.0 / (times[i] - times[i-1]);
             }
             else
             {
                 //Scale normal jumps
-                velocity = Math.Pow(velocity, 2);
+                velocity = Math.Pow(velocity, 1);
             }
            
             //Implement smarter directional change multiplier later
@@ -197,18 +197,28 @@ public class DiffCalc
             if(DCindex > 0)
             {
                 int DCcount = 0;
-                for(int j = DCindex; j >= 0 && DCtimes[DCindex] - DCtimes[j] < 1000; j--)
+                double DCsum = 0;
+                for(int j = DCindex; j > 0 && DCcount < 10; j--)
+                {
                     DCcount++;
-                if(DCcount > 2)
-                    velocity *= DCcount / 2;
+                    DCsum += DCtimes[j] - DCtimes[j-1];
+                }
+                
+                //double DCmultiplier = DCcount / 3.0;
+                //Want inverse of average, so flip sum and count
+                double DCmultiplier = DCcount / DCsum * 500;
+                if(DCmultiplier > 1)
+                    velocity *= DCmultiplier;
+                
+                
             }
             //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
             if(i > 1)
             {
                 double prevvel = Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]);
                 double thisvel = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
-                if(prevvel > 1 && thisvel <= 1)
-                    velocity *= Math.Pow(thisvel, 1) * 4;
+                if(catcher.IsHyper(prevvel) && !catcher.IsHyper(thisvel))
+                    velocity *= Math.Pow(thisvel, 3) * 4;
             }
             
             notedifficulties[velocity] = times[i];
