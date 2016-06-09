@@ -37,4 +37,9 @@ public class CatcherInfo
         
         return (int)size;
     }
+    
+    public bool IsHyper(double velocity)
+    {
+        return velocity > (-0.07 * CS + 1.69);
+    }
 }
