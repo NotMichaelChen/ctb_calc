@@ -208,8 +208,8 @@ public class DiffCalc
             //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
             if(i > 1)
             {
-                double prevvel = Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]);
-                double thisvel = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
+                double prevvel = catcher.PercentHyper(Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]));
+                double thisvel = catcher.PercentHyper(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
                 if(prevvel > 1 && thisvel <= 1)
                     velocity *= Math.Pow(thisvel, 3) * 4;
             }
