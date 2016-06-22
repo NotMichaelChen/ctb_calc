@@ -5,9 +5,19 @@ public class CatcherInfo
 {
     private double CS;
     
+    public Direction CurDirection;
+    
+    public enum Direction
+    {
+        Left,
+        Right,
+        Stop
+    }
+    
     public CatcherInfo(double aCS)
     {
         CS = aCS;
+        CurDirection = Direction.Stop;
     }
     
     public int GetCatcherSize()

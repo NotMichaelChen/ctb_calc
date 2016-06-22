@@ -76,37 +76,33 @@ public class DiffCalc
     }
     
     public double GetDirectionalChanges()
-    {
+    {        
         double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
         CatcherInfo catcher = new CatcherInfo(circlesize);
         
         List<int> DCtimes = new List<int>();
-        //Right is true, Left is false (make an enum later)
-        bool currentdir = false;
-        if(positions[0] - 256 > 0)
-            currentdir = true;
-        else
-            currentdir = false;
         
-        bool prevnotedir = currentdir;
+        CatcherInfo.Direction prevnotedir = catcher.CurDirection;
         for(int i = 1; i < positions.Length; i++)
         {
             if(positions[i] == positions[i-1])
                 continue;
-            bool notedirection = false;
+            
+            CatcherInfo.Direction notedirection;
+            
             if(positions[i] - positions[i-1] > 0)
-                notedirection = true;
+                notedirection = CatcherInfo.Direction.Right;
             else
-                notedirection = false;
+                notedirection = CatcherInfo.Direction.Left;
             
             int distance = Math.Abs(positions[i]-positions[i-1]);
-            if(notedirection != currentdir && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir))
+            if(notedirection != catcher.CurDirection && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir))
             {
-                currentdir = notedirection;
+                catcher.CurDirection = notedirection;
                 DCtimes.Add(times[i]);
             }
             
-            prevnotedir = currentdir;
+            prevnotedir = catcher.CurDirection;
         }
         
         //Directional Changes per section
@@ -140,37 +136,32 @@ public class DiffCalc
     
     public double GetJumpDifficulty()
     {
-        //Calculating DC's, will be put into a method later
         double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
         CatcherInfo catcher = new CatcherInfo(circlesize);
         
         List<int> DCtimes = new List<int>();
-        //Right is true, Left is false (make an enum later)
-        bool currentdir = false;
-        if(positions[0] - 256 > 0)
-            currentdir = true;
-        else
-            currentdir = false;
         
-        bool prevnotedir = currentdir;
+        CatcherInfo.Direction prevnotedir = catcher.CurDirection;
         for(int i = 1; i < positions.Length; i++)
         {
             if(positions[i] == positions[i-1])
                 continue;
-            bool notedirection = false;
+            
+            CatcherInfo.Direction notedirection;
+            
             if(positions[i] - positions[i-1] > 0)
-                notedirection = true;
+                notedirection = CatcherInfo.Direction.Right;
             else
-                notedirection = false;
+                notedirection = CatcherInfo.Direction.Left;
             
             int distance = Math.Abs(positions[i]-positions[i-1]);
-            if(notedirection != currentdir && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir))
+            if(notedirection != catcher.CurDirection && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir))
             {
-                currentdir = notedirection;
+                catcher.CurDirection = notedirection;
                 DCtimes.Add(times[i]);
             }
             
-            prevnotedir = currentdir;
+            prevnotedir = catcher.CurDirection;
         }
         
         //For debugging only, <difficulty, time>
@@ -185,7 +176,7 @@ public class DiffCalc
             //Temp value for hyperdashes 
             if(velocity > 1)
             {
-                velocity = 0.1;
+                velocity = 0.2;
                 //velocity = 1.0 / (times[i] - times[i-1]);
             }
             else
@@ -208,7 +199,7 @@ public class DiffCalc
                 
                 //double DCmultiplier = DCcount / 3.0;
                 //Want inverse of average, so flip sum and count
-                double DCmultiplier = DCcount / DCsum * 500;
+                double DCmultiplier = DCcount / DCsum * 1000;
                 if(DCmultiplier > 1)
                     velocity *= DCmultiplier;
                 
