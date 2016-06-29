@@ -202,8 +202,6 @@ public class DiffCalc
                 double DCmultiplier = DCcount / DCsum * 1000;
                 if(DCmultiplier > 1)
                     velocity *= DCmultiplier;
-                
-                
             }
             //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
             if(i > 1)
@@ -256,17 +254,18 @@ public class DiffCalc
 
         for(int i = 0; i < hitobjects.GetSize(); i++)
         {
-            HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
-            if(hobject == null)
-                continue;
-
             try
             {
+                HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
+                if(hobject == null)
+                    continue;
+            
                 positionslist.AddRange(hobject.GetHitLocations());
                 timeslist.AddRange(hobject.GetHitTimes());
             }
             catch (Exception e)
             {
+                //This is zero-indexed, so the first object is object=0
                 throw new Exception(e.Message + "\nobject=" + i);
             }
         }
