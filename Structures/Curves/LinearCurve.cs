@@ -5,22 +5,19 @@ namespace Structures.Curves
 {
     public class LinearCurve
     {
-        List<Point> points;
+        private Point begin;
+        private Point end;
         
-        //Constructs a Linear "curve" given a list of points
-        public LinearCurve(Point startpoint, Point[] sliderpoints)
+        //Constructs a Linear "curve" given two points
+        public LinearCurve(Point startpoint, Point endpoint)
         {
-            points = new List<Point>();
-            points.Add(startpoint);
-            points.AddRange(sliderpoints);
+            begin = startpoint;
+            end = endpoint;
         }
         
         //Courtesy of http://math.stackexchange.com/questions/656500/given-a-point-slope-and-a-distance-along-that-slope-easily-find-a-second-p
         public Point GetPointAlong(double length)
-        {
-            Point begin = points[0];
-            Point end = points[1];
-            
+        {   
             const double EPSILON = 1E-6;
             if (Math.Abs(end.x - begin.x) < EPSILON)
                 return begin;
