@@ -38,5 +38,12 @@ namespace Structures.Curves
             
             return along;
         }
+        
+        //Gets the distance between the start point and end point
+        //Note that this is NOT the length of the slider
+        public double DistanceBetween()
+        {
+            return Dewlib.GetDistance(begin.x, begin.y, end.x, end.y);
+        }
     }
 }
