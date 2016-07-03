@@ -111,7 +111,7 @@ public static class Dewlib
             if(pointlist[i].IntX() == pointlist[i-1].IntX() &&
                pointlist[i].IntY() == pointlist[i-1].IntY())
             {
-                splitlist.Add(accumulatedlist);
+                splitlist.Add(new List<Point>(accumulatedlist));
                 accumulatedlist.Clear();
             }
             accumulatedlist.Add(pointlist[i]);
