@@ -10,18 +10,14 @@ namespace HitObjects
 {
     public class LinearSlider : Slider
     {
-        LinearCurve curve;
+        LinearCurve[] curves;
         
         public LinearSlider(string id, Beatmap amap) : base(id, amap)
         {
             if(HitObjectParser.GetProperty(id, "slidertype") != "L")
                 throw new ArgumentException("Error: Hitobject provided to LinearSlider class is not Linear");
             
-            Point initialcoord = new Point();
-            initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
-            initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
-            
-            curve = new LinearCurve(initialcoord, this.controlpoints);
+            this.GetCurves();
         }
         
         protected override int[] GetTickLocations()
@@ -43,14 +39,29 @@ namespace HitObjects
             if(length <= ticklength)
                 return new int[0];
             
-            //Will represent where the next tick is in the slider
-            int calclength = ticklength;
-            //While we haven't fallen off the end of the slider
-            while(calclength < length)
+            //How far along a single curve we have traveled
+            //Initialize to ticklength to make the while loop work for the first curve
+            int accumulatedlength = ticklength;
+            //How much along the entire slider we have traveled
+            //Necessary to keep track of in case there are more curves than the slider length allows
+            int totalaccumulatedlength = ticklength;
+            //Special case for last curve, hence the curves.Length-1
+            for(int i = 0; i < curves.Length; i++)
             {
-                ticks.Add(curve.GetPointAlong(calclength).IntX());
-                //Move down the slider by a ticklength
-                calclength += ticklength;
+                //Keep traveling down the curve accumulating ticks until we reach the length of the curve
+                while(accumulatedlength < curves[i].DistanceBetween())
+                {
+                    ticks.Add(curves[i].GetPointAlong(accumulatedlength).IntX());
+                    accumulatedlength += ticklength;
+                    totalaccumulatedlength += ticklength;
+                    //>= since ticks can't appear on slider ends
+                    if(totalaccumulatedlength >= length)
+                    {
+                        //Don't want to bother with trying to break out of two loops
+                        return ticks.ToArray();
+                    }
+                }
+                accumulatedlength -= (int)Math.Round(curves[i].DistanceBetween());
             }
             
             return ticks.ToArray();
@@ -60,8 +71,64 @@ namespace HitObjects
         {
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
             int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            //Only one curve
+            if(curves.Length == 1)
+            {
+                return curves[0].GetPointAlong(length);
+            }
+            else
+            {
+                double accumulatedlength = 0;
+                //Special behavior is needed for the last curve, hence the curves.Length-1
+                for(int i = 0; i < curves.Length-1; i++)
+                {
+                    accumulatedlength += curves[i].DistanceBetween();
+                }
+                double lengthdifference = length - accumulatedlength;
+                return curves[curves.Length-1].GetPointAlong(lengthdifference);
+            }
+        }
+
+        //Uses the given list of control points to construct a list of curves
+        //to account for red points
+        private void GetCurves()
+        {
+            //Get the initial hit point of the slider
+            //Split into three lines for readibility
+            Point initialcoord = new Point();
+            initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
+            initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
+
+            //List<Point> curvepoints = new List<Point>();
+            List<LinearCurve> accumulatedcurves = new List<LinearCurve>();
             
-            return curve.GetPointAlong(length);
+            //Normal linear slider
+            if(controlpoints.Length == 1)
+            {
+                accumulatedcurves.Add(new LinearCurve(initialcoord, controlpoints[0]));
+            }
+            else
+            {
+                List<Point> allcontrolpoints = new List<Point>();
+                allcontrolpoints.Add(initialcoord);
+                allcontrolpoints.AddRange(controlpoints);
+                Point[][] curvepoints = Dewlib.SplitPointList(allcontrolpoints.ToArray());
+                foreach(Point[] curve in curvepoints)
+                {
+                    if(curve.Length > 2)
+                    {
+                        for(int i = 1; i < curve.Length; i++)
+                        {
+                            accumulatedcurves.Add(new LinearCurve(curve[i-1], curve[i]));
+                        }
+                    }
+                    else
+                    {
+                        accumulatedcurves.Add(new LinearCurve(curve[0], curve[1]));
+                    }
+                }
+            }
+            curves = accumulatedcurves.ToArray();
         }
     }
 }
