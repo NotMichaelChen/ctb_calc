@@ -6,15 +6,12 @@ namespace Structures.Curves
     //Represents a Bezier curve defined by a list of control points
     public class BezierCurve
     {
-        //Not worth changing to an array
-        List<Point> points;
+        Point[] points;
 
         //Constructs a Bezier curve given a list of points
-        public BezierCurve(Point startpoint, Point[] sliderpoints)
+        public BezierCurve(Point[] slidercontrolpoints)
         {
-            points = new List<Point>();
-            points.Add(startpoint);
-            points.AddRange(sliderpoints);
+            points = slidercontrolpoints;
         }
         
         //Calculates a point on the curve
@@ -23,11 +20,11 @@ namespace Structures.Curves
             Point result = new Point(0,0);
             
             //Degree of the bezier curve
-            int degree = points.Count-1;
+            int degree = points.Length-1;
             
             int[] pascalrow = Dewlib.GetPascalRow(degree);
             
-            for(int i = 0; i < points.Count; i++)
+            for(int i = 0; i < points.Length; i++)
             {
                 result.x += pascalrow[i] * Math.Pow((1-t), degree-i) * Math.Pow(t, i) * points[i].x;
                 result.y += pascalrow[i] * Math.Pow((1-t), degree-i) * Math.Pow(t, i) * points[i].y;
