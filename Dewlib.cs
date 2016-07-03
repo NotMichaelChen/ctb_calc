@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
+using Structures;
 
 // Collection of useful static functions
 public static class Dewlib
@@ -92,5 +95,32 @@ public static class Dewlib
             sum += items[i] * Math.Pow(weight, i);
         
         return sum;
+    }
+    
+    //Given a list of points, split the list along similar points
+    //(eg if two points are the same and appear consecutively, then split the list there)
+    public static Point[][] SplitPointList(Point[] pointlist)
+    {
+        List<List<Point>> splitlist = new List<List<Point>>();
+        
+        List<Point> accumulatedlist = new List<Point>();
+        
+        accumulatedlist.Add(pointlist[0]);
+        for(int i = 1; i < pointlist.Length; i++)
+        {
+            if(pointlist[i].IntX() == pointlist[i-1].IntX() &&
+               pointlist[i].IntY() == pointlist[i-1].IntY())
+            {
+                splitlist.Add(accumulatedlist);
+                accumulatedlist.Clear();
+            }
+            accumulatedlist.Add(pointlist[i]);
+        }
+        if(accumulatedlist.Count != 0)
+        {
+            splitlist.Add(accumulatedlist);
+        }
+        
+        return splitlist.Select(a => a.ToArray()).ToArray();
     }
 }
