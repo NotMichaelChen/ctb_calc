@@ -136,31 +136,18 @@ namespace HitObjects
             initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
             initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
 
-            List<Point> curvepoints = new List<Point>();
-            List<BezierCurve> accumulatedcurves = new List<BezierCurve>();;
-
-            curvepoints.Add(controlpoints[0]);
-            for(int i = 1; i < controlpoints.Length; i++)
+            List<BezierCurve> accumulatedcurves = new List<BezierCurve>();
+            
+            List<Point> allcontrolpoints = new List<Point>();
+            allcontrolpoints.Add(initialcoord);
+            allcontrolpoints.AddRange(controlpoints);
+            Point[][] curvepoints = Dewlib.SplitPointList(allcontrolpoints.ToArray());
+            
+            foreach(Point[] curve in curvepoints)
             {
-                curvepoints.Add(controlpoints[i]);
-
-                if(controlpoints[i].IntX() == controlpoints[i-1].IntX() &&
-                    controlpoints[i].IntY() == controlpoints[i-1].IntY())
-                {
-                    BezierCurve tempcurve = new BezierCurve(initialcoord, curvepoints.ToArray());
-                    accumulatedcurves.Add(tempcurve);
-
-                    initialcoord = controlpoints[i];
-                    curvepoints.Clear();
-                }
+                accumulatedcurves.Add(new BezierCurve(curve));
             }
-
-            if(curvepoints.Count > 0)
-            {
-                BezierCurve tempcurve = new BezierCurve(initialcoord, curvepoints.ToArray());
-                accumulatedcurves.Add(tempcurve);
-            }
-
+            
             curves = accumulatedcurves.ToArray();
         }
     }
