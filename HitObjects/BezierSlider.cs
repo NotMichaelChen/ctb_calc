@@ -12,11 +12,29 @@ namespace HitObjects
     {
         private BezierCurve[] curves;
 
+        //Uses the given list of control points to construct a list of bezier curves
+        //to account for red points
         public BezierSlider(string id, Beatmap amap) : base(id, amap)
         {
-            if(HitObjectParser.GetProperty(id, "slidertype") != "B")
-                throw new ArgumentException("Error: Hitobject provided to BezierSlider class is not Bezier");
-            this.GetCurves();
+            //Get the initial hit point of the slider
+            //Split into three lines for readibility
+            Point initialcoord = new Point();
+            initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
+            initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
+
+            List<BezierCurve> accumulatedcurves = new List<BezierCurve>();
+            
+            List<Point> allcontrolpoints = new List<Point>();
+            allcontrolpoints.Add(initialcoord);
+            allcontrolpoints.AddRange(controlpoints);
+            Point[][] curvepoints = Dewlib.SplitPointList(allcontrolpoints.ToArray());
+            
+            foreach(Point[] curve in curvepoints)
+            {
+                accumulatedcurves.Add(new BezierCurve(curve));
+            }
+            
+            curves = accumulatedcurves.ToArray();
         }
         
         protected override int[] GetTickLocations()
@@ -124,31 +142,6 @@ namespace HitObjects
             //If we reached the end of the slider without accumulated sliderlength distance,
             //just assume that the last point is the last point of the bezier curve
             return curves[curves.Length-1].Bezier(1);
-        }
-
-        //Uses the given list of control points to construct a list of bezier curves
-        //to account for red points
-        private void GetCurves()
-        {
-            //Get the initial hit point of the slider
-            //Split into three lines for readibility
-            Point initialcoord = new Point();
-            initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
-            initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
-
-            List<BezierCurve> accumulatedcurves = new List<BezierCurve>();
-            
-            List<Point> allcontrolpoints = new List<Point>();
-            allcontrolpoints.Add(initialcoord);
-            allcontrolpoints.AddRange(controlpoints);
-            Point[][] curvepoints = Dewlib.SplitPointList(allcontrolpoints.ToArray());
-            
-            foreach(Point[] curve in curvepoints)
-            {
-                accumulatedcurves.Add(new BezierCurve(curve));
-            }
-            
-            curves = accumulatedcurves.ToArray();
         }
     }
 }

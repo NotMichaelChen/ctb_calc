@@ -14,9 +14,6 @@ namespace HitObjects
         
         public CatmullSlider(string id, Beatmap amap) : base(id, amap)
         {
-            if(HitObjectParser.GetProperty(id, "slidertype") != "C")
-                throw new ArgumentException("Error: Hitobject provided to CatmullSlider class is not Catmull");
-            
             Point initialcoord = new Point();
             initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
             initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));

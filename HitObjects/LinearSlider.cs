@@ -12,12 +12,46 @@ namespace HitObjects
     {
         LinearCurve[] curves;
         
+        //Uses the given list of control points to construct a list of curves
+        //to account for red points
         public LinearSlider(string id, Beatmap amap) : base(id, amap)
         {
-            if(HitObjectParser.GetProperty(id, "slidertype") != "L")
-                throw new ArgumentException("Error: Hitobject provided to LinearSlider class is not Linear");
+            //Get the initial hit point of the slider
+            //Split into three lines for readibility
+            Point initialcoord = new Point();
+            initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
+            initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
+
+            //List<Point> curvepoints = new List<Point>();
+            List<LinearCurve> accumulatedcurves = new List<LinearCurve>();
             
-            this.GetCurves();
+            //Normal linear slider
+            if(controlpoints.Length == 1)
+            {
+                accumulatedcurves.Add(new LinearCurve(initialcoord, controlpoints[0]));
+            }
+            else
+            {
+                List<Point> allcontrolpoints = new List<Point>();
+                allcontrolpoints.Add(initialcoord);
+                allcontrolpoints.AddRange(controlpoints);
+                Point[][] curvepoints = Dewlib.SplitPointList(allcontrolpoints.ToArray());
+                foreach(Point[] curve in curvepoints)
+                {
+                    if(curve.Length > 2)
+                    {
+                        for(int i = 1; i < curve.Length; i++)
+                        {
+                            accumulatedcurves.Add(new LinearCurve(curve[i-1], curve[i]));
+                        }
+                    }
+                    else
+                    {
+                        accumulatedcurves.Add(new LinearCurve(curve[0], curve[1]));
+                    }
+                }
+            }
+            curves = accumulatedcurves.ToArray();
         }
         
         protected override int[] GetTickLocations()
@@ -87,48 +121,6 @@ namespace HitObjects
                 double lengthdifference = length - accumulatedlength;
                 return curves[curves.Length-1].GetPointAlong(lengthdifference);
             }
-        }
-
-        //Uses the given list of control points to construct a list of curves
-        //to account for red points
-        private void GetCurves()
-        {
-            //Get the initial hit point of the slider
-            //Split into three lines for readibility
-            Point initialcoord = new Point();
-            initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
-            initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
-
-            //List<Point> curvepoints = new List<Point>();
-            List<LinearCurve> accumulatedcurves = new List<LinearCurve>();
-            
-            //Normal linear slider
-            if(controlpoints.Length == 1)
-            {
-                accumulatedcurves.Add(new LinearCurve(initialcoord, controlpoints[0]));
-            }
-            else
-            {
-                List<Point> allcontrolpoints = new List<Point>();
-                allcontrolpoints.Add(initialcoord);
-                allcontrolpoints.AddRange(controlpoints);
-                Point[][] curvepoints = Dewlib.SplitPointList(allcontrolpoints.ToArray());
-                foreach(Point[] curve in curvepoints)
-                {
-                    if(curve.Length > 2)
-                    {
-                        for(int i = 1; i < curve.Length; i++)
-                        {
-                            accumulatedcurves.Add(new LinearCurve(curve[i-1], curve[i]));
-                        }
-                    }
-                    else
-                    {
-                        accumulatedcurves.Add(new LinearCurve(curve[0], curve[1]));
-                    }
-                }
-            }
-            curves = accumulatedcurves.ToArray();
         }
     }
 }

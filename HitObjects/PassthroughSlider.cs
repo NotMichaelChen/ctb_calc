@@ -14,8 +14,9 @@ namespace HitObjects
         
         public PassthroughSlider(string id, Beatmap amap) : base(id, amap)
         {
-            if(HitObjectParser.GetProperty(id, "slidertype") != "P")
-                throw new ArgumentException("Error: Hitobject provided to PassthroughSlider class is not Passthrough");
+            if(controlpoints.Length != 2)
+                throw new ArgumentException("Error: Passthrough slider does not have 2 control points\n" +
+                                            "controlpoints.Length=" + controlpoints.Length);
             
             Point initialcoord = new Point();
             initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
