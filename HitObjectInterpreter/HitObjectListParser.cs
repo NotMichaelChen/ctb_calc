@@ -24,7 +24,7 @@ namespace HitObjectInterpreter
         }
 
         //Gets the hitobject id at the specified index
-        public string GetHitObject(int index)
+        public string GetHitObjectID(int index)
         {
             return hitobjects[index];
         }

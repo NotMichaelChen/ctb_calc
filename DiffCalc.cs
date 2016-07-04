@@ -229,7 +229,7 @@ public class DiffCalc
         {
             try
             {
-                GenericHitObject hobject = new GenericHitObject(hitobjects.GetHitObject(i), map);
+                GenericHitObject hobject = new GenericHitObject(hitobjects.GetHitObjectID(i), map);
             
                 positionslist.AddRange(hobject.GetHitLocations());
                 timeslist.AddRange(hobject.GetHitTimes());
