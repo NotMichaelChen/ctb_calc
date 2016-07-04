@@ -75,66 +75,69 @@ public class DiffCalc
         return Dewlib.SumScaledList(speeds.ToArray(), 0.95);
     }
     
-    public double GetDirectionalChanges()
-    {        
+    public double GetJumpDifficulty()
+    {
         double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
         CatcherInfo catcher = new CatcherInfo(circlesize);
         
-        List<int> DCtimes = new List<int>();
+        int[] DCtimes = GetDirectionalChangeTimes();
         
-        CatcherInfo.Direction prevnotedir = catcher.CurDirection;
+        //For debugging only, <difficulty, time>
+        SortedList<double, int> notedifficulties = new SortedList<double, int>();
+
         for(int i = 1; i < positions.Length; i++)
         {
-            if(positions[i] == positions[i-1])
-                continue;
-            
-            CatcherInfo.Direction notedirection;
-            
-            if(positions[i] - positions[i-1] > 0)
-                notedirection = CatcherInfo.Direction.Right;
-            else
-                notedirection = CatcherInfo.Direction.Left;
-            
-            int distance = Math.Abs(positions[i]-positions[i-1]);
-            if(notedirection != catcher.CurDirection && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir))
+            //Cast to make division operation a double
+            double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
+            //Scale velocity to be a percent of a pixel-jump - a pixel jump is equal to 1
+            velocity = catcher.PercentHyper(velocity);
+            //Temp value for hyperdashes 
+            if(velocity > 1)
             {
-                catcher.CurDirection = notedirection;
-                DCtimes.Add(times[i]);
-            }
-            
-            prevnotedir = catcher.CurDirection;
-        }
-        
-        //Directional Changes per section
-        List<int> DCps = new List<int>();
-        
-        int threshold = 500;
-        //count of DCs in a section
-        int DCcounter = 0;
-        int index = 0;
-        while(index < DCtimes.Count)
-        {
-            if(DCtimes[index] > threshold)
-            {
-                DCps.Add(DCcounter);
-                DCcounter = 0;
-                threshold += 500;
+                velocity = 0.2;
+                //velocity = 1.0 / (times[i] - times[i-1]);
             }
             else
             {
-                DCcounter++;
-                index++;
+                //Scale normal jumps
+                velocity = Math.Pow(velocity, 1);
             }
+           
+            //Implement smarter directional change multiplier later
+            int DCindex = Array.BinarySearch(DCtimes, times[i]);
+            if(DCindex > 0)
+            {
+                int DCcount = 0;
+                double DCsum = 0;
+                for(int j = DCindex; j > 0 && DCcount < 10; j--)
+                {
+                    DCcount++;
+                    DCsum += DCtimes[j] - DCtimes[j-1];
+                }
+                
+                //double DCmultiplier = DCcount / 3.0;
+                //Want inverse of average, so flip sum and count
+                double DCmultiplier = DCcount / DCsum;
+                if(DCmultiplier > 1)
+                    velocity *= DCmultiplier;
+            }
+            //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
+            if(i > 1 && DCindex > 0)
+            {
+                double prevvel = catcher.PercentHyper(Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]));
+                double thisvel = catcher.PercentHyper(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
+                if(prevvel > 1 && thisvel <= 1)
+                    velocity *= Math.Pow(thisvel, 1) * 1.1;
+            }
+            
+            notedifficulties[velocity] = times[i];
         }
-        //Account for leftover notes
-        if(DCcounter > 0)
-            DCps.Add(DCcounter);
-
-        //Must convert int array to double array
-        return Dewlib.SumScaledList(Array.ConvertAll(DCps.ToArray(), x => (double)x), 0.95);
+        
+        return Dewlib.SumScaledList(notedifficulties.Keys.ToArray(), 0.95);
     }
     
-    public double GetJumpDifficulty()
+    //Each hitobject marked as a "DC" means that it requires a directional change to catch
+    private int[] GetDirectionalChangeTimes()
     {
         double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
         CatcherInfo catcher = new CatcherInfo(circlesize);
@@ -164,58 +167,7 @@ public class DiffCalc
             prevnotedir = catcher.CurDirection;
         }
         
-        //For debugging only, <difficulty, time>
-        SortedList<double, int> notedifficulties = new SortedList<double, int>();
-
-        for(int i = 1; i < positions.Length; i++)
-        {
-            //Cast to make division operation a double
-            double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
-            //Scale velocity to be a percent of a pixel-jump - a pixel jump is equal to 1
-            velocity = catcher.PercentHyper(velocity);
-            //Temp value for hyperdashes 
-            if(velocity > 1)
-            {
-                velocity = 0.2;
-                //velocity = 1.0 / (times[i] - times[i-1]);
-            }
-            else
-            {
-                //Scale normal jumps
-                velocity = Math.Pow(velocity, 1);
-            }
-           
-            //Implement smarter directional change multiplier later
-            int DCindex = DCtimes.BinarySearch(times[i]);
-            if(DCindex > 0)
-            {
-                int DCcount = 0;
-                double DCsum = 0;
-                for(int j = DCindex; j > 0 && DCcount < 10; j--)
-                {
-                    DCcount++;
-                    DCsum += DCtimes[j] - DCtimes[j-1];
-                }
-                
-                //double DCmultiplier = DCcount / 3.0;
-                //Want inverse of average, so flip sum and count
-                double DCmultiplier = DCcount / DCsum * 1000;
-                if(DCmultiplier > 1)
-                    velocity *= DCmultiplier;
-            }
-            //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
-            if(i > 1)
-            {
-                double prevvel = catcher.PercentHyper(Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]));
-                double thisvel = catcher.PercentHyper(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
-                if(prevvel > 1 && thisvel <= 1)
-                    velocity *= Math.Pow(thisvel, 3) * 4;
-            }
-            
-            notedifficulties[velocity] = times[i];
-        }
-        
-        return Dewlib.SumScaledList(notedifficulties.Keys.ToArray(), 0.95);
+        return DCtimes.ToArray();
     }
     
     //Gets the list of positions and times for each note of the beatmap, so that
