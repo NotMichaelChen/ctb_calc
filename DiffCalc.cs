@@ -217,33 +217,6 @@ public class DiffCalc
         
         return Dewlib.SumScaledList(notedifficulties.Keys.ToArray(), 0.95);
     }
-
-    //Gets the hitobject returned as a HitObjectWrapper
-    //Returns null if not implemented (hopefully won't exist when finished)
-    //Throws an exception if the id is invalid
-    private HitObjectWrapper GetHitObjectWrapper(string id)
-    {
-        HitObjectType objecttype = HitObjectParser.GetHitObjectType(id);
-        if(objecttype == HitObjectType.Circle)
-            return new Circle(id);
-        else if(objecttype == HitObjectType.Slider)
-        {
-            string slidertype = HitObjectParser.GetProperty(id, "slidertype");
-            if(slidertype == "L")
-                return new LinearSlider(id, map);
-            else if(slidertype == "P")
-                return new PassthroughSlider(id, map);
-            else if(slidertype == "B")
-                return new BezierSlider(id, map);
-            else if(slidertype == "C")
-                return new CatmullSlider(id, map);
-            else return null;
-        }
-        else if(objecttype == HitObjectType.Spinner)
-            return new Spinner();
-        else
-            throw new ArgumentException("Error: id is invalid");
-    }
     
     //Gets the list of positions and times for each note of the beatmap, so that
     //other methods can use these lists without continuous calculations
@@ -256,9 +229,7 @@ public class DiffCalc
         {
             try
             {
-                HitObjectWrapper hobject = this.GetHitObjectWrapper(hitobjects.GetHitObject(i));
-                if(hobject == null)
-                    continue;
+                GenericHitObject hobject = new GenericHitObject(hitobjects.GetHitObject(i), map);
             
                 positionslist.AddRange(hobject.GetHitLocations());
                 timeslist.AddRange(hobject.GetHitTimes());
