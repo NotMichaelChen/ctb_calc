@@ -6,9 +6,9 @@ using Structures.Curves;
 using HitObjectInterpreter;
 using BeatmapInfo;
 
-namespace HitObjects
+namespace HitObjects.Sliders
 {
-    public class LinearSlider : Slider
+    public class LinearSlider : GenericSlider
     {
         LinearCurve[] curves;
         

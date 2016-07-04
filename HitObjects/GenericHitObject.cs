@@ -2,6 +2,7 @@
 
 using BeatmapInfo;
 using HitObjectInterpreter;
+using HitObjects.Sliders;
 
 namespace HitObjects
 {

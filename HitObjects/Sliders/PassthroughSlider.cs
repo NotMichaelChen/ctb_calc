@@ -6,21 +6,27 @@ using Structures.Curves;
 using HitObjectInterpreter;
 using BeatmapInfo;
 
-namespace HitObjects
+namespace HitObjects.Sliders
 {
-    public class CatmullSlider : Slider
+    public class PassthroughSlider : GenericSlider
     {
-        CatmullCurve curve;
+        CircleCurve curve;
         
-        public CatmullSlider(string id, Beatmap amap) : base(id, amap)
+        public PassthroughSlider(string id, Beatmap amap) : base(id, amap)
         {
+            if(controlpoints.Length != 2)
+                throw new ArgumentException("Error: Passthrough slider does not have 2 control points\n" +
+                                            "controlpoints.Length=" + controlpoints.Length);
+            
             Point initialcoord = new Point();
             initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
             initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
             
-            curve = new CatmullCurve(initialcoord, this.controlpoints);
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            
+            curve = new CircleCurve(initialcoord, controlpoints[0], controlpoints[1], length);
         }
-
+        
         protected override int[] GetTickLocations()
         {
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
@@ -38,14 +44,19 @@ namespace HitObjects
             if(length <= ticklength)
                 return new int[0];
             
-            Point[] ticklocs = curve.GetTickLocations(ticklength, tickcount, length);
+            List<int> ticks = new List<int>();
             
-            List<int> xcoords = new List<int>();
+            //Will represent where the next tick is in the slider
+            int calclength = ticklength;
+            //While we haven't fallen off the end of the slider
+            while(calclength < length)
+            {
+                ticks.Add(curve.GetPointAlong(calclength).IntX());
+                //Move down the slider by a ticklength
+                calclength += ticklength;
+            }
             
-            foreach(Point i in ticklocs)
-                xcoords.Add(i.IntX());
-            
-            return xcoords.ToArray();
+            return ticks.ToArray();
         }
         
         protected override Point GetLastPoint()

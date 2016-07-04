@@ -5,10 +5,10 @@ using Structures;
 using HitObjectInterpreter;
 using BeatmapInfo;
 
-namespace HitObjects
+namespace HitObjects.Sliders
 {
     //Represents a generic slider - as such it remains abstract
-    abstract public class Slider : HitObjectWrapper
+    abstract public class GenericSlider : HitObjectWrapper
     {
         protected string id;
         protected Beatmap map;
@@ -19,7 +19,7 @@ namespace HitObjects
         //Constructs a slider given an id
         //The beatmap given is the beatmap that the slider resides in
         //Used to make calculations related to timing
-        protected Slider(string tempid, Beatmap amap)
+        protected GenericSlider(string tempid, Beatmap amap)
         {
             id = tempid;
             map = amap;
