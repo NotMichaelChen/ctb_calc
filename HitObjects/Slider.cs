@@ -265,9 +265,8 @@ namespace HitObjects
         }
         
         //Get the x-coordinates of every tick in the slider
-        //tickcount is needed to make sure that the correct number of ticks is returned,
-        //as rounding errors may cause problems when getting the last tick
         abstract protected int[] GetTickLocations();
+        //Get the last point of the slider, since it may not correspond with the last control point
         abstract protected Point GetLastPoint();
 
         //Formats a string of control points into an array of points
