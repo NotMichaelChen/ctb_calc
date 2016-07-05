@@ -102,6 +102,9 @@ public class DiffCalc
                 //Scale normal jumps
                 velocity = Math.Pow(velocity, 1);
             }
+            
+            //Multiply jump difficulty with CS
+            velocity *= (circlesize + 1) / 2;
            
             //Implement smarter directional change multiplier later
             int DCindex = Array.BinarySearch(DCtimes, times[i]);
