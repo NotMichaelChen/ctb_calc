@@ -41,7 +41,6 @@ namespace HitObjects.Sliders
             //TODO: Add null checking to the statements using SearchForTag
             double slidervelocity = this.GetSliderVelocity();
 
-            int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
             int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
             //Subtracting 1 returns the actual number of repeats
@@ -248,7 +247,7 @@ namespace HitObjects.Sliders
         {
             double slidervelocity = this.GetSliderVelocity();
 
-            int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
+            double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"));
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
             int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
 

@@ -38,7 +38,7 @@ namespace HitObjects.Sliders
             int tickcount = this.GetTickCount() / sliderruns;
             
             double slidervelocity = this.GetSliderVelocity();
-            int tickrate = Int32.Parse(map.GetTag("Difficulty", "SliderTickRate"));
+            double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"));
             int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
             
             if(length <= ticklength)
