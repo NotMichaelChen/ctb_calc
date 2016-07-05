@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
 
 using BeatmapInfo;
 using HitObjectInterpreter;
@@ -134,6 +135,20 @@ public class DiffCalc
             }
             
             notedifficulties[velocity] = times[i];
+        }
+        
+        if(Program.IsDebug())
+        {
+            Directory.CreateDirectory("debug");
+            string filepath = map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version") + ".txt";
+            filepath = "debug//" + filepath.Replace("/", "").Replace("\"", "\'");
+            StreamWriter debugfile = new StreamWriter(filepath);
+            foreach(KeyValuePair<double, int> kvp in notedifficulties)
+            {
+                string leftvalue = kvp.Key.ToString();
+                debugfile.WriteLine(leftvalue.PadRight(21) + kvp.Value);
+            }
+            debugfile.Close();
         }
         
         return Dewlib.SumScaledList(notedifficulties.Keys.ToArray(), 0.95);

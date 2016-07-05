@@ -8,8 +8,13 @@ using BeatmapInfo;
 
 public class Program
 {
+    private static bool debugmode = false;
+    
     public static void Main(string[] args)
     {
+        //Add way to enable from console
+        debugmode = true;
+        
         //Program should only work when a .osu file is dragged onto the program
         //Display a message if that's not done
         if(args.Length == 0)
@@ -69,5 +74,10 @@ public class Program
         }
 
         Console.ReadKey();
+    }
+    
+    public static bool IsDebug()
+    {
+        return debugmode;
     }
 }
