@@ -5,6 +5,7 @@ using System.IO;
 
 using BeatmapInfo;
 using HitObjectInterpreter;
+using Structures;
 using HitObjects;
 
 // Takes a beatmap object and calculates a difficulty based off of it
@@ -83,8 +84,7 @@ public class DiffCalc
         
         int[] DCtimes = GetDirectionalChangeTimes();
         
-        //For debugging only, <difficulty, time>
-        SortedList<double, int> notedifficulties = new SortedList<double, int>();
+        List<HitPoint> notes = new List<HitPoint>();
 
         for(int i = 1; i < positions.Length; i++)
         {
@@ -136,24 +136,32 @@ public class DiffCalc
                     difficulty += velocity * Math.Pow(thisvel, 1) * 1.1;
             }
             
-            notedifficulties[difficulty] = times[i];
+            notes.Add(new HitPoint(positions[i], times[i], difficulty));
         }
         
         if(Program.IsDebug())
         {
+            List<HitPoint> sortednotes = new List<HitPoint>(notes);
+            sortednotes.Sort();
+            
             Directory.CreateDirectory("debug");
             string filepath = map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version") + ".txt";
             filepath = "debug//" + filepath.Replace("/", "").Replace("\"", "\'");
             StreamWriter debugfile = new StreamWriter(filepath);
-            foreach(KeyValuePair<double, int> kvp in notedifficulties)
+            foreach(HitPoint notepoint in sortednotes)
             {
-                string leftvalue = kvp.Key.ToString();
-                debugfile.WriteLine(leftvalue.PadRight(21) + kvp.Value);
+                string leftvalue = notepoint.HitDifficulty.ToString();
+                debugfile.WriteLine(leftvalue.PadRight(21) + notepoint.HitTime);
             }
             debugfile.Close();
         }
         
-        return Dewlib.SumScaledList(notedifficulties.Keys.ToArray(), 0.95);
+        List<double> notedifficulties = new List<double>();
+        foreach(HitPoint notepoint in notes)
+        {
+            notedifficulties.Add(notepoint.HitDifficulty);
+        }
+        return Dewlib.SumScaledList(notedifficulties.ToArray(), 0.95);
     }
     
     //Each hitobject marked as a "DC" means that it requires a directional change to catch

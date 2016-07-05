@@ -11,7 +11,7 @@ namespace Structures
         public int HitTime;
         public double HitDifficulty;
         
-        public HitPoint(int location, int time, int difficulty)
+        public HitPoint(int location, int time, double difficulty)
         {
             HitLocation = location;
             HitTime = time;
