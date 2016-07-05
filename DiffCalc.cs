@@ -95,8 +95,8 @@ public class DiffCalc
             //Temp value for hyperdashes 
             if(velocity > 1)
             {
-                velocity = 0.2;
-                //velocity = 1.0 / (times[i] - times[i-1]);
+                //velocity = 0.2;
+                velocity = 1.0 / (times[i] - times[i-1]);
             }
             else
             {
@@ -106,6 +106,8 @@ public class DiffCalc
             
             //Multiply jump difficulty with CS
             velocity *= (circlesize + 1) / 2;
+            
+            double difficulty = 0;
            
             //Implement smarter directional change multiplier later
             int DCindex = Array.BinarySearch(DCtimes, times[i]);
@@ -123,7 +125,7 @@ public class DiffCalc
                 //Want inverse of average, so flip sum and count
                 double DCmultiplier = DCcount / DCsum * 1500;
                 if(DCmultiplier > 1)
-                    velocity *= DCmultiplier;
+                    difficulty += velocity * DCmultiplier;
             }
             //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
             if(i > 1 && DCindex > 0)
@@ -131,10 +133,10 @@ public class DiffCalc
                 double prevvel = catcher.PercentHyper(Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]));
                 double thisvel = catcher.PercentHyper(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
                 if(prevvel > 1 && thisvel <= 1)
-                    velocity *= Math.Pow(thisvel, 1) * 1.1;
+                    difficulty += velocity * Math.Pow(thisvel, 1) * 1.1;
             }
             
-            notedifficulties[velocity] = times[i];
+            notedifficulties[difficulty] = times[i];
         }
         
         if(Program.IsDebug())
