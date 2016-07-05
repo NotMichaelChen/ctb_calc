@@ -117,7 +117,7 @@ public class DiffCalc
                 
                 //double DCmultiplier = DCcount / 3.0;
                 //Want inverse of average, so flip sum and count
-                double DCmultiplier = DCcount / DCsum;
+                double DCmultiplier = DCcount / DCsum * 1500;
                 if(DCmultiplier > 1)
                     velocity *= DCmultiplier;
             }
@@ -189,7 +189,7 @@ public class DiffCalc
             catch (Exception e)
             {
                 //This is zero-indexed, so the first object is object=0
-                throw new Exception(e.Message + "\nobject=" + i);
+                throw new Exception(e.Message + "\nobject=" + i, e);
             }
         }
 
