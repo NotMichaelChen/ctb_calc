@@ -107,7 +107,43 @@ public class DiffCalc
             //Multiply jump difficulty with CS
             velocity *= (circlesize + 1) / 2;
             
-            double difficulty = 0;
+            double difficulty = velocity;
+            
+            //Distance is small enough to catch without moving
+            if(Math.Abs(positions[i] - positions[i-1]) < catcher.GetCatcherSize())
+            {
+                var temp = Math.Abs(positions[i] - positions[i-1]);
+                var temp2 = catcher.GetCatcherSize();
+                //the distance the catcher moves, scaled as a percentage of how close the jump is to requiring movement
+                double totalpercentdistance = 0;
+                //index locating what note is the last note not needing movement to catch
+                int nonmovementindex;
+                //Makes sure that the notes aren't all in a straight line
+                int leftmost = Math.Max(positions[i], positions[i-1]);
+                int rightmost = Math.Min(positions[i], positions[i-1]);
+                //used to make sure we only get at most 10 notes
+                int nonmovecount = 0;
+                //while it's still a nonmovement jump
+                for(nonmovementindex = i; nonmovementindex > 0 && nonmovecount <= 10; nonmovementindex--)
+                {
+                    if(positions[nonmovementindex] > leftmost)
+                        leftmost = positions[nonmovementindex];
+                    else if(positions[nonmovementindex] < rightmost)
+                        rightmost = positions[nonmovementindex];
+                    
+                    if(leftmost - rightmost > catcher.GetCatcherSize())
+                        break;
+                    if(positions[nonmovementindex] - positions[nonmovementindex-1] > catcher.GetCatcherSize())
+                        break;
+                    
+                    totalpercentdistance += Math.Abs(positions[nonmovementindex] - positions[nonmovementindex-1]) / (double)catcher.GetCatcherSize();
+                    nonmovecount++;
+                }
+                
+                //difficulty = (totalpercentdistance / (times[i] - times[nonmovementindex])) * 1000;
+                if((totalpercentdistance / 10) * 12 > 1)
+                    difficulty = (totalpercentdistance / 10) * 12;
+            }
            
             //Implement smarter directional change multiplier later
             int DCindex = Array.BinarySearch(DCtimes, times[i]);
@@ -115,7 +151,7 @@ public class DiffCalc
             {
                 int DCcount = 0;
                 double DCsum = 0;
-                for(int j = DCindex; j > 0 && DCcount < 10; j--)
+                for(int j = DCindex; j > 0 && DCcount <= 10; j--)
                 {
                     DCcount++;
                     DCsum += DCtimes[j] - DCtimes[j-1];
