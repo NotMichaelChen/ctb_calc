@@ -40,7 +40,7 @@ public class Program
                     DiffCalc calc = new DiffCalc(map);
                     
                     string title = map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version") + ": \t";
-                    double difficulty = calc.GetJumpDifficulty();
+                    double difficulty = calc.GetDifficulty();
 
                     timer.Stop();
                     

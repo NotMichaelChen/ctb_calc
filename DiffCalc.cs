@@ -60,10 +60,17 @@ public class DiffCalc
         return counts;
     }
     
-    /*public double GetDifficulty()
+    public double GetDifficulty()
     {
+        HitPoint[] notes = this.GetNoteDifficulty();
         
-    }*/
+        List<double> notedifficulties = new List<double>();
+        foreach(HitPoint notepoint in notes)
+        {
+            notedifficulties.Add(notepoint.HitDifficulty);
+        }
+        return Dewlib.SumScaledList(notedifficulties.ToArray(), 0.95);
+    }
 
     //Calculates the average of the top ten % of speeds between hitpoints in the given beatmap
     //(speeds = change in position / change in time)
@@ -79,7 +86,8 @@ public class DiffCalc
         return Dewlib.SumScaledList(speeds.ToArray(), 0.95);
     }
     
-    public double GetJumpDifficulty()
+    //Gets a list of every hitpoint and its associated difficulty
+    public HitPoint[] GetNoteDifficulty()
     {
         double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
         CatcherInfo catcher = new CatcherInfo(circlesize);
@@ -214,12 +222,7 @@ public class DiffCalc
             debugfile.Close();
         }
         
-        List<double> notedifficulties = new List<double>();
-        foreach(HitPoint notepoint in notes)
-        {
-            notedifficulties.Add(notepoint.HitDifficulty);
-        }
-        return Dewlib.SumScaledList(notedifficulties.ToArray(), 0.95);
+        return notes.ToArray();
     }
     
     //Each hitobject marked as a "DC" means that it requires a directional change to catch
