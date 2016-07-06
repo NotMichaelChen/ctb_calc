@@ -38,6 +38,11 @@ public class DiffCalc
         
         this.GetPositionsAndTimes();
     }
+    
+    public string GetBeatmapTitle()
+    {
+        return map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version");
+    }
 
     //Gets a count of each type of hitobject in the beatmap
     //Returns an array of 3 ints, which are the counts of Circles, Sliders,
@@ -199,23 +204,6 @@ public class DiffCalc
             }
             
             notes.Add(new HitPoint(positions[i], times[i], difficulty));
-        }
-        
-        if(Program.IsDebug())
-        {
-            List<HitPoint> sortednotes = new List<HitPoint>(notes);
-            sortednotes.Sort();
-            
-            Directory.CreateDirectory("debug");
-            string filepath = map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version") + ".txt";
-            filepath = "debug//" + filepath.Replace("/", "").Replace("\"", "\'");
-            StreamWriter debugfile = new StreamWriter(filepath);
-            foreach(HitPoint notepoint in sortednotes)
-            {
-                string leftvalue = notepoint.HitDifficulty.ToString();
-                debugfile.WriteLine(leftvalue.PadRight(21) + notepoint.HitTime);
-            }
-            debugfile.Close();
         }
         
         return notes.ToArray();

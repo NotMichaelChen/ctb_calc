@@ -3,20 +3,20 @@ using System.Diagnostics;
 using System.Collections.Generic;
 
 using BeatmapInfo;
+using DebugTools;
 
 //TODO: Overhaul exception system
 
 public class Program
 {
-    private static bool debugmode = false;
-    
     public static void Main(string[] args)
     {
-        //Add way to enable from console
-        debugmode = true;
+        DebugController debugger = new DebugController();
         
-        //Program should only work when a .osu file is dragged onto the program
-        //Display a message if that's not done
+        //Load in custom beatmaps if specified
+        args = debugger.LoadCustom(args);
+        
+        //Display a message if no files are specified
         if(args.Length == 0)
         {
             Console.WriteLine("CTB Difficulty Analyzer");
@@ -28,6 +28,7 @@ public class Program
         {
             Console.WriteLine("Calculating...");
             SortedList<double, string> beatmaps = new SortedList<double, string>();
+            List<DiffCalc> calculators = new List<DiffCalc>();
             Stopwatch timer = new Stopwatch();
             try
             {
@@ -39,13 +40,14 @@ public class Program
                     Beatmap map = new Beatmap(name);
                     DiffCalc calc = new DiffCalc(map);
                     
-                    string title = map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version") + ": \t";
+                    string title = calc.GetBeatmapTitle() + ": \t";
                     double difficulty = calc.GetDifficulty();
 
                     timer.Stop();
                     
                     title += timer.ElapsedMilliseconds;
                     beatmaps[difficulty] = title;
+                    calculators.Add(calc);
                     
                     timer.Reset();
                     count++;
@@ -59,6 +61,8 @@ public class Program
                     Console.WriteLine(titleandtime[0] + beatmaps.Keys[i]);
                     Console.WriteLine("Calculation Time (ms): " + titleandtime[1] + "\n");
                 }
+                
+                debugger.WriteDebug(calculators.ToArray());
 
                 Console.WriteLine("\nDone.");
             }
@@ -74,10 +78,5 @@ public class Program
         }
 
         Console.ReadKey();
-    }
-    
-    public static bool IsDebug()
-    {
-        return debugmode;
     }
 }
