@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.IO;
 
 using BeatmapInfo;
 using DebugTools;
@@ -11,6 +12,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
+        
         DebugController debugger = new DebugController();
         
         //Load in custom beatmaps if specified
