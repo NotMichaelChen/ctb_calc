@@ -8,6 +8,8 @@ using HitObjectInterpreter;
 using Structures;
 using HitObjects;
 
+using Direction = CatcherInfo.Direction;
+
 // Takes a beatmap object and calculates a difficulty based off of it
 public class DiffCalc
 {
@@ -123,6 +125,15 @@ public class DiffCalc
                 int rightmost = Math.Min(positions[i], positions[i-1]);
                 //used to make sure we only get at most 10 notes
                 int nonmovecount = 0;
+                int DCcount = 0;
+                Direction curdir;
+                if(positions[i] - positions[i-1] > 0)
+                    curdir = Direction.Right;
+                else if(positions[i] - positions[i-1] < 0)
+                    curdir = Direction.Left;
+                else
+                    curdir = Direction.Stop;
+                Direction prevdir = curdir;
                 //while it's still a nonmovement jump
                 for(nonmovementindex = i; nonmovementindex > 0 && nonmovecount <= 10; nonmovementindex--)
                 {
@@ -131,18 +142,29 @@ public class DiffCalc
                     else if(positions[nonmovementindex] < rightmost)
                         rightmost = positions[nonmovementindex];
                     
+                    if(positions[nonmovementindex] - positions[nonmovementindex-1] > 0)
+                        curdir = Direction.Right;
+                    else if(positions[nonmovementindex] - positions[nonmovementindex-1] < 0)
+                        curdir = Direction.Left;
+                    
                     if(leftmost - rightmost > catcher.GetCatcherSize())
                         break;
                     if(positions[nonmovementindex] - positions[nonmovementindex-1] > catcher.GetCatcherSize())
                         break;
                     
+                    if(curdir != prevdir)
+                        DCcount++;
+                    
+                    prevdir = curdir;
+                    
                     totalpercentdistance += Math.Abs(positions[nonmovementindex] - positions[nonmovementindex-1]) / (double)catcher.GetCatcherSize();
                     nonmovecount++;
                 }
                 
-                //difficulty = (totalpercentdistance / (times[i] - times[nonmovementindex])) * 1000;
-                if((totalpercentdistance / 10) * 12 > 1)
-                    difficulty = (totalpercentdistance / 10) * 12;
+                if(times[i] != times[nonmovementindex])
+                    difficulty = 100 * ((double)DCcount / (times[i] - times[nonmovementindex])) * (Math.Pow(totalpercentdistance, 2.2) / 10);
+                //if((totalpercentdistance / 10) * 12 > 1)
+                    //difficulty = (totalpercentdistance / 10) * 12;
             }
            
             //Implement smarter directional change multiplier later
@@ -208,18 +230,18 @@ public class DiffCalc
         
         List<int> DCtimes = new List<int>();
         
-        CatcherInfo.Direction prevnotedir = catcher.CurDirection;
+        Direction prevnotedir = catcher.CurDirection;
         for(int i = 1; i < positions.Length; i++)
         {
             if(positions[i] == positions[i-1])
                 continue;
             
-            CatcherInfo.Direction notedirection;
+            Direction notedirection;
             
             if(positions[i] - positions[i-1] > 0)
-                notedirection = CatcherInfo.Direction.Right;
+                notedirection = Direction.Right;
             else
-                notedirection = CatcherInfo.Direction.Left;
+                notedirection = Direction.Left;
             
             int distance = Math.Abs(positions[i]-positions[i-1]);
             if(notedirection != catcher.CurDirection && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir))
