@@ -22,6 +22,10 @@ namespace DebugTools
                     commandlist = Dewlib.TrimStringArray(commandlist);
                 }
             }
+            else
+            {
+                commandlist = new string[0];
+            }
         }
         
         //Either load the custom-defined directory or file, overriding the custom arguments,
