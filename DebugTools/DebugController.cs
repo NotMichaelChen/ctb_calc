@@ -86,13 +86,17 @@ namespace DebugTools
                         
                         Directory.CreateDirectory("debug");
                         string filepath = calc.GetBeatmapTitle() + ".txt";
+                        
+                        //Make sure files don't have invalid characters in the name
                         filepath = "debug//" + filepath.Replace("/", "").Replace("\"", "\'");
                         StreamWriter debugfile = new StreamWriter(filepath);
+                        
                         foreach(HitPoint notepoint in sortednotes)
                         {
                             string leftvalue = notepoint.HitDifficulty.ToString();
                             debugfile.WriteLine(leftvalue.PadRight(21) + notepoint.HitTime);
                         }
+                        
                         debugfile.Close();
                         donecount++;
                         Console.Write(Math.Round((double)donecount * 100 / songs.Length) + "%\r");
