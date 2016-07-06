@@ -122,8 +122,6 @@ public class DiffCalc
             //Distance is small enough to catch without moving
             if(Math.Abs(positions[i] - positions[i-1]) < catcher.GetCatcherSize())
             {
-                var temp = Math.Abs(positions[i] - positions[i-1]);
-                var temp2 = catcher.GetCatcherSize();
                 //the distance the catcher moves, scaled as a percentage of how close the jump is to requiring movement
                 double totalpercentdistance = 0;
                 //index locating what note is the last note not needing movement to catch
@@ -171,8 +169,6 @@ public class DiffCalc
                 
                 if(times[i] != times[nonmovementindex])
                     difficulty = 100 * ((double)DCcount / (times[i] - times[nonmovementindex])) * (Math.Pow(totalpercentdistance, 2.2) / 10);
-                //if((totalpercentdistance / 10) * 12 > 1)
-                    //difficulty = (totalpercentdistance / 10) * 12;
             }
            
             //Implement smarter directional change multiplier later
