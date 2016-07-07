@@ -38,11 +38,6 @@ namespace HitObjects.Sliders
             List<int> hitpoints = new List<int>();
             List<int> ticklocs = new List<int>();
 
-            //TODO: Add null checking to the statements using SearchForTag
-            double slidervelocity = this.GetSliderVelocity();
-
-            //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
             //Subtracting 1 returns the actual number of repeats
             int repeats = Int32.Parse(HitObjectParser.GetProperty(id, "repeat")) - 1;
 

@@ -32,11 +32,6 @@ namespace HitObjects.Sliders
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
             int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
             
-            int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
-            //Only need ticks for one slider length (no repeats needed)
-            //Also no need for double conversion since TickCount is always divisible by sliderruns
-            int tickcount = this.GetTickCount() / sliderruns;
-            
             double slidervelocity = this.GetSliderVelocity();
             double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"));
             int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
