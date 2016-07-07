@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.IO;
 
 using BeatmapInfo;
 using HitObjectInterpreter;
@@ -40,6 +39,8 @@ public class DiffCalc
         this.GetPositionsAndTimes();
     }
     
+    //Gets the title of the given beatmap, for display purposes
+    //(Can be moved to Beatmap, but having it here is very convenient)
     public string GetBeatmapTitle()
     {
         return map.GetTag("Metadata", "Title") + ", " + map.GetTag("Metadata", "Version");
