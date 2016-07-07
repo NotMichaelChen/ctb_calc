@@ -53,7 +53,7 @@ namespace BeatmapInfo
                     break;
 
                 //Get a pair of strings, one side is the tag, other side is the value of the tag
-                string[] pair = filelines[i].Split(':');
+                string[] pair = Dewlib.SplitFirst(filelines[i], ':');
 
                 //Skip if the pair is invalid
                 if(pair.Length != 2)

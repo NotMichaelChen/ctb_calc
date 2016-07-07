@@ -123,4 +123,26 @@ public static class Dewlib
         
         return splitlist.Select(a => a.ToArray()).ToArray();
     }
+    
+    //Split string only at the first occurance of char
+    public static string[] SplitFirst(string s, char c)
+    {
+        int splitindex;
+        for(splitindex = 0; splitindex < s.Length; splitindex++)
+        {
+            if(s[splitindex] == c)
+            {
+                string[] split = new string[2];
+                //Don't want to include the splitting character, don't do splitindex+1
+                split[0] = s.Substring(0, splitindex);
+                //Ok to do +1 here, substring will just return an empty string if splitindex is the last valid char
+                split[1] = s.Substring(splitindex+1);
+                
+                return split;
+            }
+        }
+        
+        //splitting character was not found, so just return the string given
+        return new string[] {s};
+    }
 }
