@@ -28,7 +28,8 @@ public class DiffCalc
 
         //Checks that the beatmap given is the correct mode
         string mode = map.GetTag("general", "mode");
-        if(!(mode == "0" || mode == "2"))
+        //No mode specified means standard (old maps have no mode)
+        if(!(mode == "0" || mode == "2" || mode == null))
         {
             throw new Exception("Error: beatmap is not the correct mode (std or ctb)");
         }
@@ -65,6 +66,7 @@ public class DiffCalc
         return counts;
     }
     
+    //Gets the difficulty of the entire map
     public double GetDifficulty()
     {
         HitPoint[] notes = this.GetNoteDifficulty();
@@ -120,7 +122,7 @@ public class DiffCalc
             }
             
             //Multiply jump difficulty with CS
-            velocity *= (circlesize + 1) / 2;
+            velocity *= Math.Pow(circlesize+1, 1.5) / 3;
             
             double difficulty = velocity;
             
@@ -173,7 +175,7 @@ public class DiffCalc
                 }
                 
                 if(times[i] != times[nonmovementindex])
-                    difficulty = 100 * ((double)DCcount / (times[i] - times[nonmovementindex])) * (Math.Pow(totalpercentdistance, 2.2) / 10);
+                    difficulty = 100 * ((double)DCcount / (times[i] - times[nonmovementindex])) * (Math.Pow(totalpercentdistance, 3) / 100);
             }
            
             //Implement smarter directional change multiplier later
@@ -190,9 +192,8 @@ public class DiffCalc
                 
                 //double DCmultiplier = DCcount / 3.0;
                 //Want inverse of average, so flip sum and count
-                double DCmultiplier = DCcount / DCsum * 1500;
-                if(DCmultiplier > 1)
-                    difficulty += velocity * DCmultiplier;
+                double DCmultiplier = Math.Pow(DCcount / DCsum * 250, 2);
+                difficulty += velocity * DCmultiplier;
             }
             //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
             if(i > 1 && DCindex > 0)
@@ -200,7 +201,7 @@ public class DiffCalc
                 double prevvel = catcher.PercentHyper(Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]));
                 double thisvel = catcher.PercentHyper(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
                 if(prevvel > 1 && thisvel <= 1)
-                    difficulty += velocity * Math.Pow(thisvel, 1) * 1.1;
+                    difficulty += velocity * Math.Pow(thisvel, 1) * 2;
             }
             
             notes.Add(new HitPoint(positions[i], times[i], difficulty));
