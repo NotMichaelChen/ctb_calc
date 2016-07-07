@@ -18,6 +18,7 @@ namespace Structures
             HitDifficulty = difficulty;
         }
         
+        //Sort by Difficulty, by default
         public int CompareTo(object obj)
         {
             if(obj is HitPoint)
@@ -31,6 +32,28 @@ namespace Structures
                     return 1;
             }
             else throw new Exception("Error: object is not hitpoint");
+        }
+        
+        //Sort by Time
+        public static int CompareTime(HitPoint lhs, HitPoint rhs)
+        {
+            if(lhs.HitTime == rhs.HitTime)
+                return 0;
+            else if(lhs.HitTime < rhs.HitTime)
+                return -1;
+            else
+                return 1;
+        }
+        
+        //Sort by Difficulty, if specified
+        public static int CompareDifficulty(HitPoint lhs, HitPoint rhs)
+        {
+            if(lhs.HitDifficulty == rhs.HitDifficulty)
+                return 0;
+            else if(lhs.HitDifficulty< rhs.HitDifficulty)
+                return -1;
+            else
+                return 1;
         }
     }
 }

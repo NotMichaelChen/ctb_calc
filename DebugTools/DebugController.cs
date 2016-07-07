@@ -76,21 +76,29 @@ namespace DebugTools
                 if(pair[0].ToLower() == "printdebug" && pair[1].ToLower() == "true")
                 {
                     Console.WriteLine("Writing Debug...");
+                    
                     int donecount = 0;
                     Console.Write("0%");
+                    Directory.CreateDirectory("debug");
+                    
                     foreach(DiffCalc calc in songs)
                     {
                         HitPoint[] notes = calc.GetNoteDifficulty();
                         List<HitPoint> sortednotes = new List<HitPoint>(notes);
-                        sortednotes.Sort();
                         
-                        Directory.CreateDirectory("debug");
+                        bool sortbydifficulty = this.IsSortDifficulty();
+                        if(sortbydifficulty)
+                            sortednotes.Sort(HitPoint.CompareDifficulty);
+                        else
+                            sortednotes.Sort(HitPoint.CompareTime);
+                        
                         string filepath = calc.GetBeatmapTitle() + ".txt";
                         
                         //Make sure files don't have invalid characters in the name
                         filepath = "debug//" + filepath.Replace("/", "").Replace("\"", "\'");
                         StreamWriter debugfile = new StreamWriter(filepath);
                         
+                        debugfile.WriteLine("[Difficulty]".PadRight(21) + "[Time]");
                         foreach(HitPoint notepoint in sortednotes)
                         {
                             string leftvalue = notepoint.HitDifficulty.ToString();
@@ -105,6 +113,33 @@ namespace DebugTools
                     break;
                 }
             }
+        }
+
+        //Returns whether the WriteDebug Method should sort based on difficulty or time
+        //Returns true if for difficulty, and false for time
+        //If no "sort" tag is found, then default to true        
+        private bool IsSortDifficulty()
+        {
+            foreach(string command in commandlist)
+            {
+                if(command.StartsWith("//", StringComparison.CurrentCulture))
+                    continue;
+                
+                string[] pair = command.Split('=');
+                if(pair.Length < 2)
+                    continue;
+                
+                if(pair[0].ToLower() == "sort" && pair[1].ToLower() == "difficulty")
+                {
+                    return true;
+                }
+                else if(pair[0].ToLower() == "sort" && pair[1].ToLower() == "time")
+                {
+                    return false;
+                }
+            }
+            
+            return true;
         }
     }
 }
