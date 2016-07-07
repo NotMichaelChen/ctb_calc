@@ -113,13 +113,13 @@ public class DiffCalc
             //Temp value for hyperdashes 
             if(velocity > 1)
             {
-                //velocity = 0.2;
-                velocity = 1.0 / (times[i] - times[i-1]);
+                velocity = 0.2;
+                //velocity = 1.0 / (times[i] - times[i-1]);
             }
             else
             {
                 //Scale normal jumps
-                velocity = Math.Pow(velocity, 1);
+                velocity = Math.Pow(velocity, 2);
             }
             
             //Multiply jump difficulty with CS
@@ -176,7 +176,10 @@ public class DiffCalc
                 }
                 
                 if(times[i] != times[nonmovementindex])
-                    difficulty = 100 * ((double)DCcount / (times[i] - times[nonmovementindex])) * (Math.Pow(totalpercentdistance, 3) / 100);
+                {
+                    double pendingdiff = 100 * ((double)DCcount / (times[i] - times[nonmovementindex])) * (Math.Pow(totalpercentdistance, 3) / 100);
+                    difficulty = Math.Max(pendingdiff, difficulty);
+                }
             }
            
             //Implement smarter directional change multiplier later
@@ -197,12 +200,16 @@ public class DiffCalc
                 difficulty += velocity * DCmultiplier;
             }
             //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
-            if(i > 1 && DCindex > 0)
+            if(i > 1)
             {
                 double prevvel = catcher.PercentHyper(Math.Abs(positions[i-1] - positions[i-2]) / (double)(times[i-1] - times[i-2]));
                 double thisvel = catcher.PercentHyper(Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]));
                 if(prevvel > 1 && thisvel <= 1)
-                    difficulty += velocity * Math.Pow(thisvel, 1) * 2;
+                {
+                    difficulty *= 2;
+                    if(i + 1 < positions.Length && Array.BinarySearch(DCtimes, times[i+1]) > 0)
+                        difficulty *= 2;
+                }
             }
             
             notes.Add(new HitPoint(positions[i], times[i], difficulty));
