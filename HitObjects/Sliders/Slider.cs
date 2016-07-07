@@ -172,7 +172,7 @@ namespace HitObjects.Sliders
             for(int i = 0; i < timings.Length; i++)
             {
                 //Split the string by commas to get all the relevant times
-                string[] attributes = timings[i].Split(new char[] {','});
+                string[] attributes = timings[i].Split(',');
                 //Trim each string just in case
                 attributes = Dewlib.TrimStringArray(attributes);
 
@@ -188,7 +188,7 @@ namespace HitObjects.Sliders
             if(timingpoint == null)
                 throw new Exception("Error, no relevant timing point\nms=" + ms);
 
-            string[] properties = timingpoint.Split(new char[] {','});
+            string[] properties = timingpoint.Split(',');
             return Double.Parse(properties[1]);
         }
 
@@ -210,7 +210,7 @@ namespace HitObjects.Sliders
             for(int i = 0; i < timings.Length; i++)
             {
                 //Split the string by commas to get all the relevant times
-                string[] attributes = timings[i].Split(new char[] {','});
+                string[] attributes = timings[i].Split(',');
                 //Trim each string just in case
                 attributes = Dewlib.TrimStringArray(attributes);
                 //If the timing point is a higher time, then we want the previous timing section
@@ -229,7 +229,7 @@ namespace HitObjects.Sliders
             if(timingpoint == null)
                 timingpoint = timings[timings.Length-1];
 
-            string[] properties = timingpoint.Split(new char[] {','});
+            string[] properties = timingpoint.Split(',');
             //If the offset is positive, then there is no slider multiplication
             if(Double.Parse(properties[1]) > 0)
                 return slidervelocity;
@@ -275,14 +275,14 @@ namespace HitObjects.Sliders
             //Control point string will look like: B|380:120|332:96|332:96|304:124
 
             //Gets a list of strings containing each control point by splitting up the control point string
-            string[] sliderpoints = HitObjectParser.GetProperty(id, "controlpoints").Split(new char[] {'|'});
+            string[] sliderpoints = HitObjectParser.GetProperty(id, "controlpoints").Split('|');
 
             List<Point> temppoints = new List<Point>();
 
             //Parse each point as a Point object
             foreach(string point in sliderpoints)
             {
-                string[] pair = point.Split(new char[] {':'});
+                string[] pair = point.Split(':');
                 temppoints.Add(new Point(Double.Parse(pair[0]), Double.Parse(pair[1])));
             }
 

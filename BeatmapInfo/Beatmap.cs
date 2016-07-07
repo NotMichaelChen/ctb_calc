@@ -53,7 +53,7 @@ namespace BeatmapInfo
                     break;
 
                 //Get a pair of strings, one side is the tag, other side is the value of the tag
-                string[] pair = filelines[i].Split(new char[] {':'});
+                string[] pair = filelines[i].Split(':');
 
                 //Skip if the pair is invalid
                 if(pair.Length != 2)
@@ -137,7 +137,7 @@ namespace BeatmapInfo
         /// <param name="filecontents">The contents of the file in a string</param>
         private void FormatFileString(string filecontents)
         {
-            filelines = filecontents.Split(new char[] {'\n'});
+            filelines = filecontents.Split('\n');
             filelines = Dewlib.TrimStringArray(filelines);
         }
 

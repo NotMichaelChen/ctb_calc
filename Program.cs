@@ -60,7 +60,7 @@ public class Program
                 Console.WriteLine("\n");
                 for(int i = beatmaps.Count - 1; i >= 0; i--)
                 {
-                    string[] titleandtime = beatmaps.Values[i].Split(new char[] {'\t'});
+                    string[] titleandtime = beatmaps.Values[i].Split('\t');
                     Console.WriteLine(titleandtime[0] + beatmaps.Keys[i]);
                     Console.WriteLine("Calculation Time (ms): " + titleandtime[1] + "\n");
                 }

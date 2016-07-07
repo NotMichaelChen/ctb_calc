@@ -18,7 +18,7 @@ namespace DebugTools
                 using (StreamReader sr = new StreamReader("debugcommands.txt"))
                 {
                     string filecontents = sr.ReadToEnd();
-                    commandlist = filecontents.Split(new char[] {'\n'});
+                    commandlist = filecontents.Split('\n');
                     commandlist = Dewlib.TrimStringArray(commandlist);
                 }
             }
@@ -38,7 +38,7 @@ namespace DebugTools
                 if(command.StartsWith("//", StringComparison.CurrentCulture))
                     continue;
                 
-                string[] pair = command.Split(new char[] {'='});
+                string[] pair = command.Split('=');
                 if(pair.Length < 2)
                     continue;
                 
@@ -69,7 +69,7 @@ namespace DebugTools
                 if(command.StartsWith("//", StringComparison.CurrentCulture))
                     continue;
                 
-                string[] pair = command.Split(new char[] {'='});
+                string[] pair = command.Split('=');
                 if(pair.Length < 2)
                     continue;
                 

@@ -30,7 +30,7 @@ namespace HitObjects
                 else if(slidertype == "P")
                 {
                     //Treat the slider differently depending on the number of control points
-                    string[] sliderpoints = HitObjectParser.GetProperty(id, "controlpoints").Split(new char[] {'|'});
+                    string[] sliderpoints = HitObjectParser.GetProperty(id, "controlpoints").Split('|');
                     if(sliderpoints.Length == 1)
                         hitobject = new LinearSlider(id, map);
                     else if(sliderpoints.Length == 2)

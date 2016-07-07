@@ -13,7 +13,7 @@ namespace HitObjectInterpreter
             property = property.ToUpper();
 
             //Divides the hitobject string into an array seperated by commas
-            string[] hobject = hitobject.Split(new char[] {','});
+            string[] hobject = hitobject.Split(',');
 
             int tag = -1;
 
