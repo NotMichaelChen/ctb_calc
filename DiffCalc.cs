@@ -129,7 +129,7 @@ public class DiffCalc
 
             difficulty = this.CalculateNonmovementDifficulty(i, catcher, difficulty);
             
-            difficulty = this.CalculateDCDensity(i, DCtimes, velocity, difficulty);
+            difficulty = this.CalculateDCDensity(i, catcher, DCtimes, velocity, difficulty);
             
             difficulty = this.CalculateHyperChanges(i, DCtimes, catcher, difficulty);
             
@@ -200,7 +200,7 @@ public class DiffCalc
         return difficulty;
     }
     
-    private double CalculateDCDensity(int index, int[] DCtimes, double basevelocity, double difficulty)
+    private double CalculateDCDensity(int index, CatcherInfo catcher, int[] DCtimes, double basevelocity, double difficulty)
     {
         int DCindex = Array.BinarySearch(DCtimes, times[index]);
         if(DCindex > 0)
@@ -217,6 +217,12 @@ public class DiffCalc
             //Want inverse of average, so flip sum and count
             double DCmultiplier = Math.Pow(DCcount / DCsum * 50, 3);
             difficulty += basevelocity * DCmultiplier;
+            //Previous jump was a hyper
+            if(index > 2 && times[index-1] != times[index-2] &&
+               catcher.PercentHyper((positions[index-1] - positions[index-2]) / (times[index-1] - times[index-2])) > 1)
+            {
+                difficulty *= 2;
+            }
         }
         
         return difficulty;
