@@ -78,7 +78,7 @@ namespace DebugTools
                     Console.WriteLine("Writing Debug...");
                     
                     int donecount = 0;
-                    Console.Write("0%");
+                    Console.Write("0%\r");
                     Directory.CreateDirectory("debug");
                     
                     foreach(DiffCalc calc in songs)
