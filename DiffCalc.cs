@@ -215,7 +215,7 @@ public class DiffCalc
             
             //double DCmultiplier = DCcount / 3.0;
             //Want inverse of average, so flip sum and count
-            double DCmultiplier = Math.Pow(DCcount / DCsum * 250, 2);
+            double DCmultiplier = Math.Pow(DCcount / DCsum * 50, 3);
             difficulty += basevelocity * DCmultiplier;
         }
         
@@ -261,8 +261,14 @@ public class DiffCalc
             else
                 notedirection = Direction.Left;
             
+            bool isprevhyper;
+            if(i > 1 && times[i-1] != times[i-2])
+                isprevhyper = catcher.PercentHyper((positions[i-1] - positions[i-2]) / (times[i-1] - times[i-2])) > 1;
+            else
+                isprevhyper = false;
+            
             int distance = Math.Abs(positions[i]-positions[i-1]);
-            if(notedirection != catcher.CurDirection && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir))
+            if(notedirection != catcher.CurDirection && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir || isprevhyper))
             {
                 catcher.CurDirection = notedirection;
                 DCtimes.Add(times[i]);
