@@ -47,15 +47,12 @@ public static class Dewlib
     {
         List<string> finalarr = new List<string>(arr);
 
-        finalarr.RemoveAll(isEmpty);
+        finalarr.RemoveAll(delegate(string str)
+        {
+            return str.Length == 0;
+        });
 
         return finalarr.ToArray();
-    }
-
-    //Predicate method for RemoveEmptyEntries that determines if a string is empty
-    private static bool isEmpty(string str)
-    {
-        return str.Length == 0;
     }
 
     //Calculates the distance between two points
