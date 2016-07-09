@@ -192,6 +192,7 @@ public class DiffCalc
             
             if(times[index] != times[nonmovementindex])
             {
+                //TODO: fix relation between time difference and DC count
                 double pendingdiff = 100 * ((double)DCcount / (times[index] - times[nonmovementindex])) * (Math.Pow(totalpercentdistance, 3) / 100);
                 difficulty = Math.Max(pendingdiff, difficulty);
             }
@@ -274,7 +275,10 @@ public class DiffCalc
                 isprevhyper = false;
             
             int distance = Math.Abs(positions[i]-positions[i-1]);
-            if(notedirection != catcher.CurDirection && (distance > catcher.GetCatcherSize() || notedirection == prevnotedir || isprevhyper))
+            double checkedsize = catcher.GetCatcherSize();
+            if(isprevhyper)
+                checkedsize /= 2;
+            if(notedirection != catcher.CurDirection && (distance > checkedsize || notedirection == prevnotedir))
             {
                 catcher.CurDirection = notedirection;
                 DCtimes.Add(times[i]);
