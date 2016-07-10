@@ -239,6 +239,7 @@ public class DiffCalc
             if(prevvel > 1 && thisvel <= 1)
             {
                 difficulty *= 2;
+                //next note requires a DC
                 if(index + 1 < positions.Length && Array.BinarySearch(DCtimes, times[index+1]) > 0)
                     difficulty *= 2;
             }
@@ -270,7 +271,7 @@ public class DiffCalc
             
             bool isprevhyper;
             if(i > 1 && times[i-1] != times[i-2])
-                isprevhyper = catcher.PercentHyper((positions[i-1] - positions[i-2]) / (times[i-1] - times[i-2])) > 1;
+                isprevhyper = catcher.PercentHyper(Math.Abs(positions[i-1] - positions[i-2]) / (times[i-1] - times[i-2])) > 1;
             else
                 isprevhyper = false;
             
