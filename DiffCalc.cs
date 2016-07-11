@@ -156,6 +156,7 @@ public class DiffCalc
             //used to make sure we only get at most 10 notes
             int nonmovecount = 0;
             int DCcount = 0;
+            List<int> nonmoveDCtimes = new List<int>();
             Direction curdir;
             if(positions[index] - positions[index-1] > 0)
                 curdir = Direction.Right;
@@ -182,8 +183,11 @@ public class DiffCalc
                 if(positions[nonmovementindex] - positions[nonmovementindex-1] > catcher.GetCatcherSize())
                     break;
                 
-                if(curdir != prevdir)
+                if(curdir != prevdir)   
+                {
                     DCcount++;
+                    nonmoveDCtimes.Add(times[nonmovecount]);
+                }
                 
                 prevdir = curdir;
                 
@@ -191,12 +195,17 @@ public class DiffCalc
                 nonmovecount++;
             }
             
-            if(times[index] != times[nonmovementindex])
-            {
-                //TODO: fix relation between time difference and DC count
-                double pendingdiff = 100 * ((double)DCcount / (times[index] - times[nonmovementindex])) * (Math.Pow(totalpercentdistance, 3) / 100);
-                difficulty = Math.Max(pendingdiff, difficulty);
-            }
+            double nonmoveDCsum = 0;
+            for(int i = 1; i < nonmoveDCtimes.Count; i++)
+                nonmoveDCsum += nonmoveDCtimes[i] - nonmoveDCtimes[i-1];
+            
+            double pendingdiff;
+            if(nonmoveDCsum == 0)
+                pendingdiff = 0;
+            else
+                pendingdiff = 110 * Math.Pow(DCcount/ nonmoveDCsum, 0.73) * (Math.Pow(totalpercentdistance, 5) / 10000);
+            
+            difficulty = Math.Max(pendingdiff, difficulty);
         }
         
         return difficulty;
@@ -223,7 +232,7 @@ public class DiffCalc
             if(index > 2 && times[index-1] != times[index-2] &&
                catcher.PercentHyper((positions[index-1] - positions[index-2]) / (times[index-1] - times[index-2])) > 1)
             {
-                difficulty *= 2;
+                difficulty *= 1.5;
             }
         }
         
