@@ -8,6 +8,10 @@ namespace DebugTools
 {
     public class DebugController
     {
+        string custompath;
+        bool printdebug = false;
+        bool issortdifficulty = true;
+        
         readonly string[] commandlist;
         
         public DebugController()
@@ -21,6 +25,7 @@ namespace DebugTools
                     commandlist = filecontents.Split('\n');
                     commandlist = Dewlib.TrimStringArray(commandlist);
                 }
+                this.FindCommands();
             }
             else
             {
@@ -33,112 +38,70 @@ namespace DebugTools
         //Note that if a directory is specified, only .osu files can be in it
         public string[] LoadCustom(string[] files)
         {
-            foreach(string command in commandlist)
+            //custom path is not empty
+            if(custompath != null)
             {
-                if(command.StartsWith("//", StringComparison.CurrentCulture))
-                    continue;
-                
-                string[] pair = command.Split('=');
-                if(pair.Length < 2)
-                    continue;
-                
-                if(pair[0].ToLower() == "custompath")
+                //The only responsibility this method has is making sure that the files/directories exists
+                //Valid checking is up to the other objects using the loaded files
+                if(File.Exists(custompath))
+                    return new string[] {custompath};
+                else if(Directory.Exists(custompath))
                 {
-                    string path = pair[1];
-                    //The only responsibility this method has is making sure that the files/directories exists
-                    //Valid checking is up to the other objects using the loaded files
-                    if(File.Exists(path))
-                        return new string[] {path};
-                    else if(Directory.Exists(path))
-                    {
-                        return Directory.GetFiles(path, "*.osu");
-                    }
-                    else
-                        throw new DirectoryNotFoundException("Error: Custom file/directory not found\n" +
-                                                             "path=" + path);
+                    return Directory.GetFiles(custompath, "*.osu");
                 }
+                else
+                    throw new DirectoryNotFoundException("Error: Custom file/directory not found\n" +
+                                                         "path=" + custompath);
             }
-            
             return files;
         }
         
         public void WriteDebug(DiffCalc[] songs)
         {
-            foreach(string command in commandlist)
+            if(printdebug)
             {
-                if(command.StartsWith("//", StringComparison.CurrentCulture))
-                    continue;
+                Console.WriteLine("Writing Debug...");
                 
-                string[] pair = command.Split('=');
-                if(pair.Length < 2)
-                    continue;
+                int donecount = 0;
+                Console.Write("0%\r");
+                Directory.CreateDirectory("debug");
                 
-                if(pair[0].ToLower() == "printdebug" && pair[1].ToLower() == "true")
+                foreach(DiffCalc calc in songs)
                 {
-                    Console.WriteLine("Writing Debug...");
+                    HitPoint[] notes = calc.GetNoteDifficulty();
+                    List<HitPoint> sortednotes = new List<HitPoint>(notes);
                     
-                    int donecount = 0;
-                    Console.Write("0%\r");
-                    Directory.CreateDirectory("debug");
+                    if(issortdifficulty)
+                        sortednotes.Sort(HitPoint.CompareDifficulty);
+                    else
+                        sortednotes.Sort(HitPoint.CompareTime);
                     
-                    foreach(DiffCalc calc in songs)
+                    string filepath = calc.GetBeatmapTitle() + ".txt";
+                    
+                    //Make sure files don't have invalid characters in the name
+                    filepath = "debug//" + filepath.Replace("/", "").Replace("\"", "\'");
+                    StreamWriter debugfile = new StreamWriter(filepath);
+                    
+                    debugfile.WriteLine("[Difficulty]".PadRight(21) + "[Time]");
+                    foreach(HitPoint notepoint in sortednotes)
                     {
-                        HitPoint[] notes = calc.GetNoteDifficulty();
-                        List<HitPoint> sortednotes = new List<HitPoint>(notes);
-                        
-                        bool sortbydifficulty = this.IsSortDifficulty();
-                        if(sortbydifficulty)
-                            sortednotes.Sort(HitPoint.CompareDifficulty);
-                        else
-                            sortednotes.Sort(HitPoint.CompareTime);
-                        
-                        string filepath = calc.GetBeatmapTitle() + ".txt";
-                        
-                        //Make sure files don't have invalid characters in the name
-                        filepath = "debug//" + filepath.Replace("/", "").Replace("\"", "\'");
-                        StreamWriter debugfile = new StreamWriter(filepath);
-                        
-                        debugfile.WriteLine("[Difficulty]".PadRight(21) + "[Time]");
-                        foreach(HitPoint notepoint in sortednotes)
-                        {
-                            string leftvalue = notepoint.HitDifficulty.ToString();
-                            debugfile.WriteLine(leftvalue.PadRight(21) + notepoint.HitTime);
-                        }
-                        
-                        debugfile.Close();
-                        donecount++;
-                        Console.Write(Math.Round((double)donecount * 100 / songs.Length) + "%\r");
+                        string leftvalue = notepoint.HitDifficulty.ToString();
+                        debugfile.WriteLine(leftvalue.PadRight(21) + notepoint.HitTime);
                     }
                     
-                    break;
+                    debugfile.Close();
+                    donecount++;
+                    Console.Write(Math.Round((double)donecount * 100 / songs.Length) + "%\r");
                 }
             }
         }
         
         public bool IsLoadCustom()
         {
-            foreach(string command in commandlist)
-            {
-                if(command.StartsWith("//", StringComparison.CurrentCulture))
-                    continue;
-                
-                string[] pair = command.Split('=');
-                if(pair.Length < 2)
-                    continue;
-                
-                if(pair[0].ToLower() == "loadcustom")
-                {
-                    return true;
-                }
-            }
-            
-            return false;
+            return custompath != null;
         }
-
-        //Returns whether the WriteDebug Method should sort based on difficulty or time
-        //Returns true if for difficulty, and false for time
-        //If no "sort" tag is found, then default to true        
-        private bool IsSortDifficulty()
+        
+        private void FindCommands()
         {
             foreach(string command in commandlist)
             {
@@ -151,15 +114,27 @@ namespace DebugTools
                 
                 if(pair[0].ToLower() == "sort" && pair[1].ToLower() == "difficulty")
                 {
-                    return true;
+                    issortdifficulty = true;
                 }
                 else if(pair[0].ToLower() == "sort" && pair[1].ToLower() == "time")
                 {
-                    return false;
+                    issortdifficulty = false;
+                }
+                
+                else if(pair[0].ToLower() == "custompath")
+                {
+                    custompath = pair[1];
+                }
+                
+                else if(pair[0].ToLower() == "printdebug" && pair[1].ToLower() == "true")
+                {
+                    printdebug = true;
+                }
+                else if(pair[0].ToLower() == "printdebug" && pair[1].ToLower() == "false")
+                {
+                    printdebug = false;
                 }
             }
-            
-            return true;
         }
     }
 }
