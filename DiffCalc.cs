@@ -230,11 +230,13 @@ public class DiffCalc
             //Want inverse of average, so flip sum and count
             double DCmultiplier = Math.Pow(DCcount / DCsum * 50, 3);
             difficulty += basevelocity * DCmultiplier;
+            
             //Previous jump was a hyper
-            if(index > 2 && times[index-1] != times[index-2] &&
-               catcher.PercentHyper((positions[index-1] - positions[index-2]) / (times[index-1] - times[index-2])) > 1)
+            if(index > 2 && times[index-1] != times[index-2])
             {
-                difficulty *= 1.5;
+                double prevspeed = catcher.PercentHyper((positions[index-1] - positions[index-2]) / (times[index-1] - times[index-2]));
+                if(prevspeed > 1)
+                    difficulty *= Math.Pow(prevspeed, 2) * 1.4;
             }
         }
         
@@ -250,7 +252,7 @@ public class DiffCalc
             double thisvel = catcher.PercentHyper(Math.Abs(positions[index] - positions[index-1]) / (double)(times[index] - times[index-1]));
             if(prevvel > 1 && thisvel <= 1)
             {
-                difficulty *= 2;
+                difficulty *= 1.7;
                 //next note requires a DC
                 if(index + 1 < positions.Length && Array.BinarySearch(DCtimes, times[index+1]) > 0)
                     difficulty *= 2;
