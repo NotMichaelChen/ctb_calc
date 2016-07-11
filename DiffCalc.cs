@@ -124,7 +124,9 @@ public class DiffCalc
             }
             
             //Multiply jump difficulty with CS
-            velocity *= Math.Pow(circlesize+1, 1.5) / 3;
+            double CSmultiplier = Math.Pow(circlesize, 1.5) / 3;
+            if(CSmultiplier > 0)
+                velocity *= CSmultiplier;
             
             double difficulty = velocity;
 
