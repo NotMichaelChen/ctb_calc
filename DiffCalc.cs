@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using BeatmapInfo;
+using CustomExceptions;
 using HitObjectInterpreter;
 using Structures;
 using HitObjects;
@@ -30,7 +31,7 @@ public class DiffCalc
         //No mode specified means standard (old maps have no mode)
         if(!(mode == "0" || mode == "2" || mode == null))
         {
-            throw new Exception("Error: beatmap is not the correct mode (std or ctb)");
+            throw new InvalidBeatmapException("Error: beatmap is not the correct mode (std or ctb)");
         }
 
         //Make a parser from the map

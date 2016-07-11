@@ -51,7 +51,7 @@ namespace DebugTools
                         return new string[] {path};
                     else if(Directory.Exists(path))
                     {
-                        return Directory.GetFiles(path);
+                        return Directory.GetFiles(path, "*.osu");
                     }
                     else
                         throw new DirectoryNotFoundException("Error: Custom file/directory not found\n" +
@@ -113,6 +113,26 @@ namespace DebugTools
                     break;
                 }
             }
+        }
+        
+        public bool IsLoadCustom()
+        {
+            foreach(string command in commandlist)
+            {
+                if(command.StartsWith("//", StringComparison.CurrentCulture))
+                    continue;
+                
+                string[] pair = command.Split('=');
+                if(pair.Length < 2)
+                    continue;
+                
+                if(pair[0].ToLower() == "loadcustom")
+                {
+                    return true;
+                }
+            }
+            
+            return false;
         }
 
         //Returns whether the WriteDebug Method should sort based on difficulty or time

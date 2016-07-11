@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using BeatmapInfo;
+using CustomExceptions;
 using DebugTools;
 
 //TODO: Overhaul exception system
@@ -41,7 +42,20 @@ public class Program
                     timer.Start();
 
                     Beatmap map = new Beatmap(name);
-                    DiffCalc calc = new DiffCalc(map);
+                    DiffCalc calc;
+                    try
+                    {
+                        calc = new DiffCalc(map);
+                    }
+                    catch(InvalidBeatmapException)
+                    {
+                        //Skip this beatmap if it's not a standard or ctb map, but only if
+                        //it was loaded through debug
+                        if(debugger.IsLoadCustom())
+                            continue;
+                        else
+                            throw;
+                    }
                     
                     string title = calc.GetBeatmapTitle() + ": \t";
                     double difficulty = calc.GetDifficulty();
