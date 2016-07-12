@@ -111,11 +111,10 @@ public class DiffCalc
             double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
             //Scale velocity to be a percent of a pixel-jump - a pixel jump is equal to 1
             velocity = catcher.PercentHyper(velocity);
-            //Temp value for hyperdashes 
             if(velocity > 1)
             {
-                velocity = 0.2;
-                //velocity = 1.0 / (times[i] - times[i-1]);
+                //velocity = 0.2;
+                velocity = 1.0 / Math.Pow((times[i] - times[i-1]), 0.15);
             }
             else
             {
@@ -231,12 +230,13 @@ public class DiffCalc
             double DCmultiplier = Math.Pow(DCcount / DCsum * 50, 3);
             difficulty += basevelocity * DCmultiplier;
             
-            //Previous jump was a hyper
+            //Previous jump was a hyper checking
             if(index > 2 && times[index-1] != times[index-2])
             {
                 double prevspeed = catcher.PercentHyper((positions[index-1] - positions[index-2]) / (times[index-1] - times[index-2]));
+                //If the previous jump was a hyper, scale difficulty to do DC by how fast the hyper was going
                 if(prevspeed > 1)
-                    difficulty *= Math.Pow(prevspeed, 2) * 1.4;
+                    difficulty += Math.Pow(prevspeed, 2) * 0.50;
             }
         }
         
@@ -252,7 +252,7 @@ public class DiffCalc
             double thisvel = catcher.PercentHyper(Math.Abs(positions[index] - positions[index-1]) / (double)(times[index] - times[index-1]));
             if(prevvel > 1 && thisvel <= 1)
             {
-                difficulty *= 1.7;
+                difficulty *= 2;
                 //next note requires a DC
                 if(index + 1 < positions.Length && Array.BinarySearch(DCtimes, times[index+1]) > 0)
                     difficulty *= 2;
