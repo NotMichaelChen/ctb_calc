@@ -142,4 +142,22 @@ public static class Dewlib
         //splitting character was not found, so just return the string given
         return new string[] {s};
     }
+    
+    //Removes/Replaces invalid characters in a potential filename
+    public static string MakeValidFilename(string s)
+    {
+        //chars to outright remove
+        string[] toremove = {"<", ">", "/", "\\", "|", "?", "*"};
+        foreach (string invalid in toremove)
+        {
+            s = s.Replace(invalid, string.Empty);
+        }
+        
+        //Replace : with ;
+        s = s.Replace(":", ";");
+        //Replace " with '
+        s = s.Replace("\"", "\'");
+        
+        return s;
+    }
 }

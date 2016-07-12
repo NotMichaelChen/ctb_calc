@@ -76,10 +76,10 @@ namespace DebugTools
                     else
                         sortednotes.Sort(HitPoint.CompareTime);
                     
-                    string filepath = calc.GetBeatmapTitle() + ".txt";
-                    
                     //Make sure files don't have invalid characters in the name
-                    filepath = "debug//" + filepath.Replace("/", "").Replace("\"", "\'");
+                    string filepath = Dewlib.MakeValidFilename(calc.GetBeatmapTitle() + ".txt");
+                    
+                    filepath = "debug//" + filepath;
                     StreamWriter debugfile = new StreamWriter(filepath);
                     
                     debugfile.WriteLine("[Difficulty]".PadRight(21) + "[Time]");
