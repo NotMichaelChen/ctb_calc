@@ -137,7 +137,7 @@ namespace DifficultyProcessor
                 
                 difficulty = this.CalculateDCDensity(i, catcher, DCtimes, velocity, difficulty);
                 
-                difficulty = this.CalculateHyperChanges(i, DCtimes, catcher, difficulty);
+                //difficulty = this.CalculateHyperChanges(i, DCtimes, catcher, difficulty);
                 
                 notes.Add(new HitPoint(positions[i], times[i], difficulty));
             }
@@ -242,6 +242,8 @@ namespace DifficultyProcessor
                     if(prevspeed > 1)
                         difficulty += Math.Pow(prevspeed, 2) * 0.50;
                 }
+                
+                difficulty = CalculateHyperChanges(index, DCtimes, catcher, difficulty);
             }
             
             return difficulty;
@@ -276,7 +278,7 @@ namespace DifficultyProcessor
                 double prevvel = catcher.PercentHyper(Math.Abs(positions[index-1] - positions[index-2]) / (double)(times[index-1] - times[index-2]));
                 double thisvel = catcher.PercentHyper(Math.Abs(positions[index] - positions[index-1]) / (double)(times[index] - times[index-1]));
                 
-                if(prevvel > 1 && thisvel <= 1 && Math.Abs(positions[index] - positions[index-1]) / (double)(times[index] - times[index-1]) >= 0.5)
+                if(prevvel > 1 && thisvel <= 1 && Math.Abs(positions[index] - positions[index-1]) > catcher.GetCatcherSize() / 2)
                 {
                     difficulty *= 2;
                     //next note requires a DC
