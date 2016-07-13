@@ -243,6 +243,27 @@ public class DiffCalc
         return difficulty;
     }
     
+    private double CalculateSGDensity(int index, int[] SGtimes, double basevelocity, double difficulty)
+    {
+        int SGindex = Array.BinarySearch(SGtimes, times[index]);
+        if(SGindex > 0)
+        {
+            int SGcount = 0;
+            double SGsum = 0;
+            for(int j = SGindex; j > 0 && SGcount <= 10; j--)
+            {
+                SGcount++;
+                SGsum += SGtimes[j] - SGtimes[j-1];
+            }
+            
+            //Want inverse of average, so flip sum and count
+            double SGmultiplier = Math.Pow(SGcount / SGsum * 150, 3);
+            difficulty += basevelocity * SGmultiplier;
+        }
+        
+        return difficulty;
+    }
+    
     //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
     private double CalculateHyperChanges(int index, int[] DCtimes, CatcherInfo catcher, double difficulty)
     {
@@ -250,7 +271,8 @@ public class DiffCalc
         {
             double prevvel = catcher.PercentHyper(Math.Abs(positions[index-1] - positions[index-2]) / (double)(times[index-1] - times[index-2]));
             double thisvel = catcher.PercentHyper(Math.Abs(positions[index] - positions[index-1]) / (double)(times[index] - times[index-1]));
-            if(prevvel > 1 && thisvel <= 1)
+            
+            if(prevvel > 1 && thisvel <= 1 && Math.Abs(positions[index] - positions[index-1]) / (double)(times[index] - times[index-1]) >= 0.5)
             {
                 difficulty *= 2;
                 //next note requires a DC
@@ -303,6 +325,58 @@ public class DiffCalc
         }
         
         return DCtimes.ToArray();
+    }
+    
+    private int[] GetStopGoTimes()
+    {
+        double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
+        CatcherInfo catcher = new CatcherInfo(circlesize);
+        
+        List<int> SGtimes = new List<int>();
+        
+        for(int i = 1; i < positions.Length; i++)
+        {
+            if(times[i] == times[i-1] || Math.Abs(positions[i] - positions[i-1]) < 110)
+                continue;
+            
+            double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
+            velocity = catcher.PercentHyper(velocity);
+            //Skip if not a hyper
+            if(velocity <= 1)
+                continue;
+            
+            //Skip if last two notes can't be caught together
+            if(i < 2 || positions[i-1] - positions[i-2] > catcher.GetCatcherSize())
+                continue;
+            
+            //Represents the last note that required no movement before the hyper jump
+            int lastnonmoveindex = i-2;
+            
+            int leftmost = positions[i-1] > positions[i-2] ? positions[i-2] : positions[i-1];
+            int rightmost = positions[i-1] > positions[i-2] ? positions[i-1] : positions[i-2];
+            
+            while(lastnonmoveindex > 0)
+            {
+                //Update the "bounds" of the pattern
+                if(positions[lastnonmoveindex-1] < leftmost)
+                    leftmost = positions[lastnonmoveindex-1];
+                else if(positions[lastnonmoveindex-1] > rightmost)
+                    rightmost = positions[lastnonmoveindex-1];
+                
+                //Actual "check" of the loop
+                if(rightmost - leftmost > (catcher.GetCatcherSize() * 0.25))
+                   break;
+                
+                lastnonmoveindex--;
+            }
+            
+            int nonmovetime = times[i] - times[lastnonmoveindex];
+            
+            if(nonmovetime > (catcher.GetCatcherSize() / 2))
+                SGtimes.Add(times[i]);
+        }
+        
+        return SGtimes.ToArray();
     }
     
     //Gets the list of positions and times for each note of the beatmap, so that
