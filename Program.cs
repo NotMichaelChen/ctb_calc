@@ -1,11 +1,12 @@
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 using BeatmapInfo;
 using CustomExceptions;
 using DebugTools;
+using DifficultyProcessor;
 
 //TODO: Overhaul exception system
 

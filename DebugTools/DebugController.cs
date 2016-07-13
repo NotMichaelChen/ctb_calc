@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using Structures;
+using DifficultyProcessor;
 
 namespace DebugTools
 {
