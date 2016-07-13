@@ -149,7 +149,7 @@ namespace DifficultyProcessor
         {
             //Check if the last three notes can be caught without moving
             //Prevents unnecessary checking
-            if(index > 2 && Math.Max(Math.Max(positions[index], positions[index-1]), positions[index-2]) - Math.Min(Math.Min(positions[index], positions[index-1]), positions[index-2]) < catcher.GetCatcherSize())
+            if(index > 2 && Math.Max(Math.Max(positions[index], positions[index-1]), positions[index-2]) - Math.Min(Math.Min(positions[index], positions[index-1]), positions[index-2]) < catcher.CatcherSize)
             {
                 //the distance the catcher moves, scaled as a percentage of how close the jump is to requiring movement
                 double totalpercentdistance = 0;
@@ -183,9 +183,9 @@ namespace DifficultyProcessor
                     else if(positions[nonmovementindex] - positions[nonmovementindex-1] < 0)
                         curdir = Direction.Left;
                     
-                    if(leftmost - rightmost > catcher.GetCatcherSize())
+                    if(leftmost - rightmost > catcher.CatcherSize)
                         break;
-                    if(positions[nonmovementindex] - positions[nonmovementindex-1] > catcher.GetCatcherSize())
+                    if(positions[nonmovementindex] - positions[nonmovementindex-1] > catcher.CatcherSize)
                         break;
                     
                     if(curdir != prevdir)   
@@ -196,7 +196,7 @@ namespace DifficultyProcessor
                     
                     prevdir = curdir;
                     
-                    totalpercentdistance += Math.Abs(positions[nonmovementindex] - positions[nonmovementindex-1]) / (double)catcher.GetCatcherSize();
+                    totalpercentdistance += Math.Abs(positions[nonmovementindex] - positions[nonmovementindex-1]) / (double)catcher.CatcherSize;
                     nonmovecount++;
                 }
                 
@@ -278,7 +278,7 @@ namespace DifficultyProcessor
                 double prevvel = catcher.PercentHyper(Math.Abs(positions[index-1] - positions[index-2]) / (double)(times[index-1] - times[index-2]));
                 double thisvel = catcher.PercentHyper(Math.Abs(positions[index] - positions[index-1]) / (double)(times[index] - times[index-1]));
                 
-                if(prevvel > 1 && thisvel <= 1 && Math.Abs(positions[index] - positions[index-1]) > catcher.GetCatcherSize() / 2)
+                if(prevvel > 1 && thisvel <= 1 && Math.Abs(positions[index] - positions[index-1]) > catcher.CatcherSize / 2)
                 {
                     difficulty *= 2;
                     //next note requires a DC

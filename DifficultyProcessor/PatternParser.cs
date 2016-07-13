@@ -48,7 +48,7 @@ namespace DifficultyProcessor
                     isprevhyper = false;
                 
                 int distance = Math.Abs(hitpositions[i]-hitpositions[i-1]);
-                double checkedsize = catcher.GetCatcherSize();
+                double checkedsize = catcher.CatcherSize;
                 if(isprevhyper)
                     checkedsize /= 2;
                 if(notedirection != catcher.CurDirection && (distance > checkedsize || notedirection == prevnotedir))
@@ -82,7 +82,7 @@ namespace DifficultyProcessor
                     continue;
                 
                 //Skip if last two notes can't be caught together
-                if(i < 2 || hitpositions[i-1] - hitpositions[i-2] > catcher.GetCatcherSize())
+                if(i < 2 || hitpositions[i-1] - hitpositions[i-2] > catcher.CatcherSize)
                     continue;
                 
                 //Represents the last note that required no movement before the hyper jump
@@ -100,7 +100,7 @@ namespace DifficultyProcessor
                         rightmost = hitpositions[lastnonmoveindex-1];
                     
                     //Actual "check" of the loop
-                    if(rightmost - leftmost > (catcher.GetCatcherSize() * 0.25))
+                    if(rightmost - leftmost > (catcher.CatcherSize * 0.25))
                        break;
                     
                     lastnonmoveindex--;
@@ -108,7 +108,7 @@ namespace DifficultyProcessor
                 
                 int nonmovetime = hittimes[i] - hittimes[lastnonmoveindex];
                 
-                if(nonmovetime > (catcher.GetCatcherSize() / 2))
+                if(nonmovetime > (catcher.CatcherSize / 2))
                     SGtimes.Add(hittimes[i]);
             }
             

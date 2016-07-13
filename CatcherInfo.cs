@@ -4,6 +4,7 @@
 public class CatcherInfo
 {
     private double CS;
+    private int catcherwidth;
     
     public Direction CurDirection;
     
@@ -18,9 +19,25 @@ public class CatcherInfo
     {
         CS = aCS;
         CurDirection = Direction.Stop;
+        CalculateCatcherSize();
     }
     
-    public int GetCatcherSize()
+    public int CatcherSize
+    {
+        get
+        {
+            return catcherwidth;
+        }
+    }
+    
+    //Returns what percent the given velocity is to a pixel-jump
+    public double PercentHyper(double velocity)
+    {
+        //Obtained from testing, may not be 100% exact
+        return velocity / (-0.07 * CS + 1.69);
+    }
+    
+    private void CalculateCatcherSize()
     {
         CS = Dewlib.RestrictRange(CS, 0, 10);
 
@@ -45,13 +62,6 @@ public class CatcherInfo
                 size -= 10;
         }
         
-        return (int)size;
-    }
-    
-    //Returns what percent the given velocity is to a pixel-jump
-    public double PercentHyper(double velocity)
-    {
-        //Obtained from testing, may not be 100% exact
-        return velocity / (-0.07 * CS + 1.69);
+        catcherwidth = (int)size;
     }
 }
