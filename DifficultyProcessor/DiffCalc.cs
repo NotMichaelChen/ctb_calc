@@ -119,7 +119,7 @@ namespace DifficultyProcessor
                 if(velocity > 1)
                 {
                     //velocity = 0.2;
-                    velocity = 1.0 / Math.Pow((times[i] - times[i-1]), 0.15);
+                    velocity = 1.0 / Math.Pow((times[i] - times[i-1]), 0.2);
                 }
                 else
                 {
@@ -243,7 +243,7 @@ namespace DifficultyProcessor
                     double prevspeed = catcher.PercentHyper((positions[index-1] - positions[index-2]) / (times[index-1] - times[index-2]));
                     //If the previous jump was a hyper, scale difficulty to do DC by how fast the hyper was going
                     if(prevspeed > 1)
-                        difficulty += Math.Pow(prevspeed, 2) * 0.50;
+                        difficulty += Math.Pow(prevspeed, 1.8) * 0.6;
                 }
                 
                 difficulty = CalculateHyperChanges(index, DCtimes, catcher, difficulty);
@@ -266,7 +266,7 @@ namespace DifficultyProcessor
                 }
                 
                 //Want inverse of average, so flip sum and count
-                double SGmultiplier = Math.Pow(SGcount / SGsum * 180, 2);
+                double SGmultiplier = Math.Pow(SGcount / SGsum * 200, 2);
                 difficulty += basevelocity * SGmultiplier;
             }
             
@@ -283,10 +283,13 @@ namespace DifficultyProcessor
                 
                 if(prevvel > 1 && thisvel <= 1 && Math.Abs(positions[index] - positions[index-1]) > catcher.CatcherSize / 2)
                 {
-                    difficulty *= 2;
+                    //Already know that this note requires a DC
+                    difficulty += (3 * Math.Pow(thisvel, 1.5));
                     //next note requires a DC
+                    //Does not "double dip difficulty", as this note becomes harder to catch if the next note requires a DC
+                    //(since you have to time the DC correctly)
                     if(index + 1 < positions.Length && Array.BinarySearch(DCtimes, times[index+1]) > 0)
-                        difficulty *= 2;
+                        difficulty += (3.7 * Math.Pow(thisvel, 1.7));
                 }
             }
             
