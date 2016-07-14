@@ -91,24 +91,28 @@ namespace DifficultyProcessor
                 int leftmost = hitpositions[i-1] > hitpositions[i-2] ? hitpositions[i-2] : hitpositions[i-1];
                 int rightmost = hitpositions[i-1] > hitpositions[i-2] ? hitpositions[i-1] : hitpositions[i-2];
                 
+                int templeft = leftmost;
+                int tempright = rightmost;
                 while(lastnonmoveindex > 0)
-                {
+                {    
                     //Update the "bounds" of the pattern
                     if(hitpositions[lastnonmoveindex-1] < leftmost)
-                        leftmost = hitpositions[lastnonmoveindex-1];
+                        templeft = hitpositions[lastnonmoveindex-1];
                     else if(hitpositions[lastnonmoveindex-1] > rightmost)
-                        rightmost = hitpositions[lastnonmoveindex-1];
+                        tempright = hitpositions[lastnonmoveindex-1];
                     
                     //Actual "check" of the loop
-                    if(rightmost - leftmost > (catcher.CatcherSize * 0.25))
+                    if(tempright - templeft > (catcher.CatcherSize))
                        break;
                     
+                    leftmost = templeft;
+                    rightmost = tempright;
                     lastnonmoveindex--;
                 }
                 
                 int nonmovetime = hittimes[i] - hittimes[lastnonmoveindex];
                 
-                if(nonmovetime > (catcher.CatcherSize / 2))
+                if((rightmost - leftmost) / (double)nonmovetime < 0.5)
                     SGtimes.Add(hittimes[i]);
             }
             

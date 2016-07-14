@@ -106,6 +106,7 @@ namespace DifficultyProcessor
             PatternParser patterndetector = new PatternParser(map, positions, times);
             
             int[] DCtimes = patterndetector.GetDirectionalChangeTimes();
+            int[] SGtimes = patterndetector.GetStopGoTimes();
             
             List<HitPoint> notes = new List<HitPoint>();
     
@@ -138,6 +139,8 @@ namespace DifficultyProcessor
                 difficulty = this.CalculateDCDensity(i, catcher, DCtimes, velocity, difficulty);
                 
                 //difficulty = this.CalculateHyperChanges(i, DCtimes, catcher, difficulty);
+                
+                difficulty = this.CalculateSGDensity(i, SGtimes, velocity, difficulty);
                 
                 notes.Add(new HitPoint(positions[i], times[i], difficulty));
             }
@@ -263,7 +266,7 @@ namespace DifficultyProcessor
                 }
                 
                 //Want inverse of average, so flip sum and count
-                double SGmultiplier = Math.Pow(SGcount / SGsum * 150, 3);
+                double SGmultiplier = Math.Pow(SGcount / SGsum * 180, 2);
                 difficulty += basevelocity * SGmultiplier;
             }
             
