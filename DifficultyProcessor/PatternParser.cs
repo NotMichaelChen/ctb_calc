@@ -43,7 +43,7 @@ namespace DifficultyProcessor
                 
                 bool isprevhyper;
                 if(i > 1 && hittimes[i-1] != hittimes[i-2])
-                    isprevhyper = catcher.PercentHyper(Math.Abs(hitpositions[i-1] - hitpositions[i-2]) / (hittimes[i-1] - hittimes[i-2])) > 1;
+                    isprevhyper = catcher.PercentHyper(Math.Abs(hitpositions[i-1] - hitpositions[i-2]), hittimes[i-1] - hittimes[i-2]) > 1;
                 else
                     isprevhyper = false;
                 
@@ -75,8 +75,7 @@ namespace DifficultyProcessor
                 if(hittimes[i] == hittimes[i-1] || Math.Abs(hitpositions[i] - hitpositions[i-1]) < 110)
                     continue;
                 
-                double velocity = Math.Abs(hitpositions[i] - hitpositions[i-1]) / (double)(hittimes[i] - hittimes[i-1]);
-                velocity = catcher.PercentHyper(velocity);
+                double velocity = catcher.PercentHyper(Math.Abs(hitpositions[i] - hitpositions[i-1]), hittimes[i] - hittimes[i-1]);
                 //Skip if not a hyper
                 if(velocity <= 1)
                     continue;

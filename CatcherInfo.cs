@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 //Holds relevant information about a catcher
 public class CatcherInfo
 {
     private double CS;
+    //This is the constant number that distance-time must be to create a hyper
+    private int hyperconstant;
     private int catcherwidth;
     
     public Direction CurDirection;
@@ -19,7 +22,9 @@ public class CatcherInfo
     {
         CS = aCS;
         CurDirection = Direction.Stop;
+        
         CalculateCatcherSize();
+        GenerateHyperConstant();
     }
     
     public int CatcherSize
@@ -31,10 +36,15 @@ public class CatcherInfo
     }
     
     //Returns what percent the given velocity is to a pixel-jump
-    public double PercentHyper(double velocity)
+    /*public double PercentHyper(double velocity)
     {
         //Obtained from testing, may not be 100% exact
         return velocity / (-0.07 * CS + 1.69);
+    }*/
+    
+    public double PercentHyper(double distance, double time)
+    {
+        return distance / (time + hyperconstant);
     }
     
     private void CalculateCatcherSize()
@@ -63,5 +73,41 @@ public class CatcherInfo
         }
         
         catcherwidth = (int)size;
+    }
+    
+    private void GenerateHyperConstant()
+    {
+        int distancetimedifference = 86;
+        //Easier to increment by 1 then by 0.1
+        for(double i = 0; i <= 100; i++)
+        {
+            if(Math.Round(i / 10, 1) == Math.Round(CS, 1))
+            {
+                hyperconstant = distancetimedifference;
+                return;
+            }
+            
+            //Prepare for the next incremented CS
+            
+            //If the numeric portion of the CS is even, that means it takes 7 steps
+            //to reach the odd CS
+            if((int)(i/10) % 2 == 0)
+            {
+                int CSdecimal = (int)i % 10;
+                if(CSdecimal != 1 && CSdecimal != 5 && CSdecimal != 9)
+                    distancetimedifference--;
+            }
+            //Otherwise if the numeric portion of the CS is odd, that means it takes 8
+            //steps to reach the even CS
+            else
+            {
+                int CSdecimal = (int)i % 10;
+                if(CSdecimal != 3 && CSdecimal != 7)
+                    distancetimedifference--;
+            }
+        }
+        
+        throw new ArgumentException("Error, CS is not valid\n" +
+                                    "CS=" + CS);
     }
 }

@@ -113,9 +113,9 @@ namespace DifficultyProcessor
             for(int i = 1; i < positions.Length; i++)
             {
                 //Cast to make division operation a double
-                double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
+                //double velocity = Math.Abs(positions[i] - positions[i-1]) / (double)(times[i] - times[i-1]);
                 //Scale velocity to be a percent of a pixel-jump - a pixel jump is equal to 1
-                velocity = catcher.PercentHyper(velocity);
+                double velocity = catcher.PercentHyper(Math.Abs(positions[i] - positions[i-1]), times[i] - times[i-1]);
                 if(velocity > 1)
                 {
                     //velocity = 0.2;
@@ -240,7 +240,7 @@ namespace DifficultyProcessor
                 //Previous jump was a hyper checking
                 if(index > 2 && times[index-1] != times[index-2])
                 {
-                    double prevspeed = catcher.PercentHyper((positions[index-1] - positions[index-2]) / (times[index-1] - times[index-2]));
+                    double prevspeed = catcher.PercentHyper(Math.Abs(positions[index-1] - positions[index-2]), times[index-1] - times[index-2]);
                     //If the previous jump was a hyper, scale difficulty to do DC by how fast the hyper was going
                     if(prevspeed > 1)
                         difficulty += Math.Pow(prevspeed, 1.8) * 0.6;
@@ -278,8 +278,8 @@ namespace DifficultyProcessor
         {
             if(index > 1)
             {
-                double prevvel = catcher.PercentHyper(Math.Abs(positions[index-1] - positions[index-2]) / (double)(times[index-1] - times[index-2]));
-                double thisvel = catcher.PercentHyper(Math.Abs(positions[index] - positions[index-1]) / (double)(times[index] - times[index-1]));
+                double prevvel = catcher.PercentHyper(Math.Abs(positions[index-1] - positions[index-2]), (times[index-1] - times[index-2]));
+                double thisvel = catcher.PercentHyper(Math.Abs(positions[index] - positions[index-1]), (times[index] - times[index-1]));
                 
                 if(prevvel > 1 && thisvel <= 1 && Math.Abs(positions[index] - positions[index-1]) > catcher.CatcherSize / 2)
                 {
