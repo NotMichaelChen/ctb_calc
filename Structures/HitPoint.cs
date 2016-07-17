@@ -10,12 +10,15 @@ namespace Structures
         public int HitLocation;
         public int HitTime;
         public double HitDifficulty;
+        //Which hitobject sequentially in the beatmap this one is
+        public int HitID;
         
-        public HitPoint(int location, int time, double difficulty)
+        public HitPoint(int location, int time, double difficulty, int index)
         {
             HitLocation = location;
             HitTime = time;
             HitDifficulty = difficulty;
+            HitID = index;
         }
         
         //Sort by Difficulty, by default

@@ -82,12 +82,14 @@ namespace DebugTools
                     
                     filepath = "debug//" + filepath;
                     StreamWriter debugfile = new StreamWriter(filepath);
-                    
-                    debugfile.WriteLine("[Difficulty]".PadRight(21) + "[Time]");
+
+                    //Write the header
+                    debugfile.WriteLine("[Difficulty]".PadRight(21) + "[Time]".PadRight(9) + "[Index]");
                     foreach(HitPoint notepoint in sortednotes)
                     {
-                        string leftvalue = notepoint.HitDifficulty.ToString();
-                        debugfile.WriteLine(leftvalue.PadRight(21) + notepoint.HitTime);
+                        string difficulty = notepoint.HitDifficulty.ToString();
+                        string time = notepoint.HitTime.ToString();
+                        debugfile.WriteLine(difficulty.PadRight(21) + time.PadRight(9) + notepoint.HitID);
                     }
                     
                     debugfile.Close();

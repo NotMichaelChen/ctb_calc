@@ -36,17 +36,11 @@ public class CatcherInfo
     }
     
     //Returns what percent the given velocity is to a pixel-jump
-    /*public double PercentHyper(double velocity)
-    {
-        //Obtained from testing, may not be 100% exact
-        return velocity / (-0.07 * CS + 1.69);
-    }*/
-    
     public double PercentHyper(double distance, double time)
     {
         return distance / (time + hyperconstant);
     }
-    
+
     private void CalculateCatcherSize()
     {
         CS = Dewlib.RestrictRange(CS, 0, 10);

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 using BeatmapInfo;
@@ -126,11 +125,12 @@ namespace DifficultyProcessor
                     //Scale normal jumps
                     velocity = Math.Pow(velocity, 2);
                 }
-                
+
                 //Multiply jump difficulty with CS
-                double CSmultiplier = Math.Pow(circlesize, 1.5) / 3;
-                if(CSmultiplier > 0)
-                    velocity *= CSmultiplier;
+                //double CSmultiplier = Math.Pow(circlesize, 1.5) / 3;
+                //if(CSmultiplier > 0)
+                //   velocity *= CSmultiplier;
+                velocity += Math.Pow(circlesize / 10, 1.5);
                 
                 double difficulty = velocity;
     
@@ -142,7 +142,7 @@ namespace DifficultyProcessor
                 
                 difficulty = this.CalculateSGDensity(i, SGtimes, velocity, difficulty);
                 
-                notes.Add(new HitPoint(positions[i], times[i], difficulty));
+                notes.Add(new HitPoint(positions[i], times[i], difficulty, i));
             }
             
             return notes.ToArray();
@@ -174,7 +174,7 @@ namespace DifficultyProcessor
                     curdir = Direction.Stop;
                 Direction prevdir = curdir;
                 //while it's still a nonmovement jump
-                for(nonmovementindex = index; nonmovementindex > 0 && nonmovecount <= 10; nonmovementindex--)
+                for(nonmovementindex = index; nonmovementindex > 0 && nonmovecount < 10; nonmovementindex--)
                 {
                     if(positions[nonmovementindex] > leftmost)
                         leftmost = positions[nonmovementindex];
@@ -191,7 +191,7 @@ namespace DifficultyProcessor
                     if(positions[nonmovementindex] - positions[nonmovementindex-1] > catcher.CatcherSize)
                         break;
                     
-                    if(curdir != prevdir)   
+                    if(curdir != prevdir)
                     {
                         DCcount++;
                         nonmoveDCtimes.Add(times[nonmovecount]);
@@ -211,7 +211,7 @@ namespace DifficultyProcessor
                 if(nonmoveDCsum == 0)
                     pendingdiff = 0;
                 else
-                    pendingdiff = 110 * Math.Pow(DCcount/ nonmoveDCsum, 0.73) * (Math.Pow(totalpercentdistance, 5) / 10000);
+                    pendingdiff = 110 * Math.Pow(DCcount / nonmoveDCsum, 0.73) * (Math.Pow(totalpercentdistance, 5) / 10000);
                 
                 difficulty = Math.Max(pendingdiff, difficulty);
             }
@@ -234,8 +234,8 @@ namespace DifficultyProcessor
                 
                 //double DCmultiplier = DCcount / 3.0;
                 //Want inverse of average, so flip sum and count
-                double DCmultiplier = Math.Pow(DCcount / DCsum * 50, 3);
-                difficulty += basevelocity * DCmultiplier;
+                double DCmultiplier = Math.Pow(DCcount / DCsum * 200, 3);
+                //difficulty += basevelocity * DCmultiplier;
                 
                 //Previous jump was a hyper checking
                 if(index > 2 && times[index-1] != times[index-2])
@@ -243,10 +243,10 @@ namespace DifficultyProcessor
                     double prevspeed = catcher.PercentHyper(Math.Abs(positions[index-1] - positions[index-2]), times[index-1] - times[index-2]);
                     //If the previous jump was a hyper, scale difficulty to do DC by how fast the hyper was going
                     if(prevspeed > 1)
-                        difficulty += Math.Pow(prevspeed, 1.8) * 0.6;
+                        difficulty += Math.Pow(prevspeed * 0.9, 2);
                 }
                 
-                difficulty = CalculateHyperChanges(index, DCtimes, catcher, difficulty);
+                difficulty = CalculateHyperChanges(index, DCtimes, catcher, DCmultiplier, difficulty);
             }
             
             return difficulty;
@@ -274,7 +274,7 @@ namespace DifficultyProcessor
         }
         
         //Scale velocity based on whether the previous note was a hyper dash or not, compared to this jump
-        private double CalculateHyperChanges(int index, int[] DCtimes, CatcherInfo catcher, double difficulty)
+        private double CalculateHyperChanges(int index, int[] DCtimes, CatcherInfo catcher, double DCmultiplier, double difficulty)
         {
             if(index > 1)
             {
@@ -284,12 +284,12 @@ namespace DifficultyProcessor
                 if(prevvel > 1 && thisvel <= 1 && Math.Abs(positions[index] - positions[index-1]) > catcher.CatcherSize / 2)
                 {
                     //Already know that this note requires a DC
-                    difficulty += (3 * Math.Pow(thisvel, 1.5));
+                    difficulty += (DCmultiplier * Math.Pow(thisvel, 3));
                     //next note requires a DC
                     //Does not "double dip difficulty", as this note becomes harder to catch if the next note requires a DC
                     //(since you have to time the DC correctly)
                     if(index + 1 < positions.Length && Array.BinarySearch(DCtimes, times[index+1]) > 0)
-                        difficulty += (3.7 * Math.Pow(thisvel, 1.7));
+                        difficulty += (DCmultiplier * Math.Pow(thisvel, 3));
                 }
             }
             
