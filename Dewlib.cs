@@ -7,7 +7,7 @@ using Structures;
 // Collection of useful static functions
 public static class Dewlib
 {
-    /// Takes an array of strings and trims all of their trailing and leading whitespace
+    // Takes an array of strings and trims all of their trailing and leading whitespace
     public static string[] TrimStringArray(string[] arr)
     {
         for(int i = 0; i < arr.Length; i++)
@@ -18,6 +18,8 @@ public static class Dewlib
     }
 
     // Keeps the number in the range between lower and upper
+    // If the bounds are exceeded, then the number will loop back around. This makes
+    // it functionally different from clamp
     public static double RestrictRange(double num, double lower, double upper)
     {
         if(lower > upper)
@@ -159,5 +161,15 @@ public static class Dewlib
         s = s.Replace("\"", "\'");
         
         return s;
+    }
+
+    //Makes sure that val lies between max and min. If it’s greater than man, then it’s replaced by max, etc.
+    //Different from RestrictRange as val does not loop around
+    //Copied from http://stackoverflow.com/questions/2683442/where-can-i-find-the-clamp-function-in-net
+    public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
+    {
+        if (val.CompareTo(min) < 0) return min;
+        else if(val.CompareTo(max) > 0) return max;
+        else return val;
     }
 }

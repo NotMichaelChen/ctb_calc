@@ -43,7 +43,7 @@ public class CatcherInfo
 
     private void CalculateCatcherSize()
     {
-        CS = Dewlib.RestrictRange(CS, 0, 10);
+        CS = Dewlib.Clamp(CS, 0, 10);
 
         //Calculate the integer part of CS first, then modify later based on the decimal
         double size = 144 - 12 * Math.Floor(CS);
