@@ -118,7 +118,7 @@ namespace DifficultyProcessor
                 if(velocity > 1)
                 {
                     //velocity = 0.2;
-                    velocity = 1.0 / Math.Pow((times[i] - times[i-1]), 0.2);
+                    velocity = 1.0 / Math.Pow((times[i] - times[i-1]), 0.3);
                 }
                 else
                 {
@@ -202,7 +202,8 @@ namespace DifficultyProcessor
                     totalpercentdistance += Math.Abs(positions[nonmovementindex] - positions[nonmovementindex-1]) / (double)catcher.CatcherSize;
                     nonmovecount++;
                 }
-                
+
+                //Get the sum of the time between DC's in the nonmovement section
                 double nonmoveDCsum = 0;
                 for(int i = 1; i < nonmoveDCtimes.Count; i++)
                     nonmoveDCsum += nonmoveDCtimes[i] - nonmoveDCtimes[i-1];
@@ -211,7 +212,7 @@ namespace DifficultyProcessor
                 if(nonmoveDCsum == 0)
                     pendingdiff = 0;
                 else
-                    pendingdiff = 110 * Math.Pow(DCcount / nonmoveDCsum, 0.73) * (Math.Pow(totalpercentdistance, 5) / 10000);
+                    pendingdiff = 120 * Math.Pow(DCcount / nonmoveDCsum, 0.71) * (Math.Pow(totalpercentdistance, 4.5) / (Math.Pow(10, 4.5) / 10));
                 
                 difficulty = Math.Max(pendingdiff, difficulty);
             }
@@ -226,16 +227,15 @@ namespace DifficultyProcessor
             {
                 int DCcount = 0;
                 double DCsum = 0;
-                for(int j = DCindex; j > 0 && DCcount <= 10; j--)
+                for(int j = DCindex; j > 0 && DCcount <= 10 && DCtimes[DCindex] - DCtimes[j] < 20000; j--)
                 {
                     DCcount++;
                     DCsum += DCtimes[j] - DCtimes[j-1];
                 }
-                
-                //double DCmultiplier = DCcount / 3.0;
+
                 //Want inverse of average, so flip sum and count
-                double DCmultiplier = Math.Pow(DCcount / DCsum * 200, 3);
-                //difficulty += basevelocity * DCmultiplier;
+                double DCmultiplier = Math.Pow(DCcount / DCsum * 250, 2);
+                difficulty += basevelocity * DCmultiplier;
                 
                 //Previous jump was a hyper checking
                 if(index > 2 && times[index-1] != times[index-2])
@@ -243,10 +243,11 @@ namespace DifficultyProcessor
                     double prevspeed = catcher.PercentHyper(Math.Abs(positions[index-1] - positions[index-2]), times[index-1] - times[index-2]);
                     //If the previous jump was a hyper, scale difficulty to do DC by how fast the hyper was going
                     if(prevspeed > 1)
-                        difficulty += Math.Pow(prevspeed * 0.9, 2);
+                        difficulty += Math.Pow(prevspeed * 0.80, 2);
                 }
-                
-                difficulty = CalculateHyperChanges(index, DCtimes, catcher, DCmultiplier, difficulty);
+
+                double DChypermultiplier = Math.Pow(DCcount / DCsum * 175, 2);
+                difficulty = CalculateHyperChanges(index, DCtimes, catcher, DChypermultiplier, difficulty);
             }
             
             return difficulty;
@@ -284,12 +285,12 @@ namespace DifficultyProcessor
                 if(prevvel > 1 && thisvel <= 1 && Math.Abs(positions[index] - positions[index-1]) > catcher.CatcherSize / 2)
                 {
                     //Already know that this note requires a DC
-                    difficulty += (DCmultiplier * Math.Pow(thisvel, 3));
+                    difficulty += (DCmultiplier * 1.2 * Math.Pow(thisvel, 2.5));
                     //next note requires a DC
                     //Does not "double dip difficulty", as this note becomes harder to catch if the next note requires a DC
                     //(since you have to time the DC correctly)
                     if(index + 1 < positions.Length && Array.BinarySearch(DCtimes, times[index+1]) > 0)
-                        difficulty += (DCmultiplier * Math.Pow(thisvel, 3));
+                        difficulty += (DCmultiplier * 1.2 * Math.Pow(thisvel, 2.5));
                 }
             }
             
