@@ -26,6 +26,14 @@ public class CatcherInfo
         CalculateCatcherSize();
         GenerateHyperConstant();
     }
+
+    public double CircleSize
+    {
+        get
+        {
+            return CS;
+        }
+    }
     
     public int CatcherSize
     {
@@ -39,6 +47,12 @@ public class CatcherInfo
     public double PercentHyper(double distance, double time)
     {
         return distance / (time + hyperconstant);
+    }
+
+    //Scales the CS exponentially when used in difficulty calculations
+    public double GetCSMultiplier()
+    {
+        return Math.Pow(CS, 1.57) / (Math.Pow(10, 1.57) / 10);
     }
 
     private void CalculateCatcherSize()
