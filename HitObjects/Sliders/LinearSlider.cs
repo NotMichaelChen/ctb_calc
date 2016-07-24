@@ -33,10 +33,12 @@ namespace HitObjects.Sliders
             else
             {
                 List<Point> allcontrolpoints = new List<Point>();
+
                 //Add first point only if it's not repeated in the control points (old maps)
                 if(initialcoord.IntX() != controlpoints[0].IntX() && initialcoord.IntY() != controlpoints[0].IntY())
                     allcontrolpoints.Add(initialcoord);
                 allcontrolpoints.AddRange(controlpoints);
+
                 Point[][] curvepoints = Dewlib.SplitPointList(allcontrolpoints.ToArray());
                 foreach(Point[] curve in curvepoints)
                 {

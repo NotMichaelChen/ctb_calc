@@ -115,7 +115,9 @@ public static class Dewlib
             }
             accumulatedlist.Add(pointlist[i]);
         }
-        if(accumulatedlist.Count != 0)
+
+        //Ignore redpoints at the end of sliders
+        if(accumulatedlist.Count > 1)
         {
             splitlist.Add(accumulatedlist);
         }
