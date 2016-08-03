@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 using BeatmapInfo;
 using DifficultyProcessor;
@@ -70,7 +71,7 @@ namespace PerformanceProcessor
             }
 
 
-            double approachRate = Double.Parse(map.GetTag("Difficulty", "ApproachRate"));
+            double approachRate = Double.Parse(map.GetTag("Difficulty", "ApproachRate"), CultureInfo.InvariantCulture);
             double approachRateFactor = 1.0;
             if(approachRate > 9.0)
             {

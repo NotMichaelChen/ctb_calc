@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 
 using Structures;
@@ -61,10 +62,10 @@ namespace HitObjects.Sliders
         protected override int[] GetTickLocations()
         {
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
             
             double slidervelocity = this.GetSliderVelocity();
-            double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"));
+            double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"), CultureInfo.InvariantCulture);
             int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
             
             List<int> ticks = new List<int>();
@@ -103,7 +104,7 @@ namespace HitObjects.Sliders
         protected override Point GetLastPoint()
         {
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
             //Only one curve
             if(curves.Length == 1)
             {

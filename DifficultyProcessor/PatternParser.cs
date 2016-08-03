@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 
 using BeatmapInfo;
@@ -23,7 +24,7 @@ namespace DifficultyProcessor
         //Each hitobject marked as a "DC" means that it requires a directional change to catch
         public int[] GetDirectionalChangeTimes()
         {
-            double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
+            double circlesize = Double.Parse(map.GetTag("Difficulty", "CircleSize"), CultureInfo.InvariantCulture);
             CatcherInfo catcher = new CatcherInfo(circlesize);
             
             List<int> DCtimes = new List<int>();
@@ -65,7 +66,7 @@ namespace DifficultyProcessor
         
         public int[] GetStopGoTimes()
         {
-            double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
+            double circlesize = Double.Parse(map.GetTag("Difficulty", "CircleSize"), CultureInfo.InvariantCulture);
             CatcherInfo catcher = new CatcherInfo(circlesize);
             
             List<int> SGtimes = new List<int>();

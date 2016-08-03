@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 
 using Structures;
@@ -40,7 +41,7 @@ namespace HitObjects.Sliders
         protected override int[] GetTickLocations()
         {
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
             
             int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
             //Only need ticks for one slider length (no repeats needed)
@@ -48,7 +49,7 @@ namespace HitObjects.Sliders
             int tickcount = this.GetTickCount() / sliderruns;
             
             double slidervelocity = this.GetSliderVelocity();
-            double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"));
+            double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"), CultureInfo.InvariantCulture);
             int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
             
             if(length <= ticklength)
@@ -105,7 +106,7 @@ namespace HitObjects.Sliders
         protected override Point GetLastPoint()
         {
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
             
             //how many steps to travel through the curve
             //divide by curves.Length to scale this with the number of curves

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 
 using BeatmapInfo;
@@ -100,7 +101,7 @@ namespace DifficultyProcessor
         //Gets a list of every hitpoint and its associated difficulty
         public HitPoint[] GetNoteDifficulty()
         {
-            double circlesize = Convert.ToDouble(map.GetTag("Difficulty", "CircleSize"));
+            double circlesize = Double.Parse(map.GetTag("Difficulty", "CircleSize"), CultureInfo.InvariantCulture);
             CatcherInfo catcher = new CatcherInfo(circlesize);
             
             PatternParser patterndetector = new PatternParser(map, positions, times);

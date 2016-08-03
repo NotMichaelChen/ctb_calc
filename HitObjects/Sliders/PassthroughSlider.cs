@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 
 using Structures;
@@ -22,7 +23,7 @@ namespace HitObjects.Sliders
             initialcoord.x = Int32.Parse(HitObjectParser.GetProperty(id, "x"));
             initialcoord.y = Int32.Parse(HitObjectParser.GetProperty(id, "y"));
             
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
             
             curve = new CircleCurve(initialcoord, controlpoints[0], controlpoints[1], length);
         }
@@ -30,10 +31,10 @@ namespace HitObjects.Sliders
         protected override int[] GetTickLocations()
         {
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
             
             double slidervelocity = this.GetSliderVelocity();
-            double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"));
+            double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"), CultureInfo.InvariantCulture);
             int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
             
             if(length <= ticklength)
@@ -57,7 +58,7 @@ namespace HitObjects.Sliders
         protected override Point GetLastPoint()
         {
             //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"))));
+            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
             
             return curve.GetPointAlong(length);
         }
