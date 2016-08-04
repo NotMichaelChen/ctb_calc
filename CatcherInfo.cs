@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 //Holds relevant information about a catcher
 public class CatcherInfo
