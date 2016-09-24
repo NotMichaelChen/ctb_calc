@@ -161,9 +161,8 @@ namespace HitObjects.Sliders
             int ms = Int32.Parse(HitObjectParser.GetProperty(id, "time"));
             //Get all the timing sections of the beatmap
             string[] timings = this.map.GetSection("TimingPoints");
-            //Just in case there is only one timing point
-            string timingpoint = timings[0];
-
+            //Will hold the relevant timing point
+            string timingpoint = null;
             //Find the section that applies to the given time
             for(int i = 0; i < timings.Length; i++)
             {
@@ -171,21 +170,23 @@ namespace HitObjects.Sliders
                 string[] attributes = timings[i].Split(',');
                 //Trim each string just in case
                 attributes = Dewlib.TrimStringArray(attributes);
-
+                //If the timing point is a higher time, then we want the previous timing section
                 if(Int32.Parse(attributes[0]) > ms)
+                {
+                    //avoid accessing a negative timing point
+                    if(i == 0)
+                        timingpoint = timings[0];
+                    else
+                        timingpoint = timings[i - 1];
                     break;
-
-                else if(Double.Parse(attributes[1], CultureInfo.InvariantCulture) > 0)
-                    timingpoint = timings[i];
-                else
-                    continue;
+                }
             }
 
+            //If the timing point needed is the very last one
             if(timingpoint == null)
-                throw new Exception("Error, no relevant timing point\nms=" + ms);
+                timingpoint = timings[timings.Length-1];
 
-            string[] properties = timingpoint.Split(',');
-            return Double.Parse(properties[1], CultureInfo.InvariantCulture);
+            return Double.Parse(timingpoint.Split(',')[1], CultureInfo.InvariantCulture);
         }
 
         //TODO: Throw error if somethings messed up with the timing section
