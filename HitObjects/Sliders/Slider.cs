@@ -171,7 +171,7 @@ namespace HitObjects.Sliders
                 //Trim each string just in case
                 attributes = Dewlib.TrimStringArray(attributes);
                 //If the timing point is a higher time, then we want the previous timing section
-                if(Int32.Parse(attributes[0]) > ms)
+                if(Double.Parse(attributes[0]) > ms)
                 {
                     //avoid accessing a negative timing point
                     if(i == 0)
@@ -211,7 +211,7 @@ namespace HitObjects.Sliders
                 //Trim each string just in case
                 attributes = Dewlib.TrimStringArray(attributes);
                 //If the timing point is a higher time, then we want the previous timing section
-                if(Int32.Parse(attributes[0]) > ms)
+                if(Double.Parse(attributes[0]) > ms)
                 {
                     //avoid accessing a negative timing point
                     if(i == 0)
