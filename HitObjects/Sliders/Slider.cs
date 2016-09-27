@@ -163,21 +163,23 @@ namespace HitObjects.Sliders
             string[] timings = this.map.GetSection("TimingPoints");
             //Will hold the relevant timing point
             string timingpoint = null;
+            //Store the index of the timing point just in case we need to iterate backwards later
+            int index;
             //Find the section that applies to the given time
-            for(int i = 0; i < timings.Length; i++)
+            for(index = 0; index < timings.Length; index++)
             {
                 //Split the string by commas to get all the relevant times
-                string[] attributes = timings[i].Split(',');
+                string[] attributes = timings[index].Split(',');
                 //Trim each string just in case
                 attributes = Dewlib.TrimStringArray(attributes);
                 //If the timing point is a higher time, then we want the previous timing section
                 if(Double.Parse(attributes[0]) > ms)
                 {
                     //avoid accessing a negative timing point
-                    if(i == 0)
+                    if(index == 0)
                         timingpoint = timings[0];
                     else
-                        timingpoint = timings[i - 1];
+                        timingpoint = timings[index - 1];
                     break;
                 }
             }
@@ -185,6 +187,24 @@ namespace HitObjects.Sliders
             //If the timing point needed is the very last one
             if(timingpoint == null)
                 timingpoint = timings[timings.Length-1];
+
+            //If the mpb is negative, then we need to search backwards to find a positive one
+            if(Double.Parse(timingpoint.Split(',')[1], CultureInfo.InvariantCulture) < 0)
+            {
+                for(int i = index-1; i >= 0; i--)
+                {
+                    //Split the string by commas to get all the relevant times
+                    string[] attributes = timings[i].Split(',');
+                    //Trim each string just in case
+                    attributes = Dewlib.TrimStringArray(attributes);
+
+                    if(Double.Parse(attributes[1]) > 0)
+                    {
+                        timingpoint = timings[i];
+                        break;
+                    }
+                }
+            }
 
             return Double.Parse(timingpoint.Split(',')[1], CultureInfo.InvariantCulture);
         }
