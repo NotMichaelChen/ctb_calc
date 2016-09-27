@@ -12,7 +12,7 @@ namespace HitObjects.Sliders
     public class LinearSlider : GenericSlider
     {
         LinearCurve[] curves;
-        
+
         //Uses the given list of control points to construct a list of curves
         //to account for red points
         public LinearSlider(string id, Beatmap amap) : base(id, amap)
@@ -25,7 +25,7 @@ namespace HitObjects.Sliders
 
             //List<Point> curvepoints = new List<Point>();
             List<LinearCurve> accumulatedcurves = new List<LinearCurve>();
-            
+
             //Normal linear slider
             if(controlpoints.Length == 1)
             {
@@ -36,7 +36,7 @@ namespace HitObjects.Sliders
                 List<Point> allcontrolpoints = new List<Point>();
 
                 //Add first point only if it's not repeated in the control points (old maps)
-                if(initialcoord.IntX() != controlpoints[0].IntX() && initialcoord.IntY() != controlpoints[0].IntY())
+                if(initialcoord.IntX() != controlpoints[0].IntX() || initialcoord.IntY() != controlpoints[0].IntY())
                     allcontrolpoints.Add(initialcoord);
                 allcontrolpoints.AddRange(controlpoints);
 
@@ -58,20 +58,20 @@ namespace HitObjects.Sliders
             }
             curves = accumulatedcurves.ToArray();
         }
-        
+
         protected override int[] GetTickLocations()
         {
             double length = Math.Round(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture), 4);
-            
+
             double slidervelocity = this.GetSliderVelocity();
             double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"), CultureInfo.InvariantCulture);
             double ticklength = Math.Round(slidervelocity * (100 / tickrate), 4);
-            
+
             List<int> ticks = new List<int>();
-            
+
             if(length <= ticklength)
                 return new int[0];
-            
+
             //How far along a single curve we have traveled
             //Initialize to ticklength to make the while loop work for the first curve
             double accumulatedlength = ticklength;
@@ -96,10 +96,10 @@ namespace HitObjects.Sliders
                 }
                 accumulatedlength -= (int)Math.Round(curves[i].DistanceBetween());
             }
-            
+
             return ticks.ToArray();
         }
-        
+
         protected override Point GetLastPoint()
         {
             double length = Math.Round(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture), 4);
