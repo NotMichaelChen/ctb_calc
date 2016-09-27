@@ -61,12 +61,11 @@ namespace HitObjects.Sliders
         
         protected override int[] GetTickLocations()
         {
-            //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
+            double length = Math.Round(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture), 4);
             
             double slidervelocity = this.GetSliderVelocity();
             double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"), CultureInfo.InvariantCulture);
-            int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
+            double ticklength = Math.Round(slidervelocity * (100 / tickrate), 4);
             
             List<int> ticks = new List<int>();
             
@@ -75,10 +74,10 @@ namespace HitObjects.Sliders
             
             //How far along a single curve we have traveled
             //Initialize to ticklength to make the while loop work for the first curve
-            int accumulatedlength = ticklength;
+            double accumulatedlength = ticklength;
             //How much along the entire slider we have traveled
             //Necessary to keep track of in case there are more curves than the slider length allows
-            int totalaccumulatedlength = ticklength;
+            double totalaccumulatedlength = ticklength;
             //Special case for last curve, hence the curves.Length-1
             for(int i = 0; i < curves.Length; i++)
             {
@@ -103,8 +102,7 @@ namespace HitObjects.Sliders
         
         protected override Point GetLastPoint()
         {
-            //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
+            double length = Math.Round(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture), 4);
             //Only one curve
             if(curves.Length == 1)
             {

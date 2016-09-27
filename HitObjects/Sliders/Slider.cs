@@ -265,16 +265,16 @@ namespace HitObjects.Sliders
             double slidervelocity = this.GetSliderVelocity();
 
             double tickrate = Double.Parse(map.GetTag("Difficulty", "SliderTickRate"), CultureInfo.InvariantCulture);
-            //Necessary to avoid cases where the pixellength is something like 105.000004005432
-            int length = Convert.ToInt32(Math.Floor(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture)));
+
+            double length = Math.Round(Double.Parse(HitObjectParser.GetProperty(id, "pixelLength"), CultureInfo.InvariantCulture), 4);
 
             int sliderruns = Int32.Parse(HitObjectParser.GetProperty(id, "repeat"));
             
-            int ticklength = (int)Math.Round(slidervelocity * (100 / tickrate));
+            double ticklength = Math.Round(slidervelocity * (100 / tickrate), 4);
             
-            int tickcount = length / ticklength;
+            int tickcount = (int)Math.Floor(length / ticklength);
             
-            if(length % ticklength == 0)
+            if(Math.Abs(length % ticklength) < Double.Epsilon)
                 tickcount--;
 
             return tickcount * sliderruns;
